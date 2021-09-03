@@ -1,0 +1,95 @@
+$mobile-wid: 760px;
+$p-color: #0e62b1; //포인트컬러
+$p-color: #30b46b; //포인트컬러
+$fon-size: 14px; // 기본 폰트사이즈
+$fon-color: #666; //기본 폰트색상
+$bd-color: #e2e2e2; //보더컬러
+.com-tab-box .tab-content {
+  display: none;
+}
+
+@mixin mobile {
+  @media (max-width: #{$mobile-wid}) {
+    @content;
+  }
+}
+
+@mixin flex($j: flex-start, $a: center, $d: row) {
+  display: flex;
+  justify-content: $j;
+  align-items: $a;
+  flex-direction: $d;
+}
+
+@mixin after($width, $height) {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: $width;
+  height: $height;
+}
+@mixin before($width, $height) {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: $width;
+  height: $height;
+  @content;
+}
+
+@mixin font($s: $fon-size, $w: normal, $c: $fon-color) {
+  font-size: $s;
+  font-weight: $w;
+  color: $c;
+}
+
+@mixin h2 {
+  font-size: 30px;
+  margin-bottom: 50px;
+  line-height: 1;
+  color: #000;
+  text-align: center;
+}
+
+@mixin lastMr0($margin) {
+  margin-right: $margin;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+@mixin lastMb0($margin) {
+  margin-bottom: $margin;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* 인풋 */
+@mixin input-text($h: 50px, $bd: 1px) {
+  height: $h;
+  padding: 0 20px;
+  border-radius: 5px;
+  border: 1px solid #d5d5d5;
+  border-width: $bd;
+  background-color: #fff;
+  &::placeholder {
+    color: #999;
+  }
+}
+@mixin input-check($w: 20px, $c: $p-color, $bd: 2px) {
+  position: absolute;
+  height: 0;
+  width: 0;
+  & + label {
+    display: inline-block;
+    width: $w;
+    height: $w;
+    border: 1px solid #d5d5d5;
+    border-width: $bd;
+    background-color: #fff;
+  }
+  &:checked + label {
+    background: $c url(../img/icon_check_on.svg) center no-repeat;
+    background-size: 80% auto;
+  }
+}
