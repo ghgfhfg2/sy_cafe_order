@@ -9,6 +9,10 @@ import {firebaseConfig} from "./firebaseConfig"
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+export const old = firebase.initializeApp({
+  ...firebaseConfig,
+  databaseURL: "https://cafe-order-226e5.firebaseio.com/"
+}, 'old');
 //firebase.analytics();
 
 export default firebase;

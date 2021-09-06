@@ -3,7 +3,7 @@ import { Button } from "antd";
 import styled from "styled-components";
 import firebase from "../../firebase";
 import { Radio } from "antd";
-import { commaNumber,notify } from "../CommonFunc";
+import { commaNumber,notify,getFormatDate } from "../CommonFunc";
 import { Howl } from "howler";
 import axios from "axios";
 import src1 from "../../jumun.mp3";
@@ -204,7 +204,7 @@ function AdminOrder() {
           setOrderCount(snapshot.val())
           if(OrderList.length > 0){
             SoundSelect && Sound.play();
-            notify('새 주문이 들어왔습니다.')
+            notify('새 주문이 들어왔습니다.');
           }
         });
     }
@@ -231,11 +231,13 @@ function AdminOrder() {
   };
 
   const kakaoSend = (key) => { 
-    let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name;
+    let time = getFormatDate(new Date(key.order_time.split("|")[0]));
+    time = time.full+time.hour+time.min+time.sec
+    let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name + "&order_time=" + time;
     window.open(url,'kakao',"height=1,width=1");
     return;
   }
-  
+
   return (
     <>
       <h3 className="title">주문관리</h3>

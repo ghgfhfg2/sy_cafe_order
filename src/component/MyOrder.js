@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import React, { useState, useEffect } from "react";
-import firebase from "../firebase";
+import firebase, {old} from "../firebase";
 import { Popover } from "antd";
 import { commaNumber,notify,getFormatDate } from "./CommonFunc";
 import { useSelector } from "react-redux";
@@ -94,10 +94,25 @@ function MyOrder() {
   }
 
 
+  const dbDel = () => {
+    firebase.database().ref('order')
+    .once("value",data=>{
+      data.forEach(el=>{        
+        if(el.val().timestamp < (new Date().getTime() - 5184000000)){
+          firebase.database().ref(`order/${el.key}`).remove()
+        }
+      })
+    })
+  }
+
+
 
   if (OrderList.length) {
     return (
-      <>
+      <> 
+        {userInfo && userInfo.role > 2 &&
+          <Button onClick={dbDel}>old delete</Button>
+        }
         <RangePicker onChange={onDateChange} />
         <OrderBox className="order-list-box">
           {OrderList.map((list, index) => (
