@@ -97,8 +97,9 @@ function MyOrder() {
   const dbDel = () => {
     firebase.database().ref('order')
     .once("value",data=>{
-      data.forEach(el=>{        
-        if(el.val().timestamp < (new Date().getTime() - 5184000000)){
+      data.forEach(el=>{                                
+        if(el.val().timestamp < (new Date().getTime() - 2592000000)){
+          console.log(el.key)
           firebase.database().ref(`order/${el.key}`).remove()
         }
       })

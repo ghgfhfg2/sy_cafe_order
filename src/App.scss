@@ -543,6 +543,17 @@ h3.title {
 }
 
 
+//식단관리 수정
+.lunch-check-modify{
+  h3{margin-bottom: 10px;}
+  .ant-checkbox-group{display: flex;
+    flex-wrap: wrap;
+  }
+  label{width:50%;margin:0 !important;text-align: left;
+  }
+}
+
+
 // 게시판 공통
 .board-basic{width: 100%;border-top: 2px solid $p-color;
   li{padding: 12px 15px;border-bottom: 1px solid #ddd;

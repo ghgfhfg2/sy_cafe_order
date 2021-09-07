@@ -43,6 +43,7 @@ body {
 .fl-table tr:nth-child(even) {
   background: #F8F8F8; }
 
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

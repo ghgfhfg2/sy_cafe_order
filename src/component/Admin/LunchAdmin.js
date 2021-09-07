@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Input,Button,DatePicker } from 'antd';
+import { Input,Button,DatePicker,Checkbox } from 'antd';
 import firebase from "../../firebase";
 import { getFormatDate } from '../CommonFunc';
 import moment from 'moment';
+import { FileUnknownFilled } from '@ant-design/icons';
+import { OderModalPopup } from "../OrderModal";
 const { TextArea } = Input;
 const curDate = getFormatDate(new Date());
 
@@ -20,7 +22,13 @@ function LunchAdmin() {
   const [Ruser, setRuser] = useState();
   const [NonChecker, setNonChecker] = useState();
 
-  const [Render, setRender] = useState(true)
+  const [Render, setRender] = useState(true);
+
+  const [Filter, setFilter] = useState();
+  const onFilterChange = (e) => {
+    setFilter(e)
+    setRender(!Render)
+  }
 
   useEffect(() => {
     let r_user = []
@@ -77,6 +85,19 @@ function LunchAdmin() {
           })
         }
       })
+      if(Filter && Filter.length > 0){
+        arr = arr.filter(el=>{
+          let res;
+          let count = 0;
+          Filter.map(item=>{
+            el.item.includes(item) ? count = count+1 : count = count;
+          })
+          return count > 0 ? el : ""
+        })
+      }
+      arr.sort((a,b)=>{
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      })
       setCheckLength(arr.length)
       setCheckList(arr);
       setItemSum(itemObj);
@@ -100,7 +121,7 @@ function LunchAdmin() {
 
     return () => {
     }
-  }, [SearchDate,Ruser,Render])
+  }, [Ruser,Render])
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -120,6 +141,7 @@ function LunchAdmin() {
 
   const onSelectDate = (date, dateString) => {
     setSearchDate(getFormatDate(date._d))
+    setRender(!Render)
   }
 
   const disabledDate = (current) => {
@@ -139,10 +161,37 @@ function LunchAdmin() {
     }
   }
 
+  const [ModifyData, setModifyData] = useState()
+  const [ModifyCheck, setModifyCheck] = useState();
+  const onModifyCheck = (e) => {
+    setModifyCheck(e)
+  }
+  const onModify = (el) => {
+    setModifyData(el)
+  }
+
+  const onModifySubmit = (el) => {
+    let itemList = ModifyCheck ? ModifyCheck : el.item
+    console.log(itemList);
+    firebase.database().ref(`lunch/user/${el.uid}/checkList/${SearchDate.full}`)
+    .update({
+      item:itemList
+    });
+    setModifyData();
+    setModifyCheck();
+    setRender(!Render);
+  }
+
+  const onModifyClose = () => {
+    setModifyData();
+    setModifyCheck();
+  }
+
+
   return (
     <>
       {ItemList && 
-        <>
+        <>          
           <form onSubmit={onSubmit}>
             <h3 className="title" style={{ margin: "0 0 5px 0" }}>
               식단 항목
@@ -174,13 +223,20 @@ function LunchAdmin() {
       <h3 className="title" style={{ margin: "20px 0 5px 0" }}>
         식단체크
       </h3>
-      <div className="flex-box">
+      <div className="flex-box a-center">
         <DatePicker 
           format="YYYY-MM-DD"
           defaultValue={moment()}
+          style={{marginRight:"10px"}}
           disabledDate={disabledDate} onChange={onSelectDate} 
         />
+        <Checkbox.Group style={{ width: '100%' }} onChange={onFilterChange}>
+        {TblItem && TblItem.map((el,idx) => (
+          <Checkbox key={idx} value={el}>{el}</Checkbox>
+        ))}
+        </Checkbox.Group>
       </div>
+
       <table className="fl-table tbl-lunch-check" style={{marginTop:"12px"}}>
         <thead>
           <tr key="0">
@@ -191,13 +247,16 @@ function LunchAdmin() {
               <th scope="col">{el}</th>
             ))}
             <th scope="col">확인여부</th>
+            <th scope="col">수정</th>
           </tr>          
         </thead>
         <tbody>
           {CheckList && CheckList.map((el,idx) => (
             <tr key={idx+1}>
               <td>{SearchDate.full_}</td>
-              <td>{el.name}</td>
+              <td>
+                {el.name}
+              </td>
               <td>{el.part}</td>
               {TblItem && TblItem.map((list,l_idx) => (
                   <td>
@@ -206,6 +265,36 @@ function LunchAdmin() {
               ))}
               <td>
               {el.confirm ? 'O' : <Button onClick={()=>{onConfrim(el)}}>확인</Button>}
+              </td>
+              <td style={{position:"relative"}}>
+                <Button className="sm" style={{marginRight:"5px"}} onClick={()=>onModify(el)}>수정</Button>
+                {(ModifyData && el.uid === ModifyData.uid) &&
+                  <OderModalPopup
+                    className="lunch-check-modify"
+                    style={{
+                      maxWidth:"100px",
+                      flexDirection:"column",
+                      position:"absolute",
+                      top:"10px",left:"-130px"
+                    }}
+                  >
+                    <h3>{ModifyData.name}({ModifyData.part})</h3>
+                    <Checkbox.Group                     
+                    defaultValue={el.item}
+                    style={{ width: '100%' }} 
+                    onChange={onModifyCheck}>
+                      {TblItem && TblItem.map((el,idx)=>(
+                        <Checkbox key={idx} value={el}>
+                          {el}
+                        </Checkbox>
+                      ))}
+                    </Checkbox.Group>
+                    <div style={{marginTop:"10px"}}>
+                      <Button type="primary" style={{marginRight:"5px"}} onClick={()=>onModifySubmit(el)}>수정</Button>
+                      <Button onClick={onModifyClose}>닫기</Button>
+                    </div>
+                  </OderModalPopup>
+                }
               </td>
             </tr>
           ))}
