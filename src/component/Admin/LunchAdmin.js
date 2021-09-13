@@ -67,10 +67,11 @@ function LunchAdmin() {
     firebase.database().ref('lunch/user')
     .once('value', (snapshot) => {
       let arr = [];
+      let listDate = SearchDate.full ? SearchDate.full : curDate.full
       snapshot.forEach(el => {
         let elItemArr;
-        if(el.val().checkList && el.val().checkList[SearchDate.full]){
-          elItemArr = el.val().checkList[SearchDate.full].item;
+        if(el.val().checkList && el.val().checkList[listDate]){
+          elItemArr = el.val().checkList[listDate].item;
         }
         if(elItemArr){
           elItemArr.map(el=>{
@@ -81,7 +82,7 @@ function LunchAdmin() {
             name: el.val().name,
             part: el.val().part,
             item: elItemArr,
-            confirm: el.val().checkList[SearchDate.full].confirm,
+            confirm: el.val().checkList[listDate].confirm,
           })
         }
       })

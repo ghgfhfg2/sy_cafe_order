@@ -155,13 +155,10 @@ function LunchCheck() {
     })
     
     firebase.database().ref(`lunch/user/${userInfo.uid}`)
-    .set({
+    .update({
+      checkList,
       name : userInfo.displayName,
       part : userInfo.photoURL
-    })
-    firebase.database().ref(`lunch/user/${userInfo.uid}`)
-    .update({
-      checkList
     })
     setModifyState(false)
   }
