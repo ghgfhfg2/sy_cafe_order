@@ -59,14 +59,16 @@ function App(props) {
         .ref("users")
         .child(user.uid)
         .once("value", (snapshot) => {
+          console.log(user)
           let addInfo = {
             ...user,
-            auth:snapshot.val().auth,
+            auth:snapshot.val().auth ? snapshot.val().auth : "",
             call_number:snapshot.val().call_number,
             favorite:snapshot.val().favorite,
             role:snapshot.val().role,
             sosok:snapshot.val().sosok,
           }
+          
           history.push("/");
           dispatch(setUser(addInfo));
         });

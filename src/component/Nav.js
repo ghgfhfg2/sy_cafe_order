@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { clearUser } from "../redux/actions/user_action";
 import { Link } from "react-router-dom";
 import { Menu, Input, Button } from "antd";
 import * as bsIcon from "react-icons/bs";
@@ -25,6 +26,7 @@ export const BlackBg = styled.div`
   }
 `;
 function Nav() { 
+  let dispatch = useDispatch();
 
 
   const firebaseUserInfo = firebase.auth().currentUser;
@@ -127,13 +129,11 @@ function Nav() {
 
   const [submitLoading, setsubmitLoading] = useState(false);
   const onSubmitInfo = async (e) => {
-    
     e.preventDefault();
     let sosok = e.target.sosok.value;
     let part = e.target.part.value;
-
     firebaseUserInfo.updateProfile({
-      photoURL:e.target.part.value
+      photoURL:part
     })
     let call_num = e.target.call_number.value;
     if(isNaN(call_num)){
@@ -301,12 +301,14 @@ function Nav() {
                 마이메뉴
               </Link>
             </Menu.Item>
+            {(currentUser && currentUser.role >= 0) &&
             <Menu.Item key="7">
               <Link to="/lunch">
                 <antIcon.AiOutlineDownSquare />
                 식단체크
               </Link>
             </Menu.Item>
+            }
             {(currentUser?.auth && currentUser.auth.includes('insa') || currentUser.uid === "HWC2atFlYZfThocHHF7SH4a6MAt2") && 
             <Menu.Item key="9">
               <Link to="/research">

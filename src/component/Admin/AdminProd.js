@@ -146,7 +146,7 @@ export const ProdList = styled.div`
       width: calc(33.33% - 16px);
     }
   }
-  @media all and (max-width: 640px) {
+  @media all and (max-width: 500px) {
     .list {
       width: calc(50% - 16px);
     }

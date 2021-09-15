@@ -229,7 +229,7 @@ function AdminOrder() {
         return pre + 1;
       });
   };
-
+  
   const kakaoSend = (key) => { 
     let time = getFormatDate(new Date(key.order_time.split("|")[0]));
     time = time.full+time.hour+time.min+time.sec
@@ -237,6 +237,23 @@ function AdminOrder() {
     window.open(url,'kakao',"height=1,width=1");
     return;
   }
+  
+  const orderCancel = (key,uid) => {
+    if (window.confirm("주문 취소 하시겠습니까?")) {
+      firebase.database().ref("order").child(key).remove()
+      firebase
+        .database()
+        .ref("products")
+        .child(uid)
+        .transaction((pre) => {
+          if(pre.jaego >= 0){
+            pre.jaego++;
+            return pre;
+          }
+        });
+    }
+  }
+
 
   return (
     <>
@@ -296,15 +313,24 @@ function AdminOrder() {
               <span className="date">
                 {list.order_time}
               </span>
-              
+              <div>
               {list.order_state === 0 &&
-              <Button
-                onClick={() => {
-                  stateChange(list.key);
-                }}
-              >
-                주문접수
-              </Button>
+              <>
+                <Button style={{marginRight:"5px"}}
+                  onClick={() => {
+                    orderCancel(list.key,list.prod_uid);
+                  }}
+                >
+                  주문취소
+                </Button>
+                <Button
+                  onClick={() => {
+                    stateChange(list.key);
+                  }}
+                >
+                  주문접수
+                </Button>
+              </>
               }
               {list.order_state === 1 &&
               <Button
@@ -316,6 +342,7 @@ function AdminOrder() {
                 완료처리
               </Button>
               }
+              </div>
             </div>
           </div>
         ))}
