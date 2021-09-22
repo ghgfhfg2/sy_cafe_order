@@ -436,7 +436,7 @@ function Menu() {
                       )}
                     </span>
                     <span
-                      className={"ic-favor " + item.add_favor}
+                      className={"ic-favor p-color " + item.add_favor}
                       onClick={(e) => {
                         onToggleFavor(e, item.name);
                       }}

@@ -21,16 +21,19 @@ export const ProdList = styled.div`
   flex-wrap: wrap;
   .list {
     animation-delay: 1s;
-    margin: 10px 8px;
+    margin: 12px 8px;
     width: calc(20% - 16px);
     display: flex;
     flex-direction: column;
-    border-radius: 7px;
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 7px;    
+    border:1px solid #e1e1e1;
     overflow: hidden;
     transition: all 0.2s;
     &:hover {
-      box-shadow: 0px 0px 7px 1px rgba(0, 0, 0, 0.3);
+      img{
+        transform: translate(-50%, -50%) scale(1.07);
+      }
+      box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
     }
     .img {
       height: 0;
@@ -47,6 +50,7 @@ export const ProdList = styled.div`
       position: absolute;
       left: 50%;
       top: 50%;
+      transition:all 0.2s;
       transform: translate(-50%, -50%);
     }
     .kal {
@@ -67,10 +71,10 @@ export const ProdList = styled.div`
     width: 100%;
     flex-direction: column;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     .name {
       font-weight: bold;
-      font-size: 15px;
+      font-size: 14px;
       margin: 3px 0 2px 0;
       display: -webkit-box;
       -webkit-line-clamp: 2; 
@@ -79,7 +83,7 @@ export const ProdList = styled.div`
       max-height: 46px;
     }
     .ic-favor {
-      margin-top: 7px;
+      margin-top: 5px;
       margin-left: 5px;
       flex-shrink: 0;
       z-index: 10;
@@ -87,19 +91,21 @@ export const ProdList = styled.div`
       height: 18px;
       opacity: 0.3;
       transition: all 0.2s;
+      &:hover{opacity:1}
       svg {
         width: 100%;
         height: 100%;
         display: none;
       }
       .no-favor {
-        display: block;
+        display: block;        
       }
       .favor {
         display: none;
       }
       &.true {
         opacity: 1;
+
         .no-favor {
           display: none;
         }

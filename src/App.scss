@@ -702,12 +702,11 @@ h3.title {
 // 메뉴판
 .menuCategory .ant-radio-group {
   width: 100%;
-  max-width: 1000px;
   margin: 10px 0 15px 0;
   display: flex;
   .ant-radio-button-wrapper {
-    flex: 1;
     display: flex;
+    flex:1;
     justify-content: center;
     span {
       text-align: center;
@@ -741,6 +740,9 @@ h3.title {
   .order-prod-img.no-img{
     @include flex($a:center,$j:center);
     svg{width: 50%;height: 50%;color: #dbdbdb;}
+  }
+  .list.state_2{
+    img{opacity: 0.6;}
   }
 }
 .order-check-box {
@@ -847,6 +849,16 @@ h3.title {
       span{font-size: 13px;}
       .subject:hover{font-weight: 700;}
       .date{color: #888;}
+    }
+  }
+}
+
+
+// 식단표
+.lunch-img-modal{
+  .ant-modal-body{
+    img{
+      max-width: 100%;
     }
   }
 }

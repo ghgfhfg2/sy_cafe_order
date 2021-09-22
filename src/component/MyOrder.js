@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import React, { useState, useEffect } from "react";
 import firebase, {old} from "../firebase";
-import { Popover } from "antd";
+import { Popover,message } from "antd";
 import { commaNumber,notify,getFormatDate } from "./CommonFunc";
 import { useSelector } from "react-redux";
 import { OrderBox } from "./Admin/AdminOrder";
@@ -82,6 +82,7 @@ function MyOrder() {
             return pre;
           }
         });
+        message.success('주문이 취소되었습니다.');
     }
   }
 
@@ -99,7 +100,6 @@ function MyOrder() {
     .once("value",data=>{
       data.forEach(el=>{                                
         if(el.val().timestamp < (new Date().getTime() - 2592000000)){
-          console.log(el.key)
           firebase.database().ref(`order/${el.key}`).remove()
         }
       })
@@ -111,10 +111,13 @@ function MyOrder() {
   if (OrderList.length) {
     return (
       <> 
-        {userInfo && userInfo.role > 2 &&
+        {/* {userInfo && userInfo.role > 2 &&
           <Button onClick={dbDel}>old delete</Button>
-        }
-        <RangePicker onChange={onDateChange} />
+        } */}
+        <div className="flex-box a-center">
+          <RangePicker onChange={onDateChange} />
+          <span style={{color:"#999",fontSize:"12px",marginLeft:"5px"}}>*최근 한달안의 데이터만 검색 가능합니다.</span>
+        </div>
         <OrderBox className="order-list-box">
           {OrderList.map((list, index) => (
             <div className={`user list state_${list.order_state}`} key={index}>

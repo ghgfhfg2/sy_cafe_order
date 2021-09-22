@@ -926,13 +926,12 @@ h3.title::before {
 
 .menuCategory .ant-radio-group {
   width: 100%;
-  max-width: 1000px;
   margin: 10px 0 15px 0;
   display: flex; }
 
 .menuCategory .ant-radio-group .ant-radio-button-wrapper {
-  flex: 1;
   display: flex;
+  flex: 1;
   justify-content: center; }
 
 .menuCategory .ant-radio-group .ant-radio-button-wrapper span {
@@ -970,6 +969,9 @@ h3.title::before {
   width: 50%;
   height: 50%;
   color: #dbdbdb; }
+
+.order-list-box .list.state_2 img {
+  opacity: 0.6; }
 
 .order-check-box {
   display: flex; }
@@ -1102,6 +1104,9 @@ h3.title::before {
 
 .research-temp-list ul li .date {
   color: #888; }
+
+.lunch-img-modal .ant-modal-body img {
+  max-width: 100%; }
 
 @media (max-width: 760px) {
   .ant-layout-sider.nav-wrap {

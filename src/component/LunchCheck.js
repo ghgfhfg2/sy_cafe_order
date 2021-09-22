@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getFormatDate } from './CommonFunc';
-import { Checkbox, Button } from "antd";
+import { Checkbox, Button, Modal, message } from "antd";
 import firebase from "../firebase";
 import { useSelector } from "react-redux";
+import * as antIcon from "react-icons/ai";
 
 
 
@@ -139,6 +140,25 @@ function LunchCheck() {
     }
   }, []);
 
+
+  const [LunchImg, setLunchImg] = useState()
+  const [LunchImgVisible, setLunchImgVisible] = useState(false)
+  useEffect(() => {
+    firebase.database().ref('lunch/img')
+    .on("value",data => {
+      setLunchImg(data.val())
+    })
+    return () => {
+      firebase.database().ref('lunch/img').off()
+    }
+  }, [])
+  const onLunchImg = () => {
+    setLunchImgVisible(true)
+  }
+  const LunchImgCancel = () => {
+    setLunchImgVisible(false)
+  }
+
   const onsubmit = () => {
     let list = [...weekList.current.querySelectorAll('li'),...weekList2.current.querySelectorAll('li'),...weekList3.current.querySelectorAll('li')];    
     let checkList = {};
@@ -160,6 +180,7 @@ function LunchCheck() {
       name : userInfo.displayName,
       part : userInfo.photoURL
     })
+    message.success('적용되었습니다 :)');
     setModifyState(false)
   }
 
@@ -173,6 +194,10 @@ function LunchCheck() {
   const [ModifyState, setModifyState] = useState(false)
   const onModify = () => {
     setModifyState(true)
+  }
+
+  const onCancel = () => {
+    setModifyState(false)
   }
   
 
@@ -312,11 +337,30 @@ function LunchCheck() {
       </ul>  
      
       <div className="lunch-btn-box">
+        {LunchImg && 
+          <>
+            <Button style={{marginRight:"5px"}} onClick={onLunchImg}>
+              식단표
+            </Button>
+            <Modal title="식단표" 
+            visible={LunchImgVisible} 
+            footer={null}
+            width="auto"
+            centered
+            className="lunch-img-modal"
+            onCancel={LunchImgCancel}>
+              <img src={LunchImg.img.url} />
+            </Modal>
+          </>
+        }
         {!ModifyState &&
           <Button type="primary" onClick={onModify}>수정하기</Button>
         }
         {ModifyState &&
+          <>
           <Button type="primary" onClick={onsubmit}>적용하기</Button>
+          <Button style={{marginLeft:"5px"}} onClick={onCancel}>취소</Button>
+          </>
         }
       </div>
 

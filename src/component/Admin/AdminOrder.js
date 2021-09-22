@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "antd";
+import { Button,message } from "antd";
 import styled from "styled-components";
-import firebase from "../../firebase";
+import firebase, {old} from "../../firebase";
 import { Radio } from "antd";
 import { commaNumber,notify,getFormatDate } from "../CommonFunc";
 import { Howl } from "howler";
@@ -229,8 +229,28 @@ function AdminOrder() {
         return pre + 1;
       });
   };
+
   
   const kakaoSend = (key) => { 
+
+    // 올드DB에 추가
+    let newData = key;
+    newData.order_state = 2
+    firebase.database(old).ref(`order/${newData.key}`)
+    .update({
+      ...newData
+    })
+
+    // 오래된 데이터 삭제
+    firebase.database().ref('order')
+    .once("value",data=>{
+      data.forEach(el=>{                                
+        if(el.val().timestamp < (new Date().getTime() - 2592000000)){
+          firebase.database().ref(`order/${el.key}`).remove()
+        }
+      })
+    })  
+
     let time = getFormatDate(new Date(key.order_time.split("|")[0]));
     time = time.full+time.hour+time.min+time.sec
     let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name + "&order_time=" + time;
@@ -251,6 +271,7 @@ function AdminOrder() {
             return pre;
           }
         });
+        message.success('주문이 취소되었습니다.');
     }
   }
 
@@ -314,6 +335,7 @@ function AdminOrder() {
                 {list.order_time}
               </span>
               <div>
+              
               {list.order_state === 0 &&
               <>
                 <Button style={{marginRight:"5px"}}

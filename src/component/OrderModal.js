@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Checkbox, Spin, Select } from "antd";
+import { Button, Input, Checkbox, Spin, Select,message } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
@@ -329,7 +329,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
         .transaction((pre) => {
           return pre + 1;
         });
-      alert("주문에 성공했습니다.");
+        message.success('주문에 성공했습니다 :)');  
       onFinished();
       setsubmitLoading(false);
     } catch (error) {

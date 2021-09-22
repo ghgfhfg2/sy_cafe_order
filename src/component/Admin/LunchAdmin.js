@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Input,Button,DatePicker,Checkbox } from 'antd';
+import { Input,Button,DatePicker,Checkbox,Upload,message } from 'antd';
 import firebase from "../../firebase";
 import { getFormatDate } from '../CommonFunc';
 import moment from 'moment';
-import { FileUnknownFilled } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { OderModalPopup } from "../OrderModal";
+import uuid from "react-uuid";
 const { TextArea } = Input;
 const curDate = getFormatDate(new Date());
 
@@ -29,6 +30,8 @@ function LunchAdmin() {
     setFilter(e)
     setRender(!Render)
   }
+
+  const [DefaultImg, setDefaultImg] = useState()
 
   useEffect(() => {
     let r_user = []
@@ -119,14 +122,44 @@ function LunchAdmin() {
       setNonChecker(nonChecker);
     })
 
+    
 
     return () => {
     }
   }, [Ruser,Render])
 
+  useEffect(() => {
+    firebase.database().ref('lunch/img')
+    .on("value",data => {
+      setDefaultImg(data.val())
+    })
+    return () => {
+      firebase.database().ref('lunch/img').off()
+    }
+  }, [])
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      if(uploadImg){
+        console.log(uploadImg)
+        let uploadTask = await firebase
+        .storage()
+        .ref(`lunch_img/lunchImg`)
+        .put(uploadImg.originFileObj, uploadImg.type);
+        uploadTask.ref.getDownloadURL()
+        .then(url => {
+          let uploadURL = {
+            name:uploadImg.originFileObj.name,
+            url:url
+          };
+          firebase.database().ref('lunch/img')
+          .update({
+            img:uploadURL
+          });                       
+        })
+      }
+
       let arr;
       arr = e.target.item.value.split(',');      
       firebase.database().ref('lunch')
@@ -134,6 +167,8 @@ function LunchAdmin() {
         item:arr,
         info:e.target.check_info_txt.value
       })
+
+      message.success('설정이 저장되었습니다 :)');
 
     }catch (error) {
       console.error(error);
@@ -188,6 +223,31 @@ function LunchAdmin() {
     setModifyCheck();
   }
 
+  const [uploadImg, setuploadImg] = useState()
+  const onImgUpload = (e) => {
+
+      setuploadImg(e.file);
+
+  }
+
+  const onImgRemove = () => {
+
+    const ref = firebase.storage().ref(`lunch_img`);
+      ref.listAll()
+      .then(dir => {
+        const images = dir._delegate.items;
+        images.map(el=>{
+          let path = el._location.path_;
+          firebase.storage().ref(`${path}`).delete()
+          .then(()=>{
+          }).catch(error=>console.error(error))
+        })
+      })
+
+      firebase.database().ref(`lunch/img`)
+      .remove()
+  }
+
 
   return (
     <>
@@ -208,6 +268,44 @@ function LunchAdmin() {
               <TextArea name="check_info_txt" defaultValue={CheckInfoTxt} />              
             </div>
             }
+            <h3 className="title" style={{ margin: "15px 0 5px 0" }}>
+              일반식 식단표
+            </h3>
+            <div className="flex-box">
+              {DefaultImg ? (
+                <>
+                  <Upload 
+                  
+                  fileList={[
+                      {
+                      uid:"1",
+                      name:DefaultImg.img.name,
+                      status:"done",
+                      url:DefaultImg.img.url,
+                      }
+                    ]}
+                    listType="picture"
+                    name="uploadImg"
+                    onChange={onImgUpload}
+                    onRemove={onImgRemove}
+                  >
+                    <Button icon={<UploadOutlined />}>이미지 업로드</Button>
+                  </Upload>
+                </>
+              ):(
+                <>
+                  <Upload                     
+                    listType="picture"
+                    name="uploadImg"
+                    onChange={onImgUpload}
+                    onRemove={onImgRemove}
+                  >
+                    <Button icon={<UploadOutlined />}>이미지 업로드</Button>
+                  </Upload>
+                </>
+              )}
+              
+            </div>
             <div style={{textAlign:"center"}}>
               <Button
                       htmlType="submit"

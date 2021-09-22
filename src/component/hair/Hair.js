@@ -65,23 +65,35 @@ function Hair() {
       window.alert('서명은 필수입니다.');
       return;
     }
-    firebase
-    .database()
-    .ref("hair/list")
-    .child(`${userInfo.uid}/${uid}`)
-    .update({
-      ...values,
-      part: userInfo.photoURL,
-      name: userInfo.displayName,
-      sosok: userInfo.sosok,
-      timestamp: new Date().getTime(),
-      uid:uid,
-      user_uid:userInfo.uid
+    const yearMonth = values.date.year + values.date.month
+    firebase.storage().ref(`hair/${yearMonth}/${uid}`)
+    .putString(values.signature,'data_url')
+    .then((res)=>{
+      res.ref.getDownloadURL()
+      .then(url => {
+        firebase
+        .database()
+        .ref("hair/list")
+        .child(`${userInfo.uid}/${uid}`)
+        .update({
+          ...values,
+          signature:url,
+          part: userInfo.photoURL,
+          name: userInfo.displayName,
+          sosok: userInfo.sosok,
+          timestamp: new Date().getTime(),
+          uid:uid,
+          user_uid:userInfo.uid
+        })
+        setRerender(!Rerender)
+      })
     })
-    setRerender(!Rerender)
   }
 
   const onDelete = (uid,date) => {
+    let yearMonth = getFormatDate(new Date(date));
+    yearMonth = yearMonth.year + yearMonth.month
+
     let curDate = Math.floor(new Date().getTime()/1000);
     let thisDate = Math.floor(date/1000);
     if(curDate>thisDate+259200){
@@ -92,6 +104,8 @@ function Hair() {
     if(agree){
       firebase.database().ref(`hair/list/${userInfo.uid}/${uid}`).remove();
       setRerender(!Rerender)
+
+      firebase.storage().ref(`hair/${yearMonth}/${uid}`).delete()
     }
   }
 
