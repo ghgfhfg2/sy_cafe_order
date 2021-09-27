@@ -111,9 +111,9 @@ function MyOrder() {
   if (OrderList.length) {
     return (
       <> 
-        {/* {userInfo && userInfo.role > 2 &&
+        {userInfo && userInfo.role > 2 &&
           <Button onClick={dbDel}>old delete</Button>
-        } */}
+        }
         <div className="flex-box a-center">
           <RangePicker onChange={onDateChange} />
           <span style={{color:"#999",fontSize:"12px",marginLeft:"5px"}}>*최근 한달안의 데이터만 검색 가능합니다.</span>

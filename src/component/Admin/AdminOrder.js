@@ -241,7 +241,7 @@ function AdminOrder() {
       ...newData
     })
 
-    // 오래된 데이터 삭제
+    /*
     firebase.database().ref('order')
     .once("value",data=>{
       data.forEach(el=>{                                
@@ -250,6 +250,7 @@ function AdminOrder() {
         }
       })
     })  
+    */
 
     let time = getFormatDate(new Date(key.order_time.split("|")[0]));
     time = time.full+time.hour+time.min+time.sec
