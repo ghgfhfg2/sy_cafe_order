@@ -36,6 +36,7 @@ import HairAdmin from "./component/Admin/HairAdmin";
 import AdminProdCount from "./component/Admin/AdminProdCount";
 import ResearchModify from "./component/Research/ResearchModify";
 import ResearchTemp from "./component/Research/ResearchTemp";
+import Chair from "./component/welfare/Chair";
 
 const { Sider, Content, Header } = Layout;
 
@@ -162,6 +163,7 @@ function App(props) {
                   <Route exact path="/hair" component={Hair} />
                   <Route exact path="/admin/user_admin" component={UserAdmin} />
                   <Route exact path="/admin/hair" component={HairAdmin} />
+                  <Route exact path="/chair" component={Chair} />
                   <Route exact path="/test" component={Test} />
                 </Switch>
               </Content>

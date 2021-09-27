@@ -325,6 +325,14 @@ function Nav() {
               </Link>
             </Menu.Item>
             }
+            {(currentUser && currentUser.role >= 2) &&
+            <Menu.Item key="13">
+              <Link to="/chair">
+                <antIcon.AiOutlineDownSquare />
+                안마의자
+              </Link>
+            </Menu.Item>
+            }
             {currentUser.role > 0 &&
             (
               <SubMenu

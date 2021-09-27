@@ -41,7 +41,7 @@ export const ProdList = styled.div`
       border-top-right-radius: 7px;
       overflow: hidden;
       width: 100%;
-      padding-bottom: 75%;
+      padding-bottom: 100%;
       overflow: hidden;
       position: relative;
     }
