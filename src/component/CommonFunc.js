@@ -17,6 +17,7 @@ export const getFormatDate = (date) => {
     let min = date.getMinutes();
     min = min >= 10 ? min : '0' + min; 
     let sec = date.getSeconds();
+    let timestamp = date.getTime();
     let obj = {
         'year':year,
         'month':month,
@@ -29,7 +30,8 @@ export const getFormatDate = (date) => {
         'min':min,
         'sec':sec,
         'full': year + '' + month + '' + day,
-        'full_': year + '-' + month + '-' + day
+        'full_': year + '-' + month + '-' + day,
+        'timestamp': timestamp
     }
 
     return obj;  

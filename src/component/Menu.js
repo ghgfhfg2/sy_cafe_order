@@ -10,12 +10,11 @@ import { Radio, Input, Empty, Button, Checkbox } from "antd";
 import * as antIcon from "react-icons/ai";
 import * as Hangul from "hangul-js";
 import { useSelector } from "react-redux";
+import GuestHome from "./GuestHome"
 const { Search } = Input;
 const _ = require("lodash");
 
 const curDate = getFormatDate(new Date());
-
-
 
 function Menu() {
   const userInfo = useSelector((state) => state.user.currentUser);
@@ -30,6 +29,11 @@ function Menu() {
   const calcSec = endSec - curSec;
   const restMin = Math.floor(calcSec/60);
   const restSec = calcSec%60;
+
+  const [GuestHomePop, setGuestHomePop] = useState(true);
+  const guestPopClose = () => {
+    setGuestHomePop(!GuestHomePop)
+  }
 
   const onTimeOut = () => {
     setTimeOut(true);
@@ -264,8 +268,8 @@ function Menu() {
         item.add = "";
       }
       setOrderItem(item);
-      setPosX(e.clientX);
-      setPosY(e.clientY);
+      setPosX(e.pageX);
+      setPosY(e.pageY);
       setOnModal(true);
     }
   };
@@ -338,6 +342,11 @@ function Menu() {
   if (ProdItem.length) {
     return (
       <> 
+        {userInfo && userInfo.auth && userInfo.auth.includes('guest') && GuestHomePop &&
+          <>
+            <GuestHome prod={ProdItem} guestPopClose={guestPopClose} />
+          </>
+        }        
         {TodayLunchCheck && !TodayLunchCheck.confirm && curDate.hour < 9 && LunchPop &&
           <div className="lunch-check-popup">
             {TodayLunchCheck.item && 

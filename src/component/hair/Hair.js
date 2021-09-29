@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../../firebase";
 import { useSelector } from "react-redux";
-import { Form, DatePicker, Input, Button, Table, Select } from 'antd';
+import { Form, DatePicker, Input, Button, Table, Select, message } from 'antd';
 import Signature from "../Signature";
 import { getFormatDate, commaNumber } from '../CommonFunc';
 import uuid from "react-uuid";
@@ -64,6 +64,9 @@ function Hair() {
     if(!values.signature){
       window.alert('서명은 필수입니다.');
       return;
+    }else if(values.signature.length < 2000){
+      window.alert('서명이 너무 짧습니다.');
+      return;
     }
     const yearMonth = values.date.year + values.date.month
     firebase.storage().ref(`hair/${yearMonth}/${uid}`)
@@ -85,7 +88,8 @@ function Hair() {
           uid:uid,
           user_uid:userInfo.uid
         })
-        setRerender(!Rerender)
+        setRerender(!Rerender);
+        message.success('등록되었습니다.');
       })
     })
   }
@@ -104,8 +108,8 @@ function Hair() {
     if(agree){
       firebase.database().ref(`hair/list/${userInfo.uid}/${uid}`).remove();
       setRerender(!Rerender)
-
       firebase.storage().ref(`hair/${yearMonth}/${uid}`).delete()
+      message.success('삭제되었습니다.');
     }
   }
 
@@ -150,6 +154,7 @@ function Hair() {
     });
     setRerender(!Rerender)
     modifyOff()
+    message.success('수정되었습니다.');
   }
 
   const onSelectDate = (date, dateString) => {

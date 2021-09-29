@@ -1108,6 +1108,115 @@ h3.title::before {
 .lunch-img-modal .ant-modal-body img {
   max-width: 100%; }
 
+.guest-home {
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000; }
+
+.guest-home::before {
+  content: "";
+  width: calc(100% - 30px);
+  height: calc(100% - 30px);
+  border: 2px solid #7c5424;
+  position: absolute;
+  left: 15px;
+  top: 15px; }
+
+.guest-home .top-logo-m {
+  position: absolute;
+  max-width: 180px;
+  width: 40%;
+  left: 50%;
+  top: 30px;
+  transform: translate(-50%, 10px); }
+
+.guest-home .slide-wrapper {
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 10px; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list {
+  height: 500px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list .img-box {
+  border-radius: 15px;
+  display: inline-block;
+  overflow: hidden; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list .img-box img {
+  max-height: 400px; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list .tit {
+  margin-top: 15px; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list .tit span {
+  display: block;
+  text-align: center; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list .tit .name {
+  font-size: 20px;
+  font-weight: 600; }
+
+.guest-home .ant-carousel .slick-list .slick-slide .list .tit .hot {
+  font-size: 15px; }
+
+.guest-home .btn-box {
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row; }
+
+.guest-home .btn-order {
+  width: 30%;
+  height: 45px;
+  background: #fff;
+  border: 1px solid #7c5424;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 14px; }
+
+.guest-home .btn-order.bg {
+  background-color: #7c5424;
+  color: #fff; }
+
+.chair-time-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap; }
+
+.chair-time-list li {
+  width: 25%;
+  padding: 5px; }
+
+.chair-time-list li .box {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #7c5424;
+  color: #7c5424;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row; }
+
 @media (max-width: 760px) {
   .ant-layout-sider.nav-wrap {
     min-width: 0 !important; }

@@ -26,7 +26,6 @@ export const ProdList = styled.div`
     display: flex;
     flex-direction: column;
     border-radius: 7px;    
-    border:1px solid #e1e1e1;
     overflow: hidden;
     transition: all 0.2s;
     &:hover {

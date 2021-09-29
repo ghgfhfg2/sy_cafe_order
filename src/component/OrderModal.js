@@ -13,7 +13,7 @@ export const OderModalPopup = styled.div`
   min-width:290px;
   padding: 20px;
   border: 1px solid #ddd;
-  position: fixed;
+  position: absolute;
   z-index: 150;
   border-radius: 10px;
   background: #fff;

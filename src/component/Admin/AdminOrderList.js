@@ -97,7 +97,7 @@ function AdminOrderList() {
                 return 1;
               }
             })
-          }          
+          }       
           setOrderList(array);          
         });
       }
@@ -147,7 +147,7 @@ function AdminOrderList() {
                 <td>
                   {list.hot === "hot" && "따뜻한 "}
                   {list.hot === "ice" && "차가운 "}
-                  {list.prod_name}
+                  {list.prod_name}{list.prod_option && '-'+list.prod_option}
                 </td>
                 <td>{list.amount}</td>
                 <td>{list.add}</td>
