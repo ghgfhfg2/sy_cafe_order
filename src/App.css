@@ -1195,6 +1195,17 @@ h3.title::before {
   background-color: #7c5424;
   color: #fff; }
 
+.btn-init {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0; }
+
+@media screen and (max-width: 1200px) {
+  .no-mo {
+    display: none !important; } }
+
 .chair-time-list {
   display: flex;
   justify-content: flex-start;
@@ -1203,19 +1214,84 @@ h3.title::before {
   flex-wrap: wrap; }
 
 .chair-time-list li {
-  width: 25%;
+  width: 33.33%;
   padding: 5px; }
 
 .chair-time-list li .box {
+  font-weight: 600;
+  position: relative;
   width: 100%;
-  height: 40px;
+  height: 42px;
   border: 1px solid #7c5424;
+  border-radius: 4px;
   color: #7c5424;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row; }
+
+.chair-time-list li .box .btn-del {
+  position: absolute;
+  z-index: 10;
+  height: 27px;
+  padding: 0 8px;
+  right: 8px;
+  background: #fff;
+  font-size: 11px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row; }
+
+.chair-time-list li .box .btn-del svg {
+  font-size: 14px;
+  margin-right: 2px; }
+
+.chair-time-list li .box .ic-reserv {
+  position: absolute;
+  z-index: 10;
+  font-size: 12px;
+  left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row; }
+
+.chair-time-list li .box .ic-reserv svg {
+  font-size: 17px;
+  margin-right: 2px; }
+
+.chair-time-list li.my-reserve .box {
+  background-color: #7c5424;
+  color: #fff;
+  cursor: default; }
+
+.chair-time-list li.reserv .box {
+  cursor: default; }
+
+.chair-time-list li.reserv .box::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: #7c5424;
+  opacity: 0.4;
+  left: 0;
+  top: 0; }
+
+.chair-time-list li.timeover .box {
+  cursor: default;
+  opacity: 0.5; }
+
+@media screen and (max-width: 1200px) {
+  .chair-time-list li {
+    width: 50%; } }
+
+@media (max-width: 760px) {
+  .chair-time-list li {
+    width: 100%; } }
 
 @media (max-width: 760px) {
   .ant-layout-sider.nav-wrap {

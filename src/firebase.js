@@ -13,6 +13,11 @@ export const old = firebase.initializeApp({
   ...firebaseConfig,
   databaseURL: "https://cafe-order-226e5.firebaseio.com/"
 }, 'old');
+
+export const wel = firebase.initializeApp({
+  ...firebaseConfig,
+  databaseURL: "https://metree-welfare.firebaseio.com/"
+}, 'wel');
 //firebase.analytics();
 
 export default firebase;
