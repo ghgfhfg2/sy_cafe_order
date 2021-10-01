@@ -1,5 +1,6 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400&display=swap");
 ul, li {
   list-style: none;
   padding: 0;
@@ -11,6 +12,9 @@ body {
   font-family: "Noto Sans KR", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
+
+.fon-barlow {
+  font-family: 'Barlow'; }
 
 /* Table Styles */
 .table-wrapper {
@@ -42,7 +46,6 @@ body {
 
 .fl-table tr:nth-child(even) {
   background: #F8F8F8; }
-
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
