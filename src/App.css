@@ -1248,6 +1248,13 @@ h3.title::before {
   width: 33px;
   height: 33px; }
 
+.chair-time-list li .box .btn-box .ant-btn.btn-reserv {
+  background-color: rgba(0, 0, 0, 0.08); }
+
+.chair-time-list li .box .btn-box .ant-btn.my-reserv {
+  background-color: #7c5424;
+  color: #fff; }
+
 .chair-time-list li .box .btn-del {
   position: absolute;
   z-index: 10;
@@ -1278,6 +1285,9 @@ h3.title::before {
 .chair-time-list li .box .ic-reserv svg {
   font-size: 17px;
   margin-right: 2px; }
+
+.chair-time-list li .box.full {
+  opacity: 0.3; }
 
 .chair-time-list li.my-reserve .box {
   background-color: #7c5424;
@@ -1368,11 +1378,33 @@ h3.title::before {
   font-family: 'Barlow';
   font-size: 14px; }
 
+@media (max-width: 760px) {
+  .my-reserv-list li {
+    width: 100%; }
+  .my-reserv-list li .box {
+    padding: 10px 13px 14px 13px;
+    flex-direction: column; }
+  .my-reserv-list li .box .right {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row; }
+  .my-reserv-list li .box .right .count-box {
+    margin-bottom: 0; } }
+
 .reserv-info {
   flex-wrap: wrap; }
 
 .reserv-info li {
   margin-right: 15px; }
+
+.reserv-info .info-ic-reserv {
+  background-color: rgba(0, 0, 0, 0.08); }
+
+.reserv-info .info-ic-my {
+  background-color: #7c5424;
+  color: #fff; }
 
 @media (max-width: 760px) {
   .ant-layout-sider.nav-wrap {

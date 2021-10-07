@@ -325,7 +325,7 @@ function Nav() {
               </Link>
             </Menu.Item>
             }
-            {(currentUser && currentUser.role >= 2) &&
+            {(currentUser?.auth && currentUser.auth.includes('it') || currentUser && currentUser.role > 2) &&
             <Menu.Item key="13">
               <Link to="/chair">
                 <antIcon.AiOutlineDownSquare />

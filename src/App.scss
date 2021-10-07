@@ -951,6 +951,8 @@ h3.title {
           border-radius: 4px;
           padding: 0;
           width:33px;height: 33px;
+          &.btn-reserv{background-color: rgba(0,0,0,0.08);}
+          &.my-reserv{background-color: $p-color;color: #fff;}
         }
       }
       .btn-del{
@@ -967,6 +969,7 @@ h3.title {
         @include flex($a:center);
         svg{font-size: 17px;margin-right: 2px;}
       }
+      &.full{opacity: 0.3;}
     }
     &.my-reserve{
       .box{
@@ -1032,12 +1035,30 @@ h3.title {
         
       }
     }
+    @include mobile(){
+      width: 100%;
+      .box{
+        padding: 10px 13px 14px 13px;
+        flex-direction: column;        
+        .right{
+          width: 100%;
+          @include flex($j:space-between,$a:center);
+          .count-box{margin-bottom: 0;}
+        }
+      }
+    }
   }
 }
 
 .reserv-info{
   flex-wrap: wrap;
   li{margin-right: 15px;}
+  .info-ic-reserv{
+    background-color: rgba(0,0,0,0.08);
+  }
+  .info-ic-my{
+    background-color: $p-color;color: #fff;
+  }
 }
 
 

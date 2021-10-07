@@ -60,7 +60,6 @@ function App(props) {
         .ref("users")
         .child(user.uid)
         .once("value", (snapshot) => {
-          console.log(user)
           let addInfo = {
             ...user,
             auth:snapshot.val().auth ? snapshot.val().auth : "",

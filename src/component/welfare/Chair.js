@@ -5,6 +5,7 @@ import { Popover, Popconfirm, message, Button, DatePicker, Statistic } from 'ant
 import * as antIcon from "react-icons/ai";
 import { getFormatDate } from '../CommonFunc';
 import moment from 'moment';
+import { constant } from 'lodash';
 const { Countdown } = Statistic;
 
 function Chair() {
@@ -66,13 +67,14 @@ function Chair() {
       let userArr = [];
       data.forEach(el=>{
         for(let i in el.val()){
-          if(el.val()[i].reserve_time > CurDate.timestamp){
+          if(el.val()[i].reserve_time > Date.now()){
             let room = el.val()[i].room === 'room1' ? <antIcon.AiOutlineMan /> :
                        el.val()[i].room === 'room2' ? <antIcon.AiOutlineWoman /> : <antIcon.AiOutlineUser />
             let obj = {
               date: getFormatDate(new Date(el.val()[i].reserve_time)),
               timestamp: el.val()[i].timestamp,
               timeNum: el.val()[i].timeNum,
+              roomNum:el.val()[i].room,
               room: room
             }
             userArr.push(obj)
@@ -92,22 +94,23 @@ function Chair() {
         arr.push(el.val())
       });
       timeArr.map((time,idx)=>{
+        let reservCount = 0;
         arr.map(user=>{
           if(user.timeNum === time.timeNum){
             for(let key in user){ 
               if(key != 'timeNum' && user[key]){                
-                arr2[idx][key] = user[key]
-                
                 arr2[idx][key] = user[key]
                 arr2[idx].room[user[key].room-1] = {
                   ...arr2[idx].room[user[key].room-1],
                   num: 'room'+user[key].room,
                   check:true
                 }
+                reservCount++;
               }
             }
           }
         })
+        arr2[idx].reservCount = reservCount;
       })
       console.log(arr2)
       setListData(arr2)
@@ -162,9 +165,9 @@ function Chair() {
     })
   }
 
-  const onCancel = (num) => {      
-      welDb.ref(`chair/list/${SearchDate.full}/${num}`).remove();
-      welDb.ref(`chair/user/${userInfo.uid}/list/${SearchDate.full}/${num}`).remove();
+  const onCancel = (date,num,room) => {      
+      welDb.ref(`chair/list/${date}/${num}/${room}`).remove();
+      welDb.ref(`chair/user/${userInfo.uid}/list/${date}/${num}`).remove();
       welDb.ref(`chair/user/${userInfo.uid}/count`)
       .transaction((pre) => {
         pre--
@@ -176,8 +179,10 @@ function Chair() {
 
   // 날짜선택
   const onSelectDate = (date, dateString) => {
-    setSearchDate(getFormatDate(date._d));
-    setRerender(!Rerender)
+    if(date){
+      setSearchDate(getFormatDate(date._d));
+      setRerender(!Rerender)
+    }
   }
 
   return (
@@ -200,7 +205,14 @@ function Chair() {
               <div className="box">
                 <div className="r-day">
                   <span className="room">{el.room}</span>
-                  <span className="date fon-barlow">{el.date.full_} {el.date.hour}:{el.date.min}</span>
+                  <span className="date fon-barlow">
+                    {
+                      el.date.full === CurDate.full ? 
+                      '오늘 ' :
+                      `${el.date.full_} `
+                    } 
+                    {el.date.hour}:{el.date.min}
+                    </span>
                 </div>
                 <div className="right">
                   <div className="count-box">
@@ -214,7 +226,7 @@ function Chair() {
                   </div>
                   <Popconfirm
                     title="예약 취소 하시겠습니까?"
-                    onConfirm={()=>{onCancel(el.timeNum)}}
+                    onConfirm={()=>{onCancel(el.date.full,el.timeNum,el.roomNum)}}
                   >                  
                     <Button className="btn-del"><antIcon.AiOutlineRollback /><span className="no-mo">예약취소</span></Button>
                   </Popconfirm>
@@ -239,7 +251,10 @@ function Chair() {
               <antIcon.AiOutlineUser /> 남여공용
             </li>
             <li>
-              <antIcon.AiOutlineBell /> 예약중
+              <antIcon.AiOutlineBell className="info-ic-reserv" /> 예약중
+            </li>
+            <li>
+              <antIcon.AiOutlineBell className="info-ic-my" /> 내예약
             </li>
           </ul>
           <ul className="chair-time-list">
@@ -253,18 +268,23 @@ function Chair() {
                 el.time.timestamp < CurDate.timestamp ? 'timeover' : ''
               }
             >
-              <div className="box">
+              <div
+                className={el.reservCount === 3 ? 'box full' : 'box'}
+              >                
                 <span className="time fon-barlow">{el.time.hour}:{el.time.min}</span>
                 <div className="btn-box">
                 {
                   el.room.map(list=>(
-                    <>                    
+                    <>             
                     <Popconfirm
                       title={`${list.room_num}번에 예약하시겠습니까?`}
                       disabled={el.time.timestamp < CurDate.timestamp || list.check ? true : false}
                       onConfirm={()=>{reservation(el.timeNum,el.time,list.room_num)}}
                     >
-                      <Button>
+                      <Button className={
+                        el[list.num] && el[list.num].user_uid === userInfo.uid ? 'my-reserv' :
+                        list.check ? 'btn-reserv' : '' 
+                    }>
                         {list.check ?
                           ( <Popover 
                               content={`${el[list.num].name}(${el[list.num].part})`}
@@ -288,27 +308,10 @@ function Chair() {
                         }
                         
                       </Button>
-                    </Popconfirm>                    
-                    
-                      {/* {
-                        room.room_num === userInfo.uid ?
-                        "내 예약" : `${el.user.name}(${el.user.part})`
-                      } */}
-                    
-                      
+                    </Popconfirm>  
                     </>
                   ))
-                }
-                {el.room.user_uid === userInfo.uid &&
-                  <Popconfirm
-                    title="예약 취소 하시겠습니까?"
-                    onConfirm={()=>{onCancel(el.timeNum)}}
-                  >                  
-                    {el.time.timestamp > CurDate.timestamp &&
-                    <Button className="btn-del"><antIcon.AiOutlineRollback /></Button>
-                    }
-                  </Popconfirm>
-                }
+                }                
                 </div> 
               </div>  
             </li>

@@ -287,14 +287,14 @@ function HairAdmin() {
       },
       {
         title: '작성일',
-        dataIndex: 'timestamp',
+        dataIndex: 'date,timestamp',
         key: 'timestamp',
         align: 'center',
         sorter: {
           compare: (a, b) => a.timestamp - b.timestamp,
           multiple: 2,
         },
-        render: data => data ? getFormatDate(new Date(data)).full_ : '',
+        render: (text,row) => getFormatDate(new Date(row['timestamp'])).full - row['date'].full > 4 ? <span style={{background:"#e12424",color:"#fff"}}>{getFormatDate(new Date(row['timestamp'])).full_}</span> : getFormatDate(new Date(row['timestamp'])).full_,
       },
       {
         title: '소속',
@@ -359,13 +359,13 @@ function HairAdmin() {
       },
       {
         title: '관리',
-        dataIndex: ['uid','timestamp','user_uid'],
+        dataIndex: ['uid','timestamp','user_uid','date'],
         key: 'uid',
         align: 'center',
         render: (text,row) => row['uid'] ? (
           <>
             <Button style={{marginRight:"5px"}} onClick={()=>{onModify(row['uid'],row['timestamp'],row['user_uid'])}}>수정</Button>
-            <Button onClick={()=>{onDelete(row['uid'],row['timestamp'],row['user_uid'])}}>삭제</Button>
+            <Button onClick={()=>{onDelete(row['uid'],row['timestamp'],row['user_uid'])}}>삭제</Button>            
           </>
           ) : '',
       }
