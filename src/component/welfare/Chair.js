@@ -3,9 +3,11 @@ import firebase, {wel} from "../../firebase";
 import { useSelector } from "react-redux";
 import { Popover, Popconfirm, message, Button, DatePicker, Statistic } from 'antd';
 import * as antIcon from "react-icons/ai";
+import * as imIcon from "react-icons/im";
 import { getFormatDate } from '../CommonFunc';
 import moment from 'moment';
 import { constant } from 'lodash';
+import axios from 'axios'
 const { Countdown } = Statistic;
 
 function Chair() {
@@ -14,9 +16,9 @@ function Chair() {
   const [CurDate, setCurDate] = useState(getFormatDate(new Date()))
   const [TimeData, setTimeData] = useState();
 
-  const timeTable = (time,chair) => {
-    const first = new Date(SearchDate.year,SearchDate.og_month,SearchDate.og_day,8,30);
-    const last = new Date(SearchDate.year,SearchDate.og_month,SearchDate.og_day,18,0);
+  const timeTable = (time,chair,start1,start2,end1,end2) => {
+    const first = new Date(SearchDate.year,SearchDate.og_month,SearchDate.og_day,start1,start2);
+    const last = new Date(SearchDate.year,SearchDate.og_month,SearchDate.og_day,end1,end2);
     let timeArr = [];
     let copy = timeArr.concat()
     let n = 0;
@@ -49,6 +51,16 @@ function Chair() {
     welDb.ref(`chair/list/${CurDate.full}`).off()
   }
 
+  const [DefaultNotice, setDefaultNotice] = useState()
+  useEffect(() => {
+    welDb.ref('chair/notice')
+    .once('value', data => {
+      setDefaultNotice(data.val())
+    })
+    return () => {
+    }
+  }, [])
+
   useEffect(() => {
     setInterval(() => {
       setCurDate(getFormatDate(new Date()))
@@ -61,59 +73,68 @@ function Chair() {
 
   const [MyReservation, setMyReservation] = useState()
   useEffect(() => {
-    // 사용자 목록
-    welDb.ref(`chair/user/${userInfo.uid}/list`)
-    .on('value', data => {
-      let userArr = [];
-      data.forEach(el=>{
-        for(let i in el.val()){
-          if(el.val()[i].reserve_time > Date.now()){
-            let room = el.val()[i].room === 'room1' ? <antIcon.AiOutlineMan /> :
-                       el.val()[i].room === 'room2' ? <antIcon.AiOutlineWoman /> : <antIcon.AiOutlineUser />
-            let obj = {
-              date: getFormatDate(new Date(el.val()[i].reserve_time)),
-              timestamp: el.val()[i].timestamp,
-              timeNum: el.val()[i].timeNum,
-              roomNum:el.val()[i].room,
-              room: room
+    //시간설정
+    welDb.ref('chair/time_set')
+    .once('value', data => {
+      const startTime = data.val().start;
+      const endTime = data.val().end;
+      const interval = data.val().interval;
+      // 사용자 목록
+      welDb.ref(`chair/user/${userInfo.uid}/list`)
+      .on('value', data => {
+        let userArr = [];
+        data.forEach(el=>{
+          for(let i in el.val()){
+            if(el.val()[i].reserve_time > Date.now()){
+              let room = el.val()[i].room === 'room1' ? <imIcon.ImMan /> :
+                         el.val()[i].room === 'room2' ? <imIcon.ImWoman /> : <imIcon.ImManWoman />
+              let obj = {
+                date: getFormatDate(new Date(el.val()[i].reserve_time)),
+                timestamp: el.val()[i].timestamp,
+                timeNum: el.val()[i].timeNum,
+                roomNum:el.val()[i].room,
+                room: room
+              }
+              userArr.push(obj)
             }
-            userArr.push(obj)
-          }
-        }        
+          }        
+        })
+        setMyReservation(userArr)
       })
-      setMyReservation(userArr)
-    })
-
-    // 예약목록
-    let arr = [];
-    welDb.ref(`chair/list/${SearchDate.full}`)
-    .on('value', data => {
-      let timeArr = timeTable(30,3); //시간표 생성
-      let arr2 = JSON.parse(JSON.stringify(timeArr));
-      data.forEach(el=>{
-        arr.push(el.val())
-      });
-      timeArr.map((time,idx)=>{
-        let reservCount = 0;
-        arr.map(user=>{
-          if(user.timeNum === time.timeNum){
-            for(let key in user){ 
-              if(key != 'timeNum' && user[key]){                
-                arr2[idx][key] = user[key]
-                arr2[idx].room[user[key].room-1] = {
-                  ...arr2[idx].room[user[key].room-1],
-                  num: 'room'+user[key].room,
-                  check:true
+  
+      // 예약목록
+      let arr = [];
+      welDb.ref(`chair/list/${SearchDate.full}`)
+      .on('value', data => {
+        let timeArr = timeTable(interval,3,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
+        let arr2 = JSON.parse(JSON.stringify(timeArr));
+        data.forEach(el=>{
+          arr.push(el.val())
+        });
+        timeArr.map((time,idx)=>{
+          let reservCount = 0;
+          arr.map(user=>{
+            if(user.timeNum === time.timeNum){
+              for(let key in user){ 
+                if(key != 'timeNum' && user[key]){                
+                  arr2[idx][key] = user[key]
+                  arr2[idx].room[user[key].room-1] = {
+                    ...arr2[idx].room[user[key].room-1],
+                    num: 'room'+user[key].room,
+                    check:true
+                  }
+                  reservCount++;
                 }
-                reservCount++;
               }
             }
-          }
+          })
+          arr2[idx].reservCount = reservCount;
         })
-        arr2[idx].reservCount = reservCount;
-      })
-      console.log(arr2)
-      setListData(arr2)
+        setListData(arr2)
+
+
+    })
+
     })
     
     return () => {
@@ -160,7 +181,20 @@ function Chair() {
               pre++
               return pre;
             });
-            message.success('예약 되었습니다.');
+
+            
+            axios.post('https://metree.co.kr/_sys/_xml/chair_api_add.php',{
+              name:userInfo.displayName,
+              call:userInfo.call_number,
+              date:SearchDate.full+SearchDate.hour
+            })
+            .then(res=>{
+              message.success('예약 되었습니다.');
+            })
+            .catch(error => {
+              console.log(error) 
+            });           
+
       }
     })
   }
@@ -173,7 +207,22 @@ function Chair() {
         pre--
         return pre;
       });
-      message.success('취소 되었습니다.');
+      
+      
+      axios.post('https://metree.co.kr/_sys/_xml/chair_api_del.php',{
+          name:userInfo.displayName,
+          call:userInfo.call_number,
+          date:SearchDate.full+SearchDate.hour
+        })
+        .then(res=>{
+          message.success('취소 되었습니다.');
+        })
+        .catch(error => {
+          console.log(error) 
+        });
+        
+        
+
       setRerender(!Rerender)
   }
 
@@ -184,18 +233,27 @@ function Chair() {
       setRerender(!Rerender)
     }
   }
+  const disabledDate = (current) => {
+    return current && current >= moment().add(7,'days').endOf('day');
+  }
 
   return (
     <>
+      {DefaultNotice &&
+      <div className="item-info-box" style={{marginBottom:"20px"}}>
+          <pre>{DefaultNotice}</pre>
+      </div>
+      }
       <div className="flex-box a-center" style={{marginBottom:"20px"}}>
       <h3 className="title" style={{marginRight:"10px"}}>날짜선택</h3>
         <DatePicker 
           format="YYYY-MM-DD"
           defaultValue={moment()}
+          disabledDate={disabledDate}
           style={{marginBottom:"10px"}}
           onChange={onSelectDate} 
         />
-      </div>
+      </div>      
       {MyReservation && MyReservation.length > 0 &&
         <>
           <h3 className="title">예정중인 내 예약목록</h3>
@@ -242,13 +300,13 @@ function Chair() {
           <h3 className="title" style={{marginTop:"25px"}}>예약하기</h3>
           <ul className="flex-box reserv-info">
             <li>
-              <antIcon.AiOutlineMan /> 남자전용
+              <imIcon.ImMan /> 남자전용
             </li>
             <li>
-              <antIcon.AiOutlineWoman /> 여자전용
+              <imIcon.ImWoman /> 여자전용
             </li>
             <li>
-              <antIcon.AiOutlineUser /> 남여공용
+              <imIcon.ImManWoman /> 남여공용
             </li>
             <li>
               <antIcon.AiOutlineBell className="info-ic-reserv" /> 예약중
@@ -277,7 +335,11 @@ function Chair() {
                   el.room.map(list=>(
                     <>             
                     <Popconfirm
-                      title={`${list.room_num}번에 예약하시겠습니까?`}
+                      title={
+                        list.room_num === 1 ? `남자방에 예약하시겠습니까?` :
+                        list.room_num === 2 ? `여자방에 예약하시겠습니까?` :
+                        `공용방에 예약하시겠습니까?`
+                      }
                       disabled={el.time.timestamp < CurDate.timestamp || list.check ? true : false}
                       onConfirm={()=>{reservation(el.timeNum,el.time,list.room_num)}}
                     >
@@ -298,10 +360,10 @@ function Chair() {
                             <>
                               {
                                 list.room_num === 1 ? 
-                                <antIcon.AiOutlineMan /> :
+                                <imIcon.ImMan /> :
                                 list.room_num === 2 ?
-                                <antIcon.AiOutlineWoman /> :
-                                <antIcon.AiOutlineUser />
+                                <imIcon.ImWoman /> :
+                                <imIcon.ImManWoman />
                               }
                             </>
                           )

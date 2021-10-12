@@ -328,7 +328,7 @@ function Nav() {
             {(currentUser?.auth && currentUser.auth.includes('it') || currentUser && currentUser.role > 2) &&
             <Menu.Item key="13">
               <Link to="/chair">
-                <antIcon.AiOutlineDownSquare />
+                <antIcon.AiOutlineSchedule />
                 안마의자
               </Link>
             </Menu.Item>
@@ -348,6 +348,14 @@ function Nav() {
                       헤어관리
                     </Link>
                   </Menu.Item>  
+                }
+                {(currentUser?.auth && currentUser.auth.includes('chair') || currentUser && currentUser.role > 2) &&
+                <Menu.Item key="14">
+                  <Link to="/chair_admin">
+                    <antIcon.AiOutlineSchedule />
+                    안마의자관리
+                  </Link>
+                </Menu.Item>
                 }          
                 {currentUser.role > 1 &&
                   <>
