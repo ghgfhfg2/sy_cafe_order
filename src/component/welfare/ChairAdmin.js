@@ -107,6 +107,9 @@ function ChairAdmin() {
             defaultValue={[moment(DefaultTimeSet.date_start.hour+ ':' +DefaultTimeSet.date_start.min,'HH:mm'),moment(DefaultTimeSet.date_end.hour+ ':' +DefaultTimeSet.date_end.min,'HH:mm')]}
           />
           <Button onClick={onTimeSubmit} type="primary" style={{marginLeft:"5px"}}>적용</Button>
+          <p style={{marginTop:"5px",fontSize:"12px"}}>
+            * 시간설정이 변경되면 현재 예약중인 시간이 변경 될 수 있습니다.
+          </p>
         </>
       }
     </>

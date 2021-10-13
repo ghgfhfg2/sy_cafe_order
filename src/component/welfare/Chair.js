@@ -144,6 +144,8 @@ function Chair() {
 
 
   const reservation = (num,time,chair) => {
+    const type = chair === 1 ? 'm' : chair === 2 ? 'w' : 'p';    
+    const dateTime = time.full + String(time.hour) + String(time.min)
     let room = 'room'+chair;
     const user = {
       name: userInfo.displayName,
@@ -186,7 +188,8 @@ function Chair() {
             axios.post('https://metree.co.kr/_sys/_xml/chair_api_add.php',{
               name:userInfo.displayName,
               call:userInfo.call_number,
-              date:SearchDate.full+SearchDate.hour
+              date:dateTime,
+              type:type
             })
             .then(res=>{
               message.success('예약 되었습니다.');
@@ -199,9 +202,10 @@ function Chair() {
     })
   }
 
-  const onCancel = (date,num,room) => {      
-      welDb.ref(`chair/list/${date}/${num}/${room}`).remove();
-      welDb.ref(`chair/user/${userInfo.uid}/list/${date}/${num}`).remove();
+  const onCancel = (date,num,room) => {     
+      const dateTime = date.full + String(date.hour) + String(date.min)
+      welDb.ref(`chair/list/${date.full}/${num}/${room}`).remove();
+      welDb.ref(`chair/user/${userInfo.uid}/list/${date.full}/${num}`).remove();
       welDb.ref(`chair/user/${userInfo.uid}/count`)
       .transaction((pre) => {
         pre--
@@ -212,7 +216,7 @@ function Chair() {
       axios.post('https://metree.co.kr/_sys/_xml/chair_api_del.php',{
           name:userInfo.displayName,
           call:userInfo.call_number,
-          date:SearchDate.full+SearchDate.hour
+          date:dateTime
         })
         .then(res=>{
           message.success('취소 되었습니다.');
@@ -284,7 +288,7 @@ function Chair() {
                   </div>
                   <Popconfirm
                     title="예약 취소 하시겠습니까?"
-                    onConfirm={()=>{onCancel(el.date.full,el.timeNum,el.roomNum)}}
+                    onConfirm={()=>{onCancel(el.date,el.timeNum,el.roomNum)}}
                   >                  
                     <Button className="btn-del"><antIcon.AiOutlineRollback /><span className="no-mo">예약취소</span></Button>
                   </Popconfirm>

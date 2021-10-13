@@ -68,7 +68,7 @@ function Hair() {
       window.alert('서명이 너무 짧습니다.');
       return;
     }
-    const yearMonth = values.date.year + values.date.month
+    const yearMonth = String(values.date.year) + String(values.date.month)
     firebase.storage().ref(`hair/${yearMonth}/${uid}`)
     .putString(values.signature,'data_url')
     .then((res)=>{
@@ -96,7 +96,7 @@ function Hair() {
 
   const onDelete = (uid,date) => {
     let yearMonth = getFormatDate(new Date(date));
-    yearMonth = yearMonth.year + yearMonth.month
+    yearMonth = String(yearMonth.year) + String(yearMonth.month)
 
     let curDate = Math.floor(new Date().getTime()/1000);
     let thisDate = Math.floor(date/1000);
