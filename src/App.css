@@ -809,7 +809,14 @@ h3.title::before {
   flex-direction: column; }
 
 .signature-box .signature-pad {
-  border: 1px solid #ddd; }
+  border: 1px solid #ddd;
+  width: 400px;
+  height: 200px; }
+
+@media (max-width: 760px) {
+  .signature-box .signature-pad {
+    width: 300px;
+    height: 150px; } }
 
 .signature-box .clear {
   position: absolute;
@@ -1206,18 +1213,18 @@ h3.title::before {
   .no-mo {
     display: none !important; } }
 
-.chair-time-list {
+.reserv-time-list {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
   flex-wrap: wrap; }
 
-.chair-time-list li {
+.reserv-time-list li {
   width: 33.33%;
   padding: 0 10px; }
 
-.chair-time-list li .box {
+.reserv-time-list li .box {
   font-size: 14px;
   font-weight: 600;
   position: relative;
@@ -1232,13 +1239,13 @@ h3.title::before {
   align-items: center;
   flex-direction: row; }
 
-.chair-time-list li .box .btn-box {
+.reserv-time-list li .box .btn-box {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row; }
 
-.chair-time-list li .box .btn-box .ant-btn {
+.reserv-time-list li .box .btn-box .ant-btn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1248,17 +1255,17 @@ h3.title::before {
   width: 33px;
   height: 33px; }
 
-.chair-time-list li .box .btn-box .ant-btn svg {
+.reserv-time-list li .box .btn-box .ant-btn svg {
   font-size: 16px; }
 
-.chair-time-list li .box .btn-box .ant-btn.btn-reserv {
+.reserv-time-list li .box .btn-box .ant-btn.btn-reserv {
   background-color: rgba(0, 0, 0, 0.08); }
 
-.chair-time-list li .box .btn-box .ant-btn.my-reserv {
+.reserv-time-list li .box .btn-box .ant-btn.my-reserv {
   background-color: #7c5424;
   color: #fff; }
 
-.chair-time-list li .box .btn-del {
+.reserv-time-list li .box .btn-del {
   position: absolute;
   z-index: 10;
   height: 27px;
@@ -1271,11 +1278,11 @@ h3.title::before {
   align-items: center;
   flex-direction: row; }
 
-.chair-time-list li .box .btn-del svg {
+.reserv-time-list li .box .btn-del svg {
   font-size: 14px;
   margin-right: 2px; }
 
-.chair-time-list li .box .ic-reserv {
+.reserv-time-list li .box .ic-reserv {
   position: absolute;
   z-index: 10;
   font-size: 12px;
@@ -1285,19 +1292,19 @@ h3.title::before {
   align-items: center;
   flex-direction: row; }
 
-.chair-time-list li .box .ic-reserv svg {
+.reserv-time-list li .box .ic-reserv svg {
   font-size: 17px;
   margin-right: 2px; }
 
-.chair-time-list li .box.full {
+.reserv-time-list li .box.full {
   opacity: 0.3; }
 
-.chair-time-list li.my-reserve .box {
+.reserv-time-list li.my-reserve .box {
   background-color: #7c5424;
   color: #fff;
   cursor: default; }
 
-.chair-time-list li.reserv .box::after {
+.reserv-time-list li.reserv .box::after {
   content: "";
   display: block;
   width: 100%;
@@ -1308,18 +1315,21 @@ h3.title::before {
   left: 0;
   top: 0; }
 
-.chair-time-list li.timeover .box {
+.reserv-time-list li.timeover .box {
   cursor: default;
   opacity: 0.4; }
 
 @media screen and (max-width: 1200px) {
-  .chair-time-list li {
+  .reserv-time-list li {
     width: 50%;
     padding: 0; } }
 
 @media (max-width: 760px) {
-  .chair-time-list li {
+  .reserv-time-list li {
     width: 100%; } }
+
+.reserv-time-list.styler .box .btn-box .ant-btn {
+  font-size: 13px; }
 
 .my-reserv-list {
   display: flex;
@@ -1396,6 +1406,10 @@ h3.title::before {
     flex-direction: row; }
   .my-reserv-list li .box .right .count-box {
     margin-bottom: 0; } }
+
+.my-reserv-list.styler li .box .r-day .room {
+  top: 0;
+  font-size: 24px; }
 
 .reserv-info {
   flex-wrap: wrap; }

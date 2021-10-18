@@ -4,27 +4,28 @@ import { useSelector } from "react-redux";
 import { Popover, Popconfirm, message, Button, DatePicker, Statistic } from 'antd';
 import * as antIcon from "react-icons/ai";
 import * as imIcon from "react-icons/im";
+import * as riIcon from "react-icons/ri";
 import { getFormatDate } from '../CommonFunc';
 import moment from 'moment';
 import { constant } from 'lodash';
 import axios from 'axios'
 const { Countdown } = Statistic;
 
-function Chair() {
+function Styler() {
   const userInfo = useSelector((state) => state.user.currentUser);
   const welDb = firebase.database(wel);
   const [CurDate, setCurDate] = useState(getFormatDate(new Date()))
   const [TimeData, setTimeData] = useState();
 
-  const timeTable = (time,chair,start1,start2,end1,end2) => {
+  const timeTable = (time,styler,start1,start2,end1,end2) => {
     const first = new Date(SearchDate.year,SearchDate.og_month,SearchDate.og_day,start1,start2);
     const last = new Date(SearchDate.year,SearchDate.og_month,SearchDate.og_day,end1,end2);
     let timeArr = [];
     let copy = timeArr.concat()
     let n = 0;
-    let chairArr = [];
-    for(let i=1;i<=chair;i++){
-      chairArr.push({
+    let stylerArr = [];
+    for(let i=1;i<=styler;i++){
+      stylerArr.push({
         room_num:i
       })
     }
@@ -32,7 +33,7 @@ function Chair() {
       let obj = {
         timeNum:n+1,
         time:getFormatDate(first),
-        room:chairArr
+        room:stylerArr
       }
       first.setMinutes(first.getMinutes()+time)
       timeArr.push(obj);
@@ -48,12 +49,12 @@ function Chair() {
   const [ListData, setListData] = useState()
  
   const getListOff = () => {
-    welDb.ref(`chair/list/${CurDate.full}`).off()
+    welDb.ref(`styler/list/${CurDate.full}`).off()
   }
 
   const [DefaultNotice, setDefaultNotice] = useState()
   useEffect(() => {
-    welDb.ref('chair/notice')
+    welDb.ref('styler/notice')
     .once('value', data => {
       setDefaultNotice(data.val())
     })
@@ -74,20 +75,21 @@ function Chair() {
   const [MyReservation, setMyReservation] = useState()
   useEffect(() => {
     //시간설정
-    welDb.ref('chair/time_set')
+    welDb.ref('styler/time_set')
     .once('value', data => {
       const startTime = data.val().start;
       const endTime = data.val().end;
       const interval = data.val().interval;
       // 사용자 목록
-      welDb.ref(`chair/user/${userInfo.uid}/list`)
-      .on('value', data => {
+      welDb.ref(`styler/user/${userInfo.uid}/list`)
+      .on('value', data => {        
         let userArr = [];
         data.forEach(el=>{
           for(let i in el.val()){
             if(el.val()[i].reserve_time > Date.now()){
-              let room = el.val()[i].room === 'room1' ? <imIcon.ImMan /> :
-                         el.val()[i].room === 'room2' ? <imIcon.ImWoman /> : <imIcon.ImManWoman />
+              console.log(el.val()[i])
+              let room = el.val()[i].room_num <= 3 ? 1 :
+              2
               let obj = {
                 date: getFormatDate(new Date(el.val()[i].reserve_time)),
                 timestamp: el.val()[i].timestamp,
@@ -103,16 +105,15 @@ function Chair() {
       })
   
       // 예약목록
-      let arr = [];
-      welDb.ref(`chair/list/${SearchDate.full}`)
+      let arr = [];      
+      welDb.ref(`styler/list/${SearchDate.full}`)
       .on('value', data => {
-        let timeArr = timeTable(interval,3,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
+        let timeArr = timeTable(interval,6,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
         let arr2 = JSON.parse(JSON.stringify(timeArr));
         data.forEach(el=>{
           arr.push(el.val())
         });
         timeArr.map((time,idx)=>{
-          let reservCount = 0;
           arr.map(user=>{
             if(user.timeNum === time.timeNum){
               for(let key in user){ 
@@ -130,72 +131,80 @@ function Chair() {
           arr2[idx].reservCount = Object.keys(arr2[idx]).length-3;
         })
         setListData(arr2)
+      })
 
-
-    })
 
     })
     
     return () => {
-      getListOff()
+      welDb.ref(`styler/list/${SearchDate.full}`).off()
     }
   }, [Rerender])
 
 
-  const reservation = (num,time,chair) => {
-    const type = chair === 1 ? '남' : chair === 2 ? '여' : '공용';    
+  const reservation = (num,time,styler) => {
+    const type = styler === 1 ? '남' : styler === 2 ? '여' : '공용';    
     const dateTime = time.full + String(time.hour) + String(time.min)
-    let room = 'room'+chair;
+    let room = 'room'+styler;
     const user = {
       name: userInfo.displayName,
       part: userInfo.photoURL,
       user_uid: userInfo.uid,
-      room: chair  
+      room: styler  
     }
 
-    welDb.ref(`chair/user/${userInfo.uid}/list/${SearchDate.full}`)
+    welDb.ref(`styler/user/${userInfo.uid}/list/${SearchDate.full}`)
     .get()
     .then(data=>{
       if (data.exists()) {
         message.error('예약은 하루에 한건만 가능합니다.');
       }else{
-        
+
+        welDb.ref(`styler/list/${SearchDate.full}/${num}`)
+        .get()
+        .then(data=>{
+          let able = true;
+          for(let i=1; i<styler; i++){
+            let num = 'room'+i;
+            if(!data.val()[num]){
+              message.error('예약은 순서대로 해주세요.');
+              able = false;
+              return;
+            }
+          }
+          if(able){
             // 예약 목록
-            welDb.ref(`chair/list/${SearchDate.full}/${num}`)
+            welDb.ref(`styler/list/${SearchDate.full}/${num}`)
             .update({
               [room]:user,
               timeNum: num
             })
         
             // 사용자 예약목록
-            welDb.ref(`chair/user/${userInfo.uid}/list/${SearchDate.full}/${num}`)
+            welDb.ref(`styler/user/${userInfo.uid}/list/${SearchDate.full}/${num}`)
             .update({
               reserve_time:time.timestamp,
               timestamp:new Date().getTime(),
               timeNum: num,
-              room
+              room,
+              room_num:styler
             })
         
             // 카운팅
-            welDb.ref(`chair/user/${userInfo.uid}/count`)
+            welDb.ref(`styler/user/${userInfo.uid}/count`)
             .transaction((pre) => {
               pre++
               return pre;
             });
-
-            
-            axios.post('https://metree.co.kr/_sys/_xml/chair_api_add.php',{
-              name:userInfo.displayName,
-              call:userInfo.call_number,
-              date:dateTime,
-              type:`힐링룸(${type})`
-            })
-            .then(res=>{
-              message.success('예약 되었습니다.');
-            })
-            .catch(error => {
-              console.log(error) 
-            });           
+            welDb.ref(`styler/count`)
+            .transaction((pre) => {
+              pre++
+              return pre;
+            });            
+            message.success('예약 되었습니다.');
+          }
+        })
+         
 
       }
     })
@@ -203,28 +212,22 @@ function Chair() {
 
   const onCancel = (date,num,room) => {     
       const dateTime = date.full + String(date.hour) + String(date.min)
-      welDb.ref(`chair/list/${date.full}/${num}/${room}`).remove();
-      welDb.ref(`chair/user/${userInfo.uid}/list/${date.full}/${num}`).remove();
-      welDb.ref(`chair/user/${userInfo.uid}/count`)
+      welDb.ref(`styler/list/${date.full}/${num}/${room}`).remove()
+      .then(()=>{
+      })
+      welDb.ref(`styler/user/${userInfo.uid}/list/${date.full}/${num}`).remove();
+      welDb.ref(`styler/user/${userInfo.uid}/count`)
+      .transaction((pre) => {
+        pre--
+        return pre;
+      });
+      welDb.ref(`styler/count`)
       .transaction((pre) => {
         pre--
         return pre;
       });
       
-      
-      axios.post('https://metree.co.kr/_sys/_xml/chair_api_del.php',{
-          name:userInfo.displayName,
-          call:userInfo.call_number,
-          date:dateTime
-        })
-        .then(res=>{
-          message.success('취소 되었습니다.');
-        })
-        .catch(error => {
-          console.log(error) 
-        });
-        
-        
+      message.success('취소 되었습니다.');
 
       setRerender(!Rerender)
   }
@@ -237,7 +240,7 @@ function Chair() {
     }
   }
   const disabledDate = (current) => {
-    return current && current >= moment().add(7,'days').endOf('day');
+    return current && current >= moment().endOf('day');
   }
 
   return (
@@ -260,7 +263,7 @@ function Chair() {
       {MyReservation && MyReservation.length > 0 &&
         <>
           <h3 className="title">예정중인 내 예약목록</h3>
-          <ul className="my-reserv-list">
+          <ul className="my-reserv-list styler">
           {MyReservation.map((el,idx)=>(
             <li key={idx}>
               <div className="box">
@@ -301,16 +304,7 @@ function Chair() {
       {ListData &&
         <>
           <h3 className="title" style={{marginTop:"25px"}}>예약하기</h3>
-          <ul className="flex-box reserv-info">
-            <li>
-              <imIcon.ImMan /> 남자전용
-            </li>
-            <li>
-              <imIcon.ImWoman /> 여자전용
-            </li>
-            <li>
-              <imIcon.ImManWoman /> 남여공용
-            </li>
+          <ul className="flex-box reserv-info">            
             <li>
               <antIcon.AiOutlineBell className="info-ic-reserv" /> 예약중
             </li>
@@ -318,7 +312,7 @@ function Chair() {
               <antIcon.AiOutlineBell className="info-ic-my" /> 내예약
             </li>
           </ul>
-          <ul className="reserv-time-list">
+          <ul className="reserv-time-list styler">
           {ListData.map((el,idx)=>(
             <li 
               key={idx} 
@@ -330,7 +324,7 @@ function Chair() {
               }
             >
               <div
-                className={el.reservCount === 3 ? 'box full' : 'box'}
+                className={el.reservCount === 6 ? 'box full' : 'box'}
               >                
                 <span className="time fon-barlow">{el.time.hour}:{el.time.min}</span>
                 <div className="btn-box">
@@ -339,9 +333,8 @@ function Chair() {
                     <>             
                     <Popconfirm
                       title={
-                        list.room_num === 1 ? `남자방에 예약하시겠습니까?` :
-                        list.room_num === 2 ? `여자방에 예약하시겠습니까?` :
-                        `공용방에 예약하시겠습니까?`
+                        list.room_num <= 3 ? `1번기기에 예약하시겠습니까?` :
+                        `2번기기에 예약하시겠습니까?`
                       }
                       disabled={el.time.timestamp < CurDate.timestamp || list.check ? true : false}
                       onConfirm={()=>{reservation(el.timeNum,el.time,list.room_num)}}
@@ -362,11 +355,19 @@ function Chair() {
                           (
                             <>
                               {
-                                list.room_num === 1 ? 
-                                <imIcon.ImMan /> :
+                                list.room_num === 1 ?
+                                <>1_1</>:
                                 list.room_num === 2 ?
-                                <imIcon.ImWoman /> :
-                                <imIcon.ImManWoman />
+                                <>1_2</>:
+                                list.room_num === 3 ?
+                                <>1_3</>:
+                                list.room_num === 4 ?
+                                <>2_1</>:
+                                list.room_num === 5 ?
+                                <>2_2</>:
+                                list.room_num === 6 ?
+                                <>2_3</>: ''
+                                
                               }
                             </>
                           )
@@ -388,4 +389,4 @@ function Chair() {
   )
 }
 
-export default Chair
+export default Styler

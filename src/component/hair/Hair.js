@@ -61,6 +61,7 @@ function Hair() {
     const uid = uuid();
     values.date = getFormatDate(values.date._d);
     values.signature = sigPadData;
+    console.log(sigPadData)
     if(!values.signature){
       window.alert('서명은 필수입니다.');
       return;

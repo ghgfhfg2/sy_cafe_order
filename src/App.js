@@ -38,6 +38,8 @@ import ResearchModify from "./component/Research/ResearchModify";
 import ResearchTemp from "./component/Research/ResearchTemp";
 import Chair from "./component/welfare/Chair";
 import ChairAdmin from "./component/welfare/ChairAdmin";
+import StylerAdmin from "./component/welfare/StylerAdmin";
+import Styler from "./component/welfare/Styler";
 
 const { Sider, Content, Header } = Layout;
 
@@ -165,6 +167,8 @@ function App(props) {
                   <Route exact path="/admin/hair" component={HairAdmin} />
                   <Route exact path="/chair" component={Chair} />
                   <Route exact path="/chair_admin" component={ChairAdmin} />
+                  <Route exact path="/styler" component={Styler} />
+                  <Route exact path="/styler_admin" component={StylerAdmin} />
                   <Route exact path="/test" component={Test} />
                 </Switch>
               </Content>

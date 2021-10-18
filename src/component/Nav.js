@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { Menu, Input, Button } from "antd";
 import * as bsIcon from "react-icons/bs";
 import * as antIcon from "react-icons/ai";
+import * as mdIcon from "react-icons/md";
+import * as rmIcon from "react-icons/ri";
 import firebase from "../firebase";
 import styled from "styled-components";
 import moment from "moment";
@@ -328,8 +330,16 @@ function Nav() {
             {(currentUser?.auth && currentUser.auth.includes('it') || currentUser && currentUser.role > 2) &&
             <Menu.Item key="13">
               <Link to="/chair">
-                <antIcon.AiOutlineSchedule />
+                <mdIcon.MdOutlineChair />
                 안마의자
+              </Link>
+            </Menu.Item>
+            }
+            {(currentUser?.auth && currentUser.auth.includes('wel') || currentUser && currentUser.role > 2) &&
+            <Menu.Item key="15">
+              <Link to="/styler">
+                <rmIcon.RiTShirtAirLine />
+                스타일러
               </Link>
             </Menu.Item>
             }
@@ -344,18 +354,26 @@ function Nav() {
                   currentUser.auth && currentUser.auth.includes('hair') &&
                   <Menu.Item key="11">
                     <Link to="/admin/hair">
-                      <antIcon.AiOutlineAppstoreAdd />
+                      <antIcon.AiOutlineScissor />
                       헤어관리
                     </Link>
                   </Menu.Item>  
                 }
-                {(currentUser?.auth && currentUser.auth.includes('chair') || currentUser && currentUser.role > 2) &&
-                <Menu.Item key="14">
-                  <Link to="/chair_admin">
-                    <antIcon.AiOutlineSchedule />
-                    안마의자관리
-                  </Link>
-                </Menu.Item>
+                {(currentUser?.auth && currentUser.auth.includes('wel') || currentUser && currentUser.role > 2) &&
+                  <>
+                  <Menu.Item key="14">
+                    <Link to="/chair_admin">
+                      <mdIcon.MdOutlineChair />
+                      안마의자관리
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item key="16">
+                  <Link to="/styler_admin">
+                      <rmIcon.RiTShirtAirLine />
+                      스타일러관리
+                    </Link>
+                  </Menu.Item>
+                  </>
                 }          
                 {currentUser.role > 1 &&
                   <>

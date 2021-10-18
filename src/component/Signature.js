@@ -5,13 +5,7 @@ import * as antIcon from "react-icons/ai";
 
 let sigPad = null;
 function Signature({onSigpad}) {
-  let w,h;
-  if(window.outerWidth < 760){
-    w = window.outerWidth-50;
-  }else{
-    w = 350;
-    h = 150;
-  }
+
   useEffect(() => {
     let canvas  = document.getElementById("signature-pad");
     sigPad = new SignaturePad(canvas, {
@@ -20,6 +14,17 @@ function Signature({onSigpad}) {
         onSigpad(sigPad.toDataURL("image/svg+xml")); 
       }
     });
+
+    function resizeCanvas() {
+      let ratio =  Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      canvas.getContext("2d").scale(ratio, ratio);
+      sigPad.clear();
+  }
+  window.onresize = resizeCanvas;
+  resizeCanvas();
+
     
     return () => {};
   }, []);  
@@ -35,8 +40,6 @@ function Signature({onSigpad}) {
         <canvas
           id="signature-pad"
           className="signature-pad"
-          width={w}
-          height={h}
         />
         <Button className="clear" onClick={handleRestSignature}>
           <antIcon.AiOutlineDelete />
