@@ -76,9 +76,9 @@ function Chair() {
     //시간설정
     welDb.ref('chair/time_set')
     .once('value', data => {
-      const startTime = data.val().start;
-      const endTime = data.val().end;
-      const interval = data.val().interval;
+      const startTime = data.val() ? data.val().start : "";
+      const endTime = data.val() ? data.val().end : "";
+      const interval = data.val() ? data.val().interval : "";
       // 사용자 목록
       welDb.ref(`chair/user/${userInfo.uid}/list`)
       .on('value', data => {

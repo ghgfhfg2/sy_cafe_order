@@ -22,6 +22,7 @@ function Signature({onSigpad}) {
       canvas.getContext("2d").scale(ratio, ratio);
       sigPad.clear();
   }
+  
   window.onresize = resizeCanvas;
   resizeCanvas();
 

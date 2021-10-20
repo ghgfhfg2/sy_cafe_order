@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import firebase from "../../firebase";
 import { useSelector } from "react-redux";
-import { Form, DatePicker, Input, Button, Table, Select, message } from 'antd';
+import { Form, DatePicker, Input, Button, Table, Select, message, Spin } from 'antd';
 import Signature from "../Signature";
 import { getFormatDate, commaNumber } from '../CommonFunc';
 import uuid from "react-uuid";
@@ -19,6 +19,8 @@ function Hair() {
   const [SearchDate, setSearchDate] = useState([curDate,curDate]);
 
   const [HairInfo, setHairInfo] = useState();
+
+  const formRef = useRef();
 
   useEffect(() => {
 
@@ -55,18 +57,24 @@ function Hair() {
   
   const onSigpad = (data) => {
     setSigPadData(data);
-  }
+  }  
 
-  const onFinish = (values)=> {
+  const [Loading, setLoading] = useState(false);
+
+  const onFinish = (values)=> {     
+
+    setLoading(true)
     const uid = uuid();
     values.date = getFormatDate(values.date._d);
     values.signature = sigPadData;
     console.log(sigPadData)
     if(!values.signature){
       window.alert('서명은 필수입니다.');
+      setLoading(false)
       return;
     }else if(values.signature.length < 2000){
       window.alert('서명이 너무 짧습니다.');
+      setLoading(false)
       return;
     }
     const yearMonth = String(values.date.year) + String(values.date.month)
@@ -90,7 +98,10 @@ function Hair() {
           user_uid:userInfo.uid
         })
         setRerender(!Rerender);
-        message.success('등록되었습니다.');
+        message.success('등록되었습니다.');    
+        formRef.current.resetFields();    
+        setSigPadData('');
+        setLoading(false)
       })
     })
   }
@@ -228,7 +239,7 @@ function Hair() {
             <pre>{HairInfo}</pre>
           </div>
         }
-      <Form name="dynamic_form_nest_item" className="hiar-form" onFinish={onFinish} autoComplete="off">
+      <Form ref={formRef} name="dynamic_form_nest_item" className="hiar-form" onFinish={onFinish} autoComplete="off">
         <div className="flex-box">
           <Form.Item 
           name="date"
@@ -289,7 +300,9 @@ function Hair() {
           <Signature onSigpad={onSigpad} />
         </Form.Item>
         <div className="btn-box">
-          <Button type="primary" htmlType="submit">등록하기</Button>          
+          <Spin spinning={Loading}>
+            <Button type="primary" htmlType="submit">등록하기</Button>          
+          </Spin>
         </div>
       </Form>
 

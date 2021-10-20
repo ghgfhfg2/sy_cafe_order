@@ -327,7 +327,7 @@ function Nav() {
               </Link>
             </Menu.Item>
             }
-            {(currentUser?.auth && currentUser.auth.includes('it') || currentUser && currentUser.role > 2) &&
+            {(currentUser?.auth && currentUser.auth.includes('wel') || currentUser && currentUser.role > 2) &&
             <Menu.Item key="13">
               <Link to="/chair">
                 <mdIcon.MdOutlineChair />

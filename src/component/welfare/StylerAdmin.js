@@ -33,6 +33,7 @@ function StylerAdmin() {
     .update({
       notice:Notice
     })
+    .then(()=> message.success('적용되었습니다.'))
 
   }
 
@@ -77,6 +78,7 @@ function StylerAdmin() {
       date_start: DateRange ? DateRange.start : DefaultTimeSet.date_start,
       date_end: DateRange ? DateRange.end : DefaultTimeSet.date_end,
     })
+    .then(()=> message.success('적용되었습니다.'))
   }  
 
   return (
