@@ -143,8 +143,6 @@ function Styler() {
 
 
   const reservation = (num,time,styler) => {
-    const type = styler === 1 ? '남' : styler === 2 ? '여' : '공용';    
-    const dateTime = time.full + String(time.hour) + String(time.min)
     let room = 'room'+styler;
     const user = {
       name: userInfo.displayName,
@@ -166,7 +164,8 @@ function Styler() {
           let able = true;
           for(let i=1; i<styler; i++){
             let num = 'room'+i;
-            if(!data.val()[num]){
+            console.log(data.val())
+            if(!data.val() || data.val() && !data.val()[num]){
               message.error('예약은 순서대로 해주세요.');
               able = false;
               return;
@@ -356,17 +355,17 @@ function Styler() {
                             <>
                               {
                                 list.room_num === 1 ?
-                                <>1_1</>:
+                                <><riIcon.RiNumber1 /></>:
                                 list.room_num === 2 ?
-                                <>1_2</>:
+                                <><riIcon.RiNumber1 /></>:
                                 list.room_num === 3 ?
-                                <>1_3</>:
+                                <><riIcon.RiNumber1 /></>:
                                 list.room_num === 4 ?
-                                <>2_1</>:
+                                <><riIcon.RiNumber2 /></>:
                                 list.room_num === 5 ?
-                                <>2_2</>:
+                                <><riIcon.RiNumber2 /></>:
                                 list.room_num === 6 ?
-                                <>2_3</>: ''
+                                <><riIcon.RiNumber2 /></>: ''
                                 
                               }
                             </>
