@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../../firebase";
 import { useSelector } from "react-redux";
-import { Input, DatePicker, Button, Table, Radio, Select } from 'antd';
+import { Input, DatePicker, Button, Table, Radio, Select, message } from 'antd';
 import * as antIcon from "react-icons/ai";
 import { getFormatDate, commaNumber } from '../CommonFunc';
 import moment from 'moment';
@@ -380,7 +380,9 @@ function HairAdmin() {
         .update({
           info:e.target.check_info_txt.value
         })
-  
+        .then(res => {
+          message.success("저장되었습니다.")
+        })
       }catch (error) {
         console.error(error);
       }

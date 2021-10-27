@@ -21,6 +21,7 @@ function Hair() {
   const [HairInfo, setHairInfo] = useState();
 
   const formRef = useRef();
+  
 
   useEffect(() => {
 
@@ -179,6 +180,12 @@ function Hair() {
     return current && current > moment();
   }
 
+  const contentDesc = () => {
+    let content;
+    content = HairInfo
+    return {__html: content}
+  }
+
 
   
     const columns = [
@@ -236,7 +243,7 @@ function Hair() {
     <>
       {HairInfo && 
           <div className="item-info-box" style={{marginBottom:"20px"}}>
-            <pre>{HairInfo}</pre>
+            <pre dangerouslySetInnerHTML={contentDesc()}></pre>
           </div>
         }
       <Form ref={formRef} name="dynamic_form_nest_item" className="hiar-form" onFinish={onFinish} autoComplete="off">
