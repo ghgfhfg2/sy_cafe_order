@@ -84,13 +84,16 @@ function HairAdmin() {
             if(obj[key].sosok === '2'){
               fdTotalPrice += parseInt(obj[key].price);
             }
+            obj[key].distance =  obj[key].timestamp - new Date(`${obj[key].date.full_} ${obj[key].date.hour}:${obj[key].date.min}`).getTime();
+            obj[key].distance = Math.floor(obj[key].distance/1000/60/60/24)
+            console.log(dateArr)
             dateArr.push(obj[key].date)
             dateArr.sort((a,b)=>{
               return b.full - a.full
             })
             relArr.push(obj[key].relation)
             serArr.push(obj[key].service)
-            priceArr.push(obj[key].price)
+            priceArr.push(obj[key].price)            
             personalObj = {
               date : dateArr,
               name : name,
@@ -100,7 +103,7 @@ function HairAdmin() {
               relation : relArr, 
               service : serArr, 
               price : priceArr, 
-              total_price: personalPrice
+              total_price: personalPrice,
             }
             hairArr.push(obj[key]);
           }
@@ -124,6 +127,7 @@ function HairAdmin() {
       hairArr.sort((a,b)=>{
         return b.date.full - a.date.full
       })
+      console.log(hairArr)
       setMyHairData(hairArr);
       setHairData(hairArr);
       let metreeArr = hairArr.concat().filter(el => {
@@ -144,8 +148,7 @@ function HairAdmin() {
         el.uid = "";
         el.user_uid = "";
         return el;
-      });
-       
+      });      
       setExcelData(excelArr)
       setExcelDataCopy(excelArr)
 
@@ -294,7 +297,11 @@ function HairAdmin() {
           compare: (a, b) => a.timestamp - b.timestamp,
           multiple: 2,
         },
-        render: (text,row) => getFormatDate(new Date(row['timestamp'])).full - row['date'].full > 4 ? <span style={{background:"#e12424",color:"#fff"}}>{getFormatDate(new Date(row['timestamp'])).full_}</span> : getFormatDate(new Date(row['timestamp'])).full_,
+        render: (text,row) => row['distance'] > 4 ? <span style={{background:"#e12424",color:"#fff"}}>{getFormatDate(new Date(row['timestamp'])).full_}</span> : (
+          <>
+          {getFormatDate(new Date(row['timestamp'])).full_}
+          </>
+          ),
       },
       {
         title: '소속',
