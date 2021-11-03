@@ -127,7 +127,6 @@ function HairAdmin() {
       hairArr.sort((a,b)=>{
         return b.date.full - a.date.full
       })
-      console.log(hairArr)
       setMyHairData(hairArr);
       setHairData(hairArr);
       let metreeArr = hairArr.concat().filter(el => {
