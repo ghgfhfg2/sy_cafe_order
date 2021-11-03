@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../../firebase";
-import { Radio } from "antd";
-import { commaNumber } from "../CommonFunc";
+import { Radio,Button } from "antd";
+import * as antIcon from "react-icons/ai";
+import { commaNumber,getFormatDate } from "../CommonFunc";
+import { CSVLink } from "react-csv";
 
+const curDate = getFormatDate(new Date());
 function AdminOrderList() {
 
   const [OrderList, setOrderList] = useState([]);
@@ -14,6 +17,19 @@ function AdminOrderList() {
   const [Add1Count, setAdd1Count] = useState()
   const [Add2Count, setAdd2Count] = useState()
   const [SumAddAmount, setSumAddAmount] = useState()
+
+  const [excelData, setExcelData] = useState()
+  const excelHeaders = [
+    {label: "주문자", key:"order_name"},
+    {label: "상품명", key:"prod_name"},
+    {label: "옵션", key:"prod_option"},
+    {label: "수량", key:"amount"},
+    {label: "추가", key:"add"},
+    {label: "추가2", key:"add2"},
+    {label: "주문시간", key:"order_time"},
+    {label: "가격", key:"price"}
+  ]
+
   useEffect(() => {
     let mounted = true;
     if (mounted) {     
@@ -98,6 +114,7 @@ function AdminOrderList() {
               }
             })
           }       
+          setExcelData(array);
           setOrderList(array);          
         });
       }
@@ -127,6 +144,18 @@ function AdminOrderList() {
         <Radio.Button value="3">어제</Radio.Button>
       </Radio.Group>
       <span style={{fontSize:"13px",marginLeft:"5px"}}>(영업일 기준)</span>
+      {excelData &&
+        <Button style={{marginLeft:"10px"}}>
+          <CSVLink 
+            headers={excelHeaders} 
+            data={excelData} 
+            filename={`metree-cafe${curDate.full}.csv`} 
+            target="_blank"
+          >
+            <antIcon.AiOutlineFileExcel style={{position:"relative",top:"3px",fontSize:"17px",marginRight:"3px"}} />엑셀 다운로드
+          </CSVLink>
+        </Button>
+      }
       {!SelectDay && 
         <table className="fl-table" style={{marginTop:"12px"}}>
           <thead>
