@@ -26,10 +26,10 @@ function AdminOrderList() {
   const excelHeaders = [
     {label: "주문자", key:"order_name"},
     {label: "상품명", key:"prod_name"},
-    {label: "옵션", key:"prod_option"},
     {label: "수량", key:"amount"},
     {label: "추가", key:"add"},
     {label: "추가2", key:"add2"},
+    {label: "코멘트", key:"order_etc"},
     {label: "주문시간", key:"order_time"},
     {label: "가격", key:"price"}
   ]
@@ -62,7 +62,6 @@ function AdminOrderList() {
           array = array.slice(0, 250);  
           array = array.filter(el=>{
             var date = getFormatDate(new Date(el.timestamp)).full;
-            console.log(date,SearchDate)
             return date === SearchDate.full
           })
           const day = ['월요일','화요일','수요일','목요일','금요일']
@@ -157,16 +156,17 @@ function AdminOrderList() {
     <>
       <h3 className="title">완료내역</h3>
       
-      {/* <Radio.Group onChange={onSelectDay} defaultValue="1" buttonStyle="solid">
+      <Radio.Group onChange={onSelectDay} defaultValue="1" buttonStyle="solid">
         <Radio.Button value="1">전체</Radio.Button>
-        <Radio.Button value="2">오늘</Radio.Button>
-        <Radio.Button value="3">어제</Radio.Button>
+        <Radio.Button value="2">수량합계</Radio.Button>
+        {/* <Radio.Button value="3">어제</Radio.Button> */}
       </Radio.Group> 
-      <span style={{fontSize:"13px",marginLeft:"5px"}}>(영업일 기준)</span>
-      */}
+      {/* <span style={{fontSize:"13px",marginLeft:"5px"}}>(영업일 기준)</span> */}
+     
       <DatePicker 
         format="YYYY-MM-DD"
         defaultValue={moment()}
+        style={{marginLeft:"10px"}}
         disabledDate={disabledDate} onChange={onSelectDate} 
       />
       {excelData &&
