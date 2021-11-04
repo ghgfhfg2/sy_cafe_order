@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../../firebase";
-import { Radio,Button } from "antd";
+import { Radio,Button,DatePicker } from "antd";
 import * as antIcon from "react-icons/ai";
 import { commaNumber,getFormatDate } from "../CommonFunc";
 import { CSVLink } from "react-csv";
+import moment from 'moment';
 
 const curDate = getFormatDate(new Date());
 function AdminOrderList() {
@@ -17,6 +18,9 @@ function AdminOrderList() {
   const [Add1Count, setAdd1Count] = useState()
   const [Add2Count, setAdd2Count] = useState()
   const [SumAddAmount, setSumAddAmount] = useState()
+
+  const [SearchDate, setSearchDate] = useState(curDate);
+  const [Render, setRender] = useState(true);
 
   const [excelData, setExcelData] = useState()
   const excelHeaders = [
@@ -56,6 +60,11 @@ function AdminOrderList() {
             }
           });
           array = array.slice(0, 250);  
+          array = array.filter(el=>{
+            var date = getFormatDate(new Date(el.timestamp)).full;
+            console.log(date,SearchDate)
+            return date === SearchDate.full
+          })
           const day = ['월요일','화요일','수요일','목요일','금요일']
           setLastDay(array[0].order_time.split("|")[1])
           let prevDayIndex = day.indexOf(LastDay)-1          
@@ -113,7 +122,7 @@ function AdminOrderList() {
                 return 1;
               }
             })
-          }       
+          }  
           setExcelData(array);
           setOrderList(array);          
         });
@@ -122,7 +131,7 @@ function AdminOrderList() {
         firebase.database().ref("order").off();
         mounted = false;
       };
-    }, [SelectDay]);
+    }, [SelectDay,Render]);
     
     const onSelectDay = (e) => {
       if(e.target.value === '1'){
@@ -134,16 +143,32 @@ function AdminOrderList() {
       if(e.target.value === '3'){
         setSelectDay(PrevDay)
       }
-    }        
+    }      
+    
+    const onSelectDate = (date, dateString) => {
+      setSearchDate(getFormatDate(date._d))
+      setRender(!Render)
+    }
+  
+    const disabledDate = (current) => {
+      return current < moment().subtract(30, 'days') || current > moment();
+    }    
   return (
     <>
       <h3 className="title">완료내역</h3>
-      <Radio.Group onChange={onSelectDay} defaultValue="1" buttonStyle="solid">
+      
+      {/* <Radio.Group onChange={onSelectDay} defaultValue="1" buttonStyle="solid">
         <Radio.Button value="1">전체</Radio.Button>
         <Radio.Button value="2">오늘</Radio.Button>
         <Radio.Button value="3">어제</Radio.Button>
-      </Radio.Group>
+      </Radio.Group> 
       <span style={{fontSize:"13px",marginLeft:"5px"}}>(영업일 기준)</span>
+      */}
+      <DatePicker 
+        format="YYYY-MM-DD"
+        defaultValue={moment()}
+        disabledDate={disabledDate} onChange={onSelectDate} 
+      />
       {excelData &&
         <Button style={{marginLeft:"10px"}}>
           <CSVLink 
