@@ -63,6 +63,11 @@ function AdminOrderList() {
           array = array.filter(el=>{
             var date = getFormatDate(new Date(el.timestamp)).full;
             return date === SearchDate.full
+          })  
+          array.map(el=>{
+            if(el.hot === 'hot') el.prod_name = `따뜻한 ${el.prod_name}`
+            if(el.hot === 'ice') el.prod_name = `차가운 ${el.prod_name}`
+            if(el.prod_option) el.prod_name = el.prod_name +'-'+el.prod_option
           })
           const day = ['월요일','화요일','수요일','목요일','금요일']
           setLastDay(array[0].order_time.split("|")[1])
@@ -199,9 +204,7 @@ function AdminOrderList() {
               <tr key={index}>
                 <td>{list.order_name}</td>
                 <td>
-                  {list.hot === "hot" && "따뜻한 "}
-                  {list.hot === "ice" && "차가운 "}
-                  {list.prod_name}{list.prod_option && '-'+list.prod_option}
+                  {list.prod_name}
                 </td>
                 <td>{list.amount}</td>
                 <td>{list.add}</td>
@@ -234,7 +237,6 @@ function AdminOrderList() {
             {OrderList && OrderList.map((list, index) => (
               <tr key={index}>
                 <td>
-                  {list.hot === "hot" && "따뜻한 "}
                   {list.hot === "ice" && "차가운 "}
                   {list.prod_name}
                 </td>
