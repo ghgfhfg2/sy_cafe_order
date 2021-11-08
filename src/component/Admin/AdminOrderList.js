@@ -36,12 +36,13 @@ function AdminOrderList() {
 
   useEffect(() => {
     let mounted = true;
+    let limitDate = curDate.timestamp - 345600000
     if (mounted) {     
         firebase
         .database()
         .ref("order")
-        .orderByChild("order_state")
-        .equalTo(2)
+        .orderByChild("timestamp")
+        .startAt(limitDate)
         .on("value", (snapshot) => {
           let array = [];
           snapshot.forEach(function (item) {
@@ -59,11 +60,11 @@ function AdminOrderList() {
               return 1;
             }
           });
-          array = array.slice(0, 250);  
           array = array.filter(el=>{
             var date = getFormatDate(new Date(el.timestamp)).full;
-            return date === SearchDate.full
+            return date === SearchDate.full && el.order_state === 2
           })  
+          
           array.map(el=>{
             if(el.hot === 'hot') el.prod_name = `따뜻한 ${el.prod_name}`
             if(el.hot === 'ice') el.prod_name = `차가운 ${el.prod_name}`
