@@ -391,7 +391,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                     <label htmlFor="basic">
                     저지방
                     </label>
-              {OrderItem.m_soldout && (
+              {/* {OrderItem.m_soldout && (
                   <>
                   <input
                     type="radio"
@@ -404,7 +404,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                   무지방
                   </label>
                 </>
-              )}
+              )} */}
               {OrderItem.m_soldout2 && (
                 <>
                   <input
