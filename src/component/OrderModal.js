@@ -194,15 +194,18 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
   }
   const [submitLoading, setsubmitLoading] = useState(false);
   const onSubmitOrder = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault();    
     if(userInfo?.auth && userInfo.auth.includes('disable')){
-      window.alert("주문이 불가능 합니다.")
+      message.error("주문이 불가능 합니다.")
       return;
     }    
     if(OrderItem.jaego === 0){
-      window.alert("재고가 부족합니다.")
+      message.error("재고가 부족합니다.")
       return
+    }
+    if(OrderItem.option && !ProdOption){
+      message.error("옵션을 선택해 주세요")
+      return;
     }
        
     setsubmitLoading(true);
@@ -215,7 +218,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
         let time = UserDb.limit[OrderItem.name].timestamp
         time = getFormatDate(new Date(time));        
         if(curTime.full === time.full){
-          window.alert("하루에 한번만 주문 가능합니다.");
+          message.error("하루에 한번만 주문 가능합니다.");
           onFinished();
           setsubmitLoading(false);
           return;
@@ -248,7 +251,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
     }
 
     if (e.target.hot && !e.target.hot.value) {
-        alert("온도를 선택해주세요");
+        message.error("온도를 선택해주세요");
         setsubmitLoading(false);
         return;
     }
