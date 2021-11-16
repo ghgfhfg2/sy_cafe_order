@@ -40,6 +40,8 @@ import Chair from "./component/welfare/Chair";
 import ChairAdmin from "./component/welfare/ChairAdmin";
 import StylerAdmin from "./component/welfare/StylerAdmin";
 import Styler from "./component/welfare/Styler";
+import Inventory from "./component/inven/Inventory";
+import InvenAdmin from "./component/inven/InvenAdmin";
 
 const { Sider, Content, Header } = Layout;
 
@@ -169,6 +171,8 @@ function App(props) {
                   <Route exact path="/chair_admin" component={ChairAdmin} />
                   <Route exact path="/styler" component={Styler} />
                   <Route exact path="/styler_admin" component={StylerAdmin} />
+                  <Route exact path="/inventory" component={Inventory} />
+                  <Route exact path="/inven_admin" component={InvenAdmin} />
                   <Route exact path="/test" component={Test} />
                 </Switch>
               </Content>

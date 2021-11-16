@@ -104,14 +104,12 @@ function Nav() {
         }
         if(currentTimeNum >= newAble.ableTimeStart && currentTimeNum < newAble.ableTimeEnd){
           setCurAbleTime(1);
-          if(currentTimeNum >= newAble.disableTimeStart && currentTimeNum < newAble.disableTimeEnd){
+          
+          if(currentTimeNum >= newAble.lunchTimeStart && currentTimeNum < newAble.lunchTimeEnd){
             setCurAbleTime(2);
           }
-          if(currentTimeNum >= newAble.lunchTimeStart && currentTimeNum < newAble.lunchTimeEnd){
-            setCurAbleTime(3);
-          }
           if(currentTimeNum >= newAble.breakTimeStart && currentTimeNum < newAble.breakTimeEnd){
-            setCurAbleTime(4);
+            setCurAbleTime(3);
           }
         }else{
           setCurAbleTime(5)
@@ -343,6 +341,14 @@ function Nav() {
               </Link>
             </Menu.Item>
             }
+            {currentUser?.auth && currentUser.role > 2 &&
+            <Menu.Item key="17">
+              <Link to="/inventory">
+                <mdIcon.MdOutlineInventory />
+                재고
+              </Link>
+            </Menu.Item>
+            }
             {currentUser.role > 0 &&
             (
               <SubMenu
@@ -429,14 +435,11 @@ function Nav() {
                 {AbleTime.ableTimeStart &&
                 <li className={CurAbleTime === 1 ? "cur" : ""}><span>운영시간</span> - {AbleTime.ableTimeStart}~{AbleTime.ableTimeEnd}</li>
                 }
-                {AbleTime.disableTimeStart &&
-                <li className={CurAbleTime === 2 ? "cur" : ""}><span>이용불가</span> - {AbleTime.disableTimeStart}~{AbleTime.disableTimeEnd}</li>
-                }
                 {AbleTime.lunchTimeStart &&
-                <li className={CurAbleTime === 3 ? "cur" : ""}><span>점심시간</span> - {AbleTime.lunchTimeStart}~{AbleTime.lunchTimeEnd}</li>
+                <li className={CurAbleTime === 2 ? "cur" : ""}><span>점심시간</span> - {AbleTime.lunchTimeStart}~{AbleTime.lunchTimeEnd}</li>
                 }
                 {AbleTime.breakTimeStart &&
-                <li className={CurAbleTime === 4 ? "cur" : ""}><span>브레이크</span> - {AbleTime.breakTimeStart}~{AbleTime.breakTimeEnd}</li>
+                <li className={CurAbleTime === 3 ? "cur" : ""}><span>브레이크</span> - {AbleTime.breakTimeStart}~{AbleTime.breakTimeEnd}</li>
                 }
               </ul>
           </div>
