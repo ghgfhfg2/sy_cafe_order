@@ -1,6 +1,6 @@
 import React,{ useState, useEffect, useRef } from 'react';
 import {Form, Button, Input, Radio, Checkbox, Row, Divider, Switch, message, Table, Upload, Modal } from "antd";
-import { InboxOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import ImgUpload from './ImgUpload';
 import firebase from "../../firebase";
 import styled from "styled-components";
@@ -90,31 +90,39 @@ function InvenAdmin() {
     setProdRegist(!ProdRegist);
   };  
 
+
   const normFile = (e) => {
     console.log('Upload event:', e);
+  
     if (Array.isArray(e)) {
       return e;
     }
+  
     return e && e.fileList;
   };
+
 
   const onSubmitProd = async (values) => {
     values.etc = values.etc ? values.etc : '';
     console.log(values)
-    return
+    var upload;
+    if(values.upload){
+      upload = values.upload[0]
+    }
+    console.log(upload)
     try {
       let downloadURL;
-      if(true){
-        const file = ""
-        const metadata = ""
+      const uid = uuid();
+      if(normFile){
+        const file = upload.originFileObj;
+        const metadata = upload.type;
         let uploadTaskSnapshot = await firebase
         .storage()
         .ref("inventory")
-        .child(`prod_image/${uuid()}`)
+        .child(`prod_image/${uid}`)
         .put(file, metadata);
         downloadURL = await uploadTaskSnapshot.ref.getDownloadURL();
       }
-      const uid = uuid();
       await firebase
         .database()
         .ref("inventory")
@@ -141,14 +149,27 @@ function InvenAdmin() {
     setIsModalVisible(true);
   }
   const onDelete = (uid) => {
-    db.ref('inventory')
-    .child(uid)
-    .remove()
+    firebase.storage().ref(`inventory/prod_image/${uid}`)
+    .delete()
+    .then(res => {
+      db.ref('inventory')
+      .child(uid)
+      .remove();
+      message.success('삭제에 성공했습니다.')
+    })  
+    .catch(error=>{
+      message.error(error)
+    })
+
+
+
   }
 
 
   const onModifySubmit = (values) => {
-    console.log(values)
+    console.log(values,ModifyData)
+    const uid = ModifyData.uid;
+    
   }
   return (
     <>
@@ -163,18 +184,7 @@ function InvenAdmin() {
         />
       </div>            
       {ProdRegist && (
-        <Form ref={formRef} className="admin-prod-form" onFinish={onSubmitProd}>
-          <Form.Item label="Dragger">
-            <Form.Item name="dragger" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
-              <Upload.Dragger name="files" action="">
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-              </Upload.Dragger>
-            </Form.Item>
-          </Form.Item>         
+        <Form ref={formRef} className="admin-prod-form" onFinish={onSubmitProd}>          
           <Form.Item
             name="name"
             label="상품명"
@@ -232,24 +242,16 @@ function InvenAdmin() {
        footer={false}
       >
         {ModifyData &&
-        <Form 
-          className="admin-prod-form" 
-          onFinish={onModifySubmit}
-          initialValues={{
-            'name': ModifyData.name
-          }}
-        >
-          <Form.Item label="Dragger">
-            <Form.Item name="dragger" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
-              <Upload.Dragger name="files">
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-              </Upload.Dragger>
-            </Form.Item>
-          </Form.Item>         
+          <Form 
+            className="admin-prod-form" 
+            onFinish={onModifySubmit}
+            initialValues={{
+              'name': ModifyData.name,
+              'ea': ModifyData.ea,
+              'etc': ModifyData.etc
+            }}
+          >
+                  
           <Form.Item
             name="name"
             label="상품명"  
