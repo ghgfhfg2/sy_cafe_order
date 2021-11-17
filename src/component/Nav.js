@@ -345,7 +345,7 @@ function Nav() {
             <Menu.Item key="17">
               <Link to="/inventory">
                 <mdIcon.MdOutlineInventory />
-                재고
+                재고체크
               </Link>
             </Menu.Item>
             }
@@ -398,7 +398,7 @@ function Nav() {
                     <Menu.Item key="12">
                       <Link to="/admin/prod_count">
                         <antIcon.AiOutlineAppstoreAdd />
-                        재고관리
+                        카페 재고관리
                       </Link>
                     </Menu.Item>
                     <Menu.Item key="5">
@@ -416,12 +416,20 @@ function Nav() {
                   </>
                 }
                 {currentUser.role > 2 &&
-                <Menu.Item key="0">
-                  <Link to="/admin/user_admin">
-                    <antIcon.AiOutlineTeam />
-                    회원관리
-                  </Link>
-                </Menu.Item>
+                <>
+                  <Menu.Item key="18">
+                    <Link to="/admin/inventory">
+                      <mdIcon.MdOutlineInventory2 />
+                      사무용품 관리
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item key="0">
+                    <Link to="/admin/user_admin">
+                      <antIcon.AiOutlineTeam />
+                      회원관리
+                    </Link>
+                  </Menu.Item>
+                </>
                 }
               </SubMenu>
             )}

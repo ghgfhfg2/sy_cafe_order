@@ -36,13 +36,15 @@ function AdminOrderList() {
 
   useEffect(() => {
     let mounted = true;
-    let limitDate = curDate.timestamp - 345600000
+    let limitDateStart = SearchDate.timestamp - 36000000;
+    let limitDateEnd = SearchDate.timestamp + 36000000;
     if (mounted) {     
         firebase
         .database()
         .ref("order")
         .orderByChild("timestamp")
-        .startAt(limitDate)
+        .startAt(limitDateStart)
+        .endAt(limitDateEnd)
         .on("value", (snapshot) => {
           let array = [];
           snapshot.forEach(function (item) {
@@ -51,7 +53,7 @@ function AdminOrderList() {
               key: item.key,
             });
           });
-          // eslint-disable-next-line array-callback-return
+          // eslint-disable-next-line array-callback-return          
           array.sort((a, b) => {
             if (a.timestamp > b.timestamp) {
               return -1;
@@ -127,7 +129,7 @@ function AdminOrderList() {
                 return 1;
               }
             })
-          }  
+          }            
           setExcelData(array);
           setOrderList(array);          
         });
