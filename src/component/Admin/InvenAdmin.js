@@ -5,6 +5,7 @@ import ImgUpload from './ImgUpload';
 import firebase from "../../firebase";
 import styled from "styled-components";
 import uuid from "react-uuid";
+import { getFormatDate } from '../CommonFunc';
 
 function InvenAdmin() {
   const db = firebase.database()
@@ -92,7 +93,6 @@ function InvenAdmin() {
 
 
   const normFile = (e) => {
-    console.log('Upload event:', e);
   
     if (Array.isArray(e)) {
       return e;
@@ -104,16 +104,20 @@ function InvenAdmin() {
 
   const onSubmitProd = async (values) => {
     values.etc = values.etc ? values.etc : '';
-    console.log(values)
-    var upload;
+    values.upload = values.upload ? values.upload : ''
+    var upload = '';
     if(values.upload){
       upload = values.upload[0]
     }
-    console.log(upload)
+    var regex = /[^0-9]/g;
+    if(values.ea.match(regex)){
+      message.error('재고는 숫자만 입력해 주세요');
+      return
+    }
     try {
       let downloadURL;
       const uid = uuid();
-      if(normFile){
+      if(upload != ''){
         const file = upload.originFileObj;
         const metadata = upload.type;
         let uploadTaskSnapshot = await firebase
@@ -130,6 +134,7 @@ function InvenAdmin() {
         .set({
           ...values,
           uid,
+          date: getFormatDate(new Date()),
           image: downloadURL ? downloadURL : '',
         });
         message.success("상품을 등록했습니다.");
@@ -140,11 +145,17 @@ function InvenAdmin() {
   }
   const [isModalVisible, setIsModalVisible] = useState(false);  
 
+  const onCountCheck = (e) => {
+    var str = e.target.value;
+    var regex = /[^0-9]/g;
+    if(str.match(regex)){
+      message.error('숫자만 입력해 주세요');
+    }
+  }
   const handleCancel = () => {
     setIsModalVisible(false);
   };  
   const onModify = (uid) => {
-    console.log(uid)
     setModifyUid(uid)
     setIsModalVisible(true);
   }
@@ -169,7 +180,15 @@ function InvenAdmin() {
   const onModifySubmit = (values) => {
     console.log(values,ModifyData)
     const uid = ModifyData.uid;
-    
+    firebase
+        .database()
+        .ref("inventory")
+        .child(uid)
+        .update({
+          ...values
+        });
+        message.success("업데이트에 성공했습니다.");
+        setIsModalVisible(false);
   }
   return (
     <>
@@ -184,10 +203,22 @@ function InvenAdmin() {
         />
       </div>            
       {ProdRegist && (
-        <Form ref={formRef} className="admin-prod-form" onFinish={onSubmitProd}>          
+        <Form ref={formRef} className="admin-prod-form" onFinish={onSubmitProd}>     
+          <Form.Item 
+            name="upload"
+            label="Upload"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
+            <Upload 
+               listType="picture"
+            >
+              <Button icon={<UploadOutlined />}>이미지 업로드</Button>
+            </Upload>
+          </Form.Item>     
           <Form.Item
             name="name"
-            label="상품명"
+            label="상품명"            
             rules={[
               {
                 required: true,
@@ -199,7 +230,8 @@ function InvenAdmin() {
           </Form.Item>
           <Form.Item
             name="ea"
-            label="재고개수"
+            label="재고개수"            
+            onChange={onCountCheck}
             rules={[
               {
                 required: true,
@@ -291,7 +323,7 @@ function InvenAdmin() {
               type="primary"
               size="large"
             >
-              등록하기
+              수정하기
             </Button>
           </div>
         </Form>
