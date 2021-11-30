@@ -372,18 +372,22 @@ h3.title {
 }
 
 /* 관리자 상품등록 */
-.admin-prod-form {
-  margin-bottom: 30px;
+
+.admin-prod-form{
+  &.ant-form-horizontal .ant-form-item-label {
+    width: 80px;
+  }
+  .ant-input {
+    max-width: 50%;
+  }
+  .ant-input.sm-input {
+    max-width: 150px;
+  }
+  .btn-box{
+    @include flex($j:center)
+  }
 }
-.admin-prod-form.ant-form-horizontal .ant-form-item-label {
-  width: 80px;
-}
-.admin-prod-form .ant-input {
-  max-width: 50%;
-}
-.admin-prod-form .ant-input.sm-input {
-  max-width: 150px;
-}
+
 
 .admin-modify-form {
   display: flex;
@@ -1073,6 +1077,52 @@ h3.title {
   }
   .info-ic-my{
     background-color: $p-color;color: #fff;
+  }
+}
+
+
+// 사무용품 재고체크
+.inven-list-box{
+  display: flex;
+  li{
+    .left{
+      @include flex($a:center);
+    }
+    .right{
+      @include flex($d:column);
+      .ea{display: block;margin-bottom: 5px;font-weight: 600;}
+      .use{
+        @include flex($a:center);
+        span{margin-left: 5px;font-size: 13px;}
+      }
+    }
+    padding:0 10px;width:33.33%;
+    .list-con{
+      border:1px solid #ddd;border-radius: 5px;padding:13px 15px;
+      @include flex($a:center,$j:space-between);
+      .img-box{
+        width:56px;height: 56px;border-radius: 50%;overflow: hidden;position: relative;margin-right:13px;
+        img, svg{max-height: 100%;position: absolute;left: 50%;top:50%;transform: translate(-50%,-50%);font-size: 25px;color: #999;}
+        &.no-img{border:1px solid #ddd}
+      }
+      .txt-box{
+        margin:0;
+        dt{font-size: 15px;font-weight: 600;}
+        dd{margin:0;}
+      }
+    }
+    .input-box{
+      @include flex();
+      .use{margin-left: 4px;}
+    }
+  }
+}
+.inven-log-list{
+  max-height: 100px;overflow: auto;margin-bottom: 0;
+  li{
+    @include flex($j:space-between);
+    padding: 0 10px;font-size:13px;
+    .date{font-size: 12px;color: #888;}
   }
 }
 

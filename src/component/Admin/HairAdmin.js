@@ -86,7 +86,6 @@ function HairAdmin() {
             }
             obj[key].distance =  obj[key].timestamp - new Date(`${obj[key].date.full_} ${obj[key].date.hour}:${obj[key].date.min}`).getTime();
             obj[key].distance = Math.floor(obj[key].distance/1000/60/60/24)
-            console.log(dateArr)
             dateArr.push(obj[key].date)
             dateArr.sort((a,b)=>{
               return b.full - a.full

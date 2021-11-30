@@ -386,9 +386,6 @@ h3.title::before {
     box-shadow: 0 0 1px #fff, 0 0 2px #7c5424, 0 0 2px #7c5424, 0 0 3px #7c5424; } }
 
 /* 관리자 상품등록 */
-.admin-prod-form {
-  margin-bottom: 30px; }
-
 .admin-prod-form.ant-form-horizontal .ant-form-item-label {
   width: 80px; }
 
@@ -397,6 +394,12 @@ h3.title::before {
 
 .admin-prod-form .ant-input.sm-input {
   max-width: 150px; }
+
+.admin-prod-form .btn-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row; }
 
 .admin-modify-form {
   display: flex;
@@ -1423,6 +1426,105 @@ h3.title::before {
 .reserv-info .info-ic-my {
   background-color: #7c5424;
   color: #fff; }
+
+.inven-list-box {
+  display: flex; }
+
+.inven-list-box li {
+  padding: 0 10px;
+  width: 33.33%; }
+
+.inven-list-box li .left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row; }
+
+.inven-list-box li .right {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column; }
+
+.inven-list-box li .right .ea {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600; }
+
+.inven-list-box li .right .use {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row; }
+
+.inven-list-box li .right .use span {
+  margin-left: 5px;
+  font-size: 13px; }
+
+.inven-list-box li .list-con {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 13px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row; }
+
+.inven-list-box li .list-con .img-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  margin-right: 13px; }
+
+.inven-list-box li .list-con .img-box img, .inven-list-box li .list-con .img-box svg {
+  max-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 25px;
+  color: #999; }
+
+.inven-list-box li .list-con .img-box.no-img {
+  border: 1px solid #ddd; }
+
+.inven-list-box li .list-con .txt-box {
+  margin: 0; }
+
+.inven-list-box li .list-con .txt-box dt {
+  font-size: 15px;
+  font-weight: 600; }
+
+.inven-list-box li .list-con .txt-box dd {
+  margin: 0; }
+
+.inven-list-box li .input-box {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row; }
+
+.inven-list-box li .input-box .use {
+  margin-left: 4px; }
+
+.inven-log-list {
+  max-height: 100px;
+  overflow: auto;
+  margin-bottom: 0; }
+
+.inven-log-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: 0 10px;
+  font-size: 13px; }
+
+.inven-log-list li .date {
+  font-size: 12px;
+  color: #888; }
 
 @media (max-width: 760px) {
   .ant-layout-sider.nav-wrap {

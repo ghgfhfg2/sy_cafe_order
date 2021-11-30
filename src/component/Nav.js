@@ -420,7 +420,7 @@ function Nav() {
                   <Menu.Item key="18">
                     <Link to="/admin/inventory">
                       <mdIcon.MdOutlineInventory2 />
-                      사무용품 관리
+                      비품관리
                     </Link>
                   </Menu.Item>
                   <Menu.Item key="0">

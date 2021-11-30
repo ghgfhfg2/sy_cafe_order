@@ -57,3 +57,28 @@ export function notify(msg) {
         notification.close();
     }, 3000);
   }
+
+
+
+  //객체배열추출
+  export function getArr(obj) {
+    let arr = [];
+    for (let key in obj){
+        arr.push(obj[key]);
+    }
+    return arr;
+}
+
+
+export function getMax(arr,target){
+    let abs = 0;
+    let arr2 = []
+    for (var i = 0; i < arr.length; i++)
+    {
+        abs = target - arr[i] > 0 && target - arr[i];
+        abs && arr2.push(abs);        
+    }
+    console.log(arr2)
+    let res = Math.min.apply(null,arr2);
+    return arr[res];
+}
