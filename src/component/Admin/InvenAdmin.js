@@ -65,6 +65,12 @@ function InvenAdmin() {
     {label: "품명", key:"prod"},
     {label: "재고", key:"ea"}
   ]
+
+  const excelHeaders3 = [    
+    {label: "품명", key:"prod"},
+    {label: "입고", key:"input"},
+    {label: "출고", key:"output"}
+  ]
   
   const [ModifyUid, setModifyUid] = useState("");
   const [ModifyData, setModifyData] = useState()
@@ -118,8 +124,19 @@ function InvenAdmin() {
       snapshot.val() && snapshot.forEach((el)=>{
         let obj = getArr(el.val())
         obj = obj.filter(list=> list.prod_uid === ThisLogUid.uid)
-        arr.push(...obj)
+        let arr2 = [];
+        obj.map(list=>{
+          var obj2 = {
+            ...list,
+            date_: `${list.date.full_} ${list.date.hour}:${list.date.min}`,
+            real_date_:`${list.real_date.full_}`,
+            name:`${list.name}(${list.part})`
+          }
+          arr2.push(obj2)
+        }) 
+        arr.push(...arr2)
       })
+      console.log(arr)
       setThisLogData(arr)
     })
     return () => {
@@ -554,7 +571,7 @@ function InvenAdmin() {
       key: 'name',
       align: 'center',  
       width: 120,    
-      render: (text,row) => `${row['name']}(${row['part']})`
+      render: (text,row) => `${row['name']}`
     },
     {
       title: '수량',
@@ -926,6 +943,18 @@ function InvenAdmin() {
 
       <div className="flex-box a-center" style={{marginTop:"30px",marginBottom:"10px"}}>
         <h3 className="title" style={{marginBottom:"0",marginRight:"10px"}}>월간 입출고내역</h3>
+        {EaData &&
+        <Button style={{marginRight:"5px"}}>
+          <CSVLink 
+            headers={excelHeaders3} 
+            data={TotalLogData} 
+            filename={`metree-expendables-date-${EaDate}.csv`} 
+            target="_blank"
+          >
+            <antIcon.AiOutlineFileExcel style={{position:"relative",top:"3px",fontSize:"17px",marginRight:"3px"}} />엑셀 다운로드
+          </CSVLink>
+        </Button>
+        }
         <DatePicker defaultValue={moment(SearchMonth,'YYYY-MM')} onChange={onSearchMonth} picker="month" style={{marginRight:"5px"}} />
         <span style={{fontSize:"12px",color:"#888"}}>*월별 검색</span>
       </div>

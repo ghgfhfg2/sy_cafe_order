@@ -78,7 +78,6 @@ export function getMax(arr,target){
         abs = target - arr[i] > 0 && target - arr[i];
         abs && arr2.push(abs);        
     }
-    console.log(arr2)
     let res = Math.min.apply(null,arr2);
     return arr[res];
 }
