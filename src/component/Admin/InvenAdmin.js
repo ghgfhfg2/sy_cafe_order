@@ -900,22 +900,22 @@ function InvenAdmin() {
         footer={false}
         >
           {ThisLogData && ThisLogData.length > 0 &&
-            <Button style={{marginBottom:"10px"}}>
-              <CSVLink 
-                headers={excelHeaders} 
-                data={ThisLogData} 
-                filename={`metree-expendables-${DateStart}_${DateEnd}.csv`} 
-                target="_blank"
-              >
-                <antIcon.AiOutlineFileExcel style={{position:"relative",top:"3px",fontSize:"17px",marginRight:"3px"}} />엑셀 다운로드
-              </CSVLink>
-            </Button>
-          }
-          {ThisLogData &&
-            <Table 
-              columns={columns3} 
-              dataSource={ThisLogData}
-            />  
+            <>
+              <Button style={{marginBottom:"10px"}}>
+                <CSVLink 
+                  headers={excelHeaders} 
+                  data={ThisLogData} 
+                  filename={`metree-expendables-${DateStart}_${DateEnd}.csv`} 
+                  target="_blank"
+                >
+                  <antIcon.AiOutlineFileExcel style={{position:"relative",top:"3px",fontSize:"17px",marginRight:"3px"}} />엑셀 다운로드
+                </CSVLink>
+              </Button>
+              <Table 
+                columns={columns3} 
+                dataSource={ThisLogData}
+              />  
+            </>
           }
         </Modal>
       }
@@ -943,7 +943,7 @@ function InvenAdmin() {
 
       <div className="flex-box a-center" style={{marginTop:"30px",marginBottom:"10px"}}>
         <h3 className="title" style={{marginBottom:"0",marginRight:"10px"}}>월간 입출고내역</h3>
-        {EaData &&
+        {TotalLogData &&
         <Button style={{marginRight:"5px"}}>
           <CSVLink 
             headers={excelHeaders3} 

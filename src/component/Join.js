@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import firebase from "../firebase";
@@ -12,6 +13,7 @@ function Join() {
   const password = useRef();
   password.current = watch("password");
   const onSubmit = async (data) => {
+    
     data.part == 1 && alert('부서를 선택해 주세요')
     try {
       setLoading(true);
@@ -23,6 +25,7 @@ function Join() {
         displayName: data.name,
         photoURL: data.part,
       });
+
       //Firebase 데이터베이스에 저장해주기
       await firebase.database().ref("users").child(createdUser.user.uid).set({
         name: createdUser.user.displayName,
@@ -33,6 +36,8 @@ function Join() {
         auth: "intern",
       });
       setLoading(false);
+      
+      window.location.reload();
     } catch (error) {
       setErrorFromSubmit(error.message);
       setTimeout(() => {

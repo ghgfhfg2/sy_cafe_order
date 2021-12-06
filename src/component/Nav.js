@@ -341,7 +341,7 @@ function Nav() {
               </Link>
             </Menu.Item>
             }
-            {currentUser?.auth && currentUser.role > 2 &&
+            {(currentUser?.auth && currentUser.auth.includes('insa') ||currentUser?.auth && currentUser.role > 2) &&
             <Menu.Item key="17">
               <Link to="/inventory">
                 <mdIcon.MdOutlineInventory />
@@ -415,7 +415,7 @@ function Nav() {
                     </Menu.Item>
                   </>
                 }
-                {currentUser.role > 2 &&
+                {(currentUser?.auth && currentUser.auth.includes('insa') ||currentUser?.auth && currentUser.role > 2) &&
                 <>
                   <Menu.Item key="18">
                     <Link to="/admin/inventory">
