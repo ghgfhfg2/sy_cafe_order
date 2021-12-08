@@ -1,18 +1,109 @@
 import React,{ useState, useEffect, useRef } from 'react';
 import firebase, {wel} from "../../firebase";
 import { getFormatDate } from '../CommonFunc';
-import { Button,Popconfirm,message,InputNumber,Modal,Form,Input,DatePicker } from 'antd'
+import { Button,Popconfirm,message,InputNumber,Modal,Form,Input,DatePicker,Table } from 'antd'
 import * as bsIcon from "react-icons/bs";
 import { useSelector } from "react-redux";
 import uuid from "react-uuid";
+import moment from 'moment';
 
 function Inventory() {
   const nowDate = getFormatDate(new Date());
   const curDate = nowDate.full;
+  const curMonth = curDate.substr(0,curDate.length-2)
   const db = firebase.database(wel);
   const userInfo = useSelector((state) => state.user.currentUser);
   const [InvenData, setInvenData] = useState();
   const formRef = useRef();
+
+  const [SearchMonth, setSearchMonth] = useState(curMonth);
+  const onSearchMonth = (date, dateString) => {
+    let regex = /-/g
+    let month = dateString.replace(regex,"")
+    setSearchMonth(month)
+  } 
+
+  const columns = [
+    {
+      title: '등록일자',
+      dataIndex: ['date','date_'],
+      key: 'date',
+      align: 'center',  
+      width: 100,    
+      sorter: {
+        compare: (a, b) => b.date.timestamp - a.date.timestamp,
+        multiple: 1,
+      },
+      defaultSortOrder: 'ascend',
+      render: (text,row) => `${row['date'].full_} ${row['date'].hour}:${row['date'].min}`
+    },
+    {
+      title: '입출고일자',
+      dataIndex: ['real_date'],
+      key: 'real_date',
+      align: 'center',  
+      width: 100,    
+      sorter: {
+        compare: (a, b) => b.real_date.timestamp - a.real_date.timestamp,
+        multiple: 2,
+      },
+      defaultSortOrder: 'ascend',
+      render: (text,row) => `${row['real_date'].full_}`
+    },
+    {
+      title: '입출고',
+      dataIndex: 'type',
+      key: 'type',
+      align: 'center',  
+      width: 100,    
+      render: data => data
+    },
+    {
+      title: '사용자',
+      dataIndex: ['name','part'],
+      key: 'name',
+      align: 'center',  
+      width: 100,    
+      render: (text,row) => `${row['name']}`
+    },
+    {
+      title: '품명',
+      dataIndex: 'prod',
+      key: 'prod',
+      align: 'center',  
+      width: 120,    
+      render: data => data
+    },
+    {
+      title: '수량',
+      dataIndex: 'val',
+      key: 'val',
+      align: 'center',  
+      width: 40,    
+      render: data => data
+    },  
+    {
+      title: '비고',
+      dataIndex: 'comment',
+      key: 'comment',
+      align: 'center',  
+      width: 200,    
+      render: data => data
+    }, 
+    {
+      title: '출납 후 재고',
+      dataIndex: 'ea',
+      key: 'ea',
+      align: 'center',  
+      width: 80,    
+      render: (text,row) => <>
+        <span>{row['ea']}</span>
+      </>
+    },
+  ]
+
+  const [ProdItem, setProdItem] = useState();
+
   useEffect(() => {    
     db.ref('inventory/list')
     .on('value',snapshot => {
@@ -21,6 +112,16 @@ function Inventory() {
         arr.push(el.val())
       })
       setInvenData(arr)
+    })
+
+    db.ref(`inventory/user/${SearchMonth}/${userInfo.uid}`)
+    .on("value", snapshot => {
+      let arr = [];
+      snapshot.forEach(item=>{
+        let obj = item.val();
+        arr.push(obj)
+      })     
+      setProdItem(arr)
     })
     return () => {
       db.ref('inventory/list').off()
@@ -46,6 +147,8 @@ function Inventory() {
   const [ModifyUid, setModifyUid] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);  
   const onModifySubmit = (values) => {
+    const agree = window.confirm('출고 하시겠습니까?\n(수량확인 부탁드립니다)')
+    if(!agree){return}
     let ea = parseInt(ModifyUid.ea) - parseInt(values.val);
     if(ea < 0){
       message.error('재고가 부족합니다.');
@@ -102,12 +205,20 @@ function Inventory() {
       ea          
     });
 
+    db
+    .ref(`inventory/user/${monthDate}/${userInfo.uid}/${uuid()}`)
+    .update({
+      ...obj
+    })
+
     message.success("출고완료");
     formRef.current.resetFields();
     setIsModalVisible(false);
     setModifyUid("");
 
   }
+
+
   return (
     <>
       {InvenData && 
@@ -135,6 +246,19 @@ function Inventory() {
         ))}
       </ul>      
       }
+
+      <div className="flex-box a-center" style={{marginTop:"30px",marginBottom:"10px"}}>
+        <h3 className="title" style={{marginBottom:"0",marginRight:"10px"}}>비품 출고 내역</h3>
+        <DatePicker defaultValue={moment(SearchMonth,'YYYY-MM')} onChange={onSearchMonth} picker="month" style={{marginRight:"5px"}} />
+        <span style={{fontSize:"12px",color:"#888"}}>*월별 검색</span>
+      </div>
+      {ProdItem &&
+        <Table 
+          columns={columns} 
+          dataSource={ProdItem}
+        />      
+      }
+
       {ModifyUid && 
       <Modal title={`${ModifyUid.name}`} 
        visible={isModalVisible}

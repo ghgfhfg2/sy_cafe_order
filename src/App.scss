@@ -1083,8 +1083,8 @@ h3.title {
 
 // 사무용품 재고체크
 .inven-list-box{
-  display: flex;
-  li{
+  display: flex;flex-wrap:wrap;
+  li{    
     .left{
       @include flex($a:center);
     }
@@ -1095,9 +1095,10 @@ h3.title {
         @include flex($a:center);
         span{margin-left: 5px;font-size: 13px;}
       }
-    }
-    padding:0 10px;width:33.33%;
+    }    
+    margin-bottom: 20px;padding:0 10px;width:33.33%;
     .list-con{
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
       border:1px solid #ddd;border-radius: 5px;padding:13px 15px;
       @include flex($a:center,$j:space-between);
       .img-box{
@@ -1114,6 +1115,9 @@ h3.title {
     .input-box{
       @include flex();
       .use{margin-left: 4px;}
+    }
+    @include mobile(){
+      width: 100%;
     }
   }
 }

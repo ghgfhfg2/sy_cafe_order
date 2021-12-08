@@ -212,8 +212,15 @@ function InvenAdmin() {
       db.ref("inventory/log_month").off();
     }
   }, [SearchMonth,Render])
-
   const total_columns = [
+    {
+      title: '년월',
+      dataIndex: 'prod',
+      key: 'prod',
+      align: 'center',  
+      width: 100,    
+      render: data => `${SearchMonth.substr(0,SearchMonth.length-2)}-${SearchMonth.substr(4,SearchMonth.length-2)}`
+    },
     {
       title: '품명',
       dataIndex: 'prod',
@@ -290,6 +297,7 @@ function InvenAdmin() {
       uid:userInfo.uid,
       val,
       real_date:submitDate,
+      comment:LogMessege,
       date:getFormatDate(new Date())
     })
     val && 
@@ -313,7 +321,7 @@ function InvenAdmin() {
         .update(parseInt(val))
       }else{
         return pre + parseInt(val);
-      }
+      }      
     })
 
     db
@@ -324,6 +332,7 @@ function InvenAdmin() {
     });
 
     message.success('업데이트 완료');
+    setLogMessege('')
     setRender(!Render)
   }
   const onMinus = (uid,prod,ea) => {    
@@ -349,6 +358,7 @@ function InvenAdmin() {
       sosok:userInfo.sosok,
       uid:userInfo.uid,
       real_date:submitDate,
+      comment:LogMessege,
       val,
       date:getFormatDate(new Date())
     });
@@ -381,6 +391,7 @@ function InvenAdmin() {
       ea:rest
     });
     message.success('업데이트 완료');
+    setLogMessege('')
     setRender(!Render)
   }
 
@@ -449,7 +460,7 @@ function InvenAdmin() {
     }
   ]
 
-  const cancel = function cancel(e) {
+  const cancel = (e) => {
     message.error('취소되었습니다.');
   }
 
@@ -581,6 +592,14 @@ function InvenAdmin() {
       width: 50,    
       render: data => data
     },  
+    {
+      title: '비고',
+      dataIndex: 'comment',
+      key: 'comment',
+      align: 'center',  
+      width: 200,    
+      render: data => data
+    }, 
     {
       title: '출납 후 재고',
       dataIndex: 'ea',
@@ -740,7 +759,10 @@ function InvenAdmin() {
     setIsModalVisible(false);
   }
 
-  
+  const [LogMessege, setLogMessege] = useState('')
+  const onMessege = (e) => {
+    setLogMessege(e.target.value)
+  }
 
   return (
     <>
@@ -829,11 +851,15 @@ function InvenAdmin() {
       <div style={{marginBottom:"20px"}}>
         <RangePicker defaultValue={[moment(DateStart,'YYYY-MM-DD'),moment(DateEnd,'YYYY-MM-DD')]} onChange={onSearchDate} style={{marginRight:"5px"}} />
         <span style={{fontSize:"12px",color:"#888"}}>*날짜 검색</span>
-      </div>  
+      </div>
       <div className="flex-box a-center" style={{marginBottom:"10px"}}>
         <h3 className="title" style={{marginBottom:"0",marginRight:"10px"}}>비품 리스트</h3>
         <DatePicker defaultValue={moment(DateStart,'YYYY-MM-DD')} onChange={onSubmitDate} style={{marginRight:"5px"}} />
         <span style={{fontSize:"12px",color:"#888"}}>*실 입출고시간이 있는경우 선택</span>
+      </div>
+      <div className="flex-box a-center" style={{marginBottom:"10px"}}>
+        <span style={{flexShrink:"0",marginRight:"5px"}}>입출고시 추가 메세지</span>
+        <Input onChange={onMessege} value={LogMessege} />   
       </div>
       {ProdItem &&
         <Table 

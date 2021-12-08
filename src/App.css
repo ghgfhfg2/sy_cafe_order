@@ -1428,9 +1428,11 @@ h3.title::before {
   color: #fff; }
 
 .inven-list-box {
-  display: flex; }
+  display: flex;
+  flex-wrap: wrap; }
 
 .inven-list-box li {
+  margin-bottom: 20px;
   padding: 0 10px;
   width: 33.33%; }
 
@@ -1462,6 +1464,7 @@ h3.title::before {
   font-size: 13px; }
 
 .inven-list-box li .list-con {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 13px 15px;
@@ -1508,6 +1511,10 @@ h3.title::before {
 
 .inven-list-box li .input-box .use {
   margin-left: 4px; }
+
+@media (max-width: 760px) {
+  .inven-list-box li {
+    width: 100%; } }
 
 .inven-log-list {
   max-height: 100px;
