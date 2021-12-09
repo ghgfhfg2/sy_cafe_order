@@ -3,6 +3,7 @@ import firebase, {wel} from "../../firebase";
 import { getFormatDate } from '../CommonFunc';
 import { Button,Popconfirm,message,InputNumber,Modal,Form,Input,DatePicker,Table } from 'antd'
 import * as bsIcon from "react-icons/bs";
+import * as antIcon from "react-icons/ai";
 import { useSelector } from "react-redux";
 import uuid from "react-uuid";
 import moment from 'moment';
@@ -100,6 +101,24 @@ function Inventory() {
         <span>{row['ea']}</span>
       </>
     },
+    {
+      title: '삭제',
+      dataIndex: ['ea','val','real_date','prod_uid','uid','key'],
+      key: 'ea',
+      align: 'center',  
+      width: 80,    
+      render: (text,row) => <>
+        <Popconfirm
+          title={`삭제하시겠습니까?`}
+          onConfirm={()=>onLogDelete(row['ea'],row['val'],row['real_date'],row['prod_uid'],row['uid'],row['key'])}
+          onCancel={cancel}
+          okText="네"
+          cancelText="아니오"
+        >
+          <Button onClick={()=>onLogDelete(row['ea'],row['val'],row['real_date'],row['prod_uid'],row['uid'],row['key'])}><antIcon.AiOutlineDelete style={{marginTop:"4px"}} /></Button>
+        </Popconfirm>
+      </>
+    },
   ]
 
   const [ProdItem, setProdItem] = useState();
@@ -121,6 +140,7 @@ function Inventory() {
         let obj = item.val();
         arr.push(obj)
       })     
+      console.log(arr)
       setProdItem(arr)
     })
     return () => {
@@ -157,6 +177,7 @@ function Inventory() {
     let date = values.real_date ? getFormatDate(new Date(values.real_date)) : getFormatDate(new Date());
     values.real_date = date;
     values.comment = values.comment ? values.comment : '';
+    const uid = uuid();
     let obj = {
       ...values,
       ea,
@@ -167,10 +188,11 @@ function Inventory() {
       part:userInfo.photoURL,
       sosok:userInfo.sosok,
       uid:userInfo.uid,
+      key:uid,
       date:getFormatDate(new Date()),
     }
 
-    db.ref(`inventory/log/${curDate}/${uuid()}`)
+    db.ref(`inventory/log/${curDate}/${uid}`)
     .update({...obj})
 
     db.ref(`inventory/list/${ModifyUid.uid}`)
@@ -206,7 +228,7 @@ function Inventory() {
     });
 
     db
-    .ref(`inventory/user/${monthDate}/${userInfo.uid}/${uuid()}`)
+    .ref(`inventory/user/${monthDate}/${userInfo.uid}/${uid}`)
     .update({
       ...obj
     })
@@ -216,6 +238,37 @@ function Inventory() {
     setIsModalVisible(false);
     setModifyUid("");
 
+  }
+
+
+  const onLogDelete = (ea,val,date,prod,uid,key) => {
+    console.log(ea,val,date.full,prod,uid,key)
+    let monthDate = date.full.substr(0,date.full.length-2)
+    db
+    .ref(`inventory/log_month/${monthDate}/${prod}/output`)
+    .transaction(pre=>{
+      return pre - parseInt(val);
+    }) 
+
+    db
+    .ref(`inventory/list/${prod}/ea`)
+    .transaction(pre=>{
+      return pre - parseInt(val);
+    }) 
+
+    db
+    .ref(`inventory/log_date/${prod}/${date.full}/ea`)
+    .transaction(pre=>{
+      return pre - parseInt(val);
+    })
+
+    db
+    .ref(`inventory/user/${monthDate}/${uid}/${key}`)
+    .remove()
+
+    db
+    .ref(`inventory/log/${date.full}/${key}`)
+    .remove()
   }
 
 
