@@ -20,7 +20,7 @@ function GuestHome(props) {
 
 
   const onParkingPop = () => {
-    window.open("http://suseong.iptime.org:8080/HpmsWeb/main.do")
+    window.open("http://suseong.iptime.org:8080/HpmsWeb")
   }
 
   const [VisitPop, setVisitPop] = useState(false)
