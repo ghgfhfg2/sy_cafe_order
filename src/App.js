@@ -58,6 +58,8 @@ function App(props) {
   let history = useHistory();
   let dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
+
+
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -118,7 +120,7 @@ function App(props) {
             <a href="/">
               <img className="top-logo" src={Logo_PC} alt="" />
               <img className="top-logo-m" src={Logo_PC} alt="" />
-            </a>
+            </a>            
           </Header>
           <Layout>
             <div className="content-box">

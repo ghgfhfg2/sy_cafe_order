@@ -169,6 +169,7 @@ h3.title {
   border-bottom: 1px solid #e1e1e1;
   align-items: center;
   justify-content: center;
+  position: relative;
   .top-logo-m{display: none;}
   @include mobile() {
     height: 80px;
@@ -178,6 +179,10 @@ h3.title {
       height: 53px;
     }
   }
+}
+.btn-guest-home{
+  position: absolute;
+  right: 15px;top:25px;
 }
 
 .ant-btn.sm{height: 28px;line-height: 28px;padding: 0 10px;}
@@ -878,24 +883,23 @@ h3.title {
 .guest-home{
   width: 100vw;height: 100vh;
   background: #fff;position: fixed;left: 0;top:0;z-index: 1000;
+  @include flex($d:column,$j:space-between);
   &::before{
     content: "";
     width:calc(100% - 30px);height: calc(100% - 30px);
-    border:2px solid $p-color;
     position: absolute;left: 15px;top:15px;
   }
-  .top-logo-m{position: absolute;
-    max-width: 180px;
-    width:40%;left: 50%;top:30px;transform: translate(-50%,10px);
+  .top-logo-m{
+    max-width: 180px;margin: 30px auto 30px auto;
   }
   .slide-wrapper{
     display: block;width: 100%;
-    position: absolute;top:50%;transform: translateY(-50%);margin-top: 10px;
+    margin-bottom: 20px;
   }
   .ant-carousel{
     .slick-list .slick-slide{
       .list{
-        height: 500px;
+        height: 400px;
         display: flex !important;
         flex-direction: column;
         justify-content: center;
@@ -905,7 +909,7 @@ h3.title {
           display: inline-block;
           overflow: hidden;
           img{
-            max-height: 400px;
+            max-height: 350px;
           }
         }
         .tit{
@@ -931,7 +935,35 @@ h3.title {
     font-size: 14px;
     &.bg{background-color: $p-color;color: #fff}
   }
+  .home-menu{
+    @include flex($a:center);
+    padding: 0 10px 30px 10px;
+    width:100%;
+    .menu{
+      font-size: 20px;font-weight:600;
+      color:#333;border-radius: 10px;
+      border:1px solid #ccc;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+      margin: 0 7px;
+      height:90px;
+      flex:1;
+      @include flex($a:center,$j:center);
+      .ic{font-size: 28px;position: relative;margin-right: 10px;}
+    }
+  }
 }
+.visit-pop{
+  z-index: 2000 !important;top:50% !important;
+  .type_box{
+    @include flex();
+    &.hide{display: none;}
+    .type{flex:1;margin:0 3px;height: 100px;border-radius: 10px;font-size: 16px;font-weight: 600;}
+  }
+  .step{
+    .ant-btn{margin:3px}
+  }
+}
+.parking-iframe{position: fixed;top:0 !important;left:0;width:100vw;top:100vh;z-index: 1000;border:none}
 
 .btn-init{border: none;background: none;padding: 0;cursor: pointer;font-size: 0;}
 //예약

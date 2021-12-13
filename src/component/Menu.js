@@ -32,7 +32,10 @@ function Menu() {
 
   const [GuestHomePop, setGuestHomePop] = useState(true);
   const guestPopClose = () => {
-    setGuestHomePop(!GuestHomePop)
+    setGuestHomePop(false)
+  }
+  const guestPopOn = () => {
+    setGuestHomePop(true)
   }
 
   const onTimeOut = () => {
@@ -342,6 +345,9 @@ function Menu() {
   if (ProdItem.length) {
     return (
       <> 
+        {userInfo && userInfo.auth && userInfo.auth.includes('guest') &&
+            <Button onClick={guestPopOn} type="primary" className="btn-guest-home"><antIcon.AiOutlineHome style={{position:"relative",top:"2px",marginRight:"5px"}} />홈화면</Button>
+        }
         {userInfo && userInfo.auth && userInfo.auth.includes('guest') && GuestHomePop &&
           <>
             <GuestHome prod={ProdItem} guestPopClose={guestPopClose} />
