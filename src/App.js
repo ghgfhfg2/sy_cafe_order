@@ -142,7 +142,7 @@ function App(props) {
           <Header className="header-box">
             <a href="/">
               <img className="top-logo" src={Logo_PC} alt="" />
-              <img className="top-logo-m" src={Logo} alt="" />
+              <img className="top-logo-m" src={Logo_PC} alt="" />
             </a>
           </Header>
           <Layout>
