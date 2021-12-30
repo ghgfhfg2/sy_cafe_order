@@ -37,6 +37,21 @@ export const getFormatDate = (date) => {
     return obj;  
 }
 
+
+export const curWeek = (date) => {
+    let curDate = new Date(date);
+    let day = curDate.getDay();
+    let last = 5 - day;
+    let firstDate = getFormatDate(new Date(curDate.setDate(curDate.getDate() - day + 1))).full;
+    curDate = new Date(date);
+    let lastDate = getFormatDate(new Date(curDate.setDate(curDate.getDate() + last))).full;
+    let dateObj = {
+        firstDate,
+        lastDate
+    }
+    return dateObj
+}
+
 export const getNotificationPermission = () => {
     // 브라우저 지원 여부 체크
     if (!("Notification" in window)) {

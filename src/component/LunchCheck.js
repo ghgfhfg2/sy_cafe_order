@@ -14,6 +14,9 @@ function LunchCheck() {
   const weekNum = curDate.weekNum;
   let date = new Date();
   let hour = date.getHours();
+  let min = date.getMinutes();
+  min = min < 10 ? '0'+min : min;
+  let limitTime = ''+hour+min;
   new Date(date.setDate(date.getDate() - weekNum + 7));
   let curWeekArr = [];
   let i = 0;
@@ -268,7 +271,7 @@ function LunchCheck() {
                 <>
                 {!el.confirm && 
                 <>
-                  <Button type="primary" disabled={!el.item ? true : hour < 9 ? false : true}  onClick={()=>{onTodayCheck(el.full)}}>
+                  <Button type="primary" disabled={!el.item ? true : limitTime < 930 ? false : true}  onClick={()=>{onTodayCheck(el.full)}}>
                     {el.item ? '식단확인' : '확인불가'}
                   </Button>
                 </>
@@ -286,7 +289,7 @@ function LunchCheck() {
                 ) : (
                   <Checkbox key={l_idx} data-value={list} disabled={
                     el.full > curDate.full ? 
-                    false : el.full == curDate.full && hour < 9 ? false : true
+                    false : el.full == curDate.full && limitTime < 930 ? false : true
                   } defaultChecked={el.item && el.item.includes(list) ? true : false}>{list}</Checkbox>
                 )}
               </>

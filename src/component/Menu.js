@@ -25,7 +25,7 @@ function Menu() {
 
   const [TimeOut, setTimeOut] = useState(false)
   const curSec = Math.floor(new Date().getTime()/1000);
-  const endSec = Math.floor(new Date(curDate.year,curDate.og_month,curDate.og_day,9).getTime()/1000);
+  const endSec = Math.floor(new Date(curDate.year,curDate.og_month,curDate.og_day,9,30).getTime()/1000);
   const calcSec = endSec - curSec;
   const restMin = Math.floor(calcSec/60);
   const restSec = calcSec%60;

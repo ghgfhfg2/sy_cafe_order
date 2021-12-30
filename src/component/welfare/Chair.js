@@ -4,13 +4,14 @@ import { useSelector } from "react-redux";
 import { Popover, Popconfirm, message, Button, DatePicker, Statistic } from 'antd';
 import * as antIcon from "react-icons/ai";
 import * as imIcon from "react-icons/im";
-import { getFormatDate } from '../CommonFunc';
+import { getFormatDate, curWeek } from '../CommonFunc';
 import moment from 'moment';
 import { constant } from 'lodash';
 import axios from 'axios'
 const { Countdown } = Statistic;
 
 function Chair() {
+  const todayDate = getFormatDate(new Date())
   const userInfo = useSelector((state) => state.user.currentUser);
   const welDb = firebase.database(wel);
   const [CurDate, setCurDate] = useState(getFormatDate(new Date()))
@@ -71,8 +72,24 @@ function Chair() {
   
   const [SearchDate, setSearchDate] = useState(CurDate)
 
-  const [MyReservation, setMyReservation] = useState()
+  const [MyReservation, setMyReservation] = useState();
+  const [ThisWeekRserv, setThisWeekRserv] = useState();
+
   useEffect(() => {
+    //이번주 예약횟수
+    let curWeekSel = [];
+    let weekObj = curWeek(SearchDate.full_); //todayDate.timestamp
+    welDb.ref(`chair/user/${userInfo.uid}/list`)
+    .orderByKey()
+    .startAt(weekObj.firstDate)
+    .endAt(weekObj.lastDate)
+    .on('value',data => {
+      data.forEach(el=>{
+        curWeekSel.push(el.val());
+      })
+      setThisWeekRserv(curWeekSel.length)
+    })
+
     //시간설정
     welDb.ref('chair/time_set')
     .once('value', data => {
@@ -143,8 +160,14 @@ function Chair() {
 
 
   const reservation = (num,time,chair) => {
+    
+    if(ThisWeekRserv >= 3){
+      message.error('예약은 일주일에 3번까지 가능합니다.');        
+      return;
+    }
     const type = chair === 1 ? '남' : chair === 2 ? '여' : '공용';    
     const dateTime = time.full + String(time.hour) + String(time.min)
+    
     let room = 'room'+chair;
     const user = {
       name: userInfo.displayName,
@@ -183,7 +206,9 @@ function Chair() {
               return pre;
             });
 
-            
+            message.success('예약 되었습니다.');
+
+            /* 카톡알림
             axios.post('https://metree.co.kr/_sys/_xml/chair_api_add.php',{
               name:userInfo.displayName,
               call:userInfo.call_number,
@@ -195,7 +220,8 @@ function Chair() {
             })
             .catch(error => {
               console.log(error) 
-            });           
+            });
+            */           
 
       }
     })
@@ -300,7 +326,10 @@ function Chair() {
       }
       {ListData &&
         <>
-          <h3 className="title" style={{marginTop:"25px"}}>예약하기</h3>
+          <div className="flex-box" style={{alignItems:"baseline",marginBottom:"10px"}}>
+            <h3 className="title" style={{marginTop:"25px",marginRight:"7px"}}>예약하기</h3>
+            <span>- 이번주<span style={{fontSize:"12px"}}>(선택날짜기준)</span> <span style={{fontWeight:"bold"}}>{ThisWeekRserv}회</span> 이용 하셨습니다.</span>
+          </div>
           <ul className="flex-box reserv-info">
             <li>
               <imIcon.ImMan /> 남자전용
