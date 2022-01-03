@@ -163,8 +163,8 @@ function Chair() {
 
   const reservation = (num,time,chair) => {
     let now = getFormatDate(new Date());
-    if(now.hour < 10){
-      message.error('예약은 10시부터 가능합니다.');        
+    if(now.hour < 9){
+      message.error('예약은 9시부터 가능합니다.');        
       return;
     }
     
