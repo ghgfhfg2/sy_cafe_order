@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Popover, Popconfirm, message, Button, DatePicker, Statistic } from 'antd';
 import * as antIcon from "react-icons/ai";
 import * as imIcon from "react-icons/im";
+import * as giIcon from "react-icons/gi";
 import { getFormatDate, curWeek } from '../CommonFunc';
 import moment from 'moment';
 import { constant } from 'lodash';
@@ -104,7 +105,8 @@ function Chair() {
           for(let i in el.val()){
             if(el.val()[i].reserve_time > Date.now()){
               let room = el.val()[i].room === 'room1' ? <imIcon.ImMan /> :
-                         el.val()[i].room === 'room2' ? <imIcon.ImWoman /> : <imIcon.ImManWoman />
+                         el.val()[i].room === 'room2' ? <imIcon.ImWoman /> : 
+                         el.val()[i].room === 'room3' ? <imIcon.ImManWoman /> : <giIcon.GiLeg />
               let obj = {
                 date: getFormatDate(new Date(el.val()[i].reserve_time)),
                 timestamp: el.val()[i].timestamp,
@@ -123,7 +125,7 @@ function Chair() {
       let arr = [];
       welDb.ref(`chair/list/${SearchDate.full}`)
       .on('value', data => {
-        let timeArr = timeTable(interval,3,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
+        let timeArr = timeTable(interval,4,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
         let arr2 = JSON.parse(JSON.stringify(timeArr));
         data.forEach(el=>{
           arr.push(el.val())
@@ -160,12 +162,17 @@ function Chair() {
 
 
   const reservation = (num,time,chair) => {
+    let now = getFormatDate(new Date());
+    if(now.hour < 10){
+      message.error('예약은 10시부터 가능합니다.');        
+      return;
+    }
     
     if(ThisWeekRserv >= 3){
       message.error('예약은 일주일에 3번까지 가능합니다.');        
       return;
     }
-    const type = chair === 1 ? '남' : chair === 2 ? '여' : '공용';    
+    const type = chair === 1 ? '남' : chair === 2 ? '여' : chair === 3 ? '공용(세라젬)' :'공용(발마사지)';    
     const dateTime = time.full + String(time.hour) + String(time.min)
     
     let room = 'room'+chair;
@@ -332,13 +339,16 @@ function Chair() {
           </div>
           <ul className="flex-box reserv-info">
             <li>
-              <imIcon.ImMan /> 남자전용
+              <imIcon.ImMan /> 남자전용(바디프렌드)
             </li>
             <li>
-              <imIcon.ImWoman /> 여자전용
+              <imIcon.ImWoman /> 여자전용(바디프렌드)
             </li>
             <li>
-              <imIcon.ImManWoman /> 남여공용
+              <imIcon.ImManWoman /> 남여공용(세라젬)
+            </li>
+            <li>
+              <giIcon.GiLeg /> 남여공용(발마사지)
             </li>
             <li>
               <antIcon.AiOutlineBell className="info-ic-reserv" /> 예약중
@@ -370,7 +380,7 @@ function Chair() {
                       title={
                         list.room_num === 1 ? `남자방에 예약하시겠습니까?` :
                         list.room_num === 2 ? `여자방에 예약하시겠습니까?` :
-                        `공용방에 예약하시겠습니까?`
+                        list.room_num === 3 ? `공용방(세라젬)에 예약하시겠습니까?` : `발마사지를 예약하시겠습니까?`
                       }
                       disabled={el.time.timestamp < CurDate.timestamp || list.check ? true : false}
                       onConfirm={()=>{reservation(el.timeNum,el.time,list.room_num)}}
@@ -395,7 +405,9 @@ function Chair() {
                                 <imIcon.ImMan /> :
                                 list.room_num === 2 ?
                                 <imIcon.ImWoman /> :
-                                <imIcon.ImManWoman />
+                                list.room_num === 3 ?
+                                <imIcon.ImManWoman /> :
+                                <giIcon.GiLeg />
                               }
                             </>
                           )
