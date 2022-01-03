@@ -125,7 +125,7 @@ function Chair() {
       let arr = [];
       welDb.ref(`chair/list/${SearchDate.full}`)
       .on('value', data => {
-        let timeArr = timeTable(interval,4,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
+        let timeArr = timeTable(interval,3,startTime[0],startTime[1],endTime[0],endTime[1]); //시간표 생성
         let arr2 = JSON.parse(JSON.stringify(timeArr));
         data.forEach(el=>{
           arr.push(el.val())
@@ -347,9 +347,9 @@ function Chair() {
             <li>
               <imIcon.ImManWoman /> 남여공용(세라젬)
             </li>
-            <li>
+            {/* <li>
               <giIcon.GiLeg /> 남여공용(발마사지)
-            </li>
+            </li> */}
             <li>
               <antIcon.AiOutlineBell className="info-ic-reserv" /> 예약중
             </li>
