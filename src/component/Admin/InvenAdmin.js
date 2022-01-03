@@ -81,7 +81,10 @@ function InvenAdmin() {
       snapshot.forEach(item=>{
         let obj = item.val();
         arr.push(obj)
-      })     
+      }) 
+      arr.sort((a,b)=>{
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      })
       setProdItem(arr)
     })
     
@@ -410,6 +413,10 @@ function InvenAdmin() {
       key: 'name',
       align: 'center',  
       width: 200,    
+      sorter: {
+        compare: (a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
+        defaultSortOrder: 'ascend',
+      },
       render: data => data
     },
     {

@@ -130,6 +130,9 @@ function Inventory() {
       snapshot.forEach(el => {
         arr.push(el.val())
       })
+      arr.sort((a,b)=>{
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      })
       setInvenData(arr)
     })
 
@@ -139,8 +142,7 @@ function Inventory() {
       snapshot.forEach(item=>{
         let obj = item.val();
         arr.push(obj)
-      })     
-      console.log(arr)
+      })           
       setProdItem(arr)
     })
     return () => {
