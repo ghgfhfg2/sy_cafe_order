@@ -348,9 +348,9 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
               />
             </div>
             <Checkbox.Group onChange={onChange}>
-              <Checkbox value="버블" style={{ lineHeight: "32px" }}>
+              {/* <Checkbox value="버블" style={{ lineHeight: "32px" }}>
                 버블
-              </Checkbox>
+              </Checkbox> */}
               <Checkbox value="샷" style={{ lineHeight: "32px" }}>
                 샷
               </Checkbox>

@@ -530,9 +530,9 @@ function AdminProd() {
           <Form.Item name="add" label="추가">
             <Checkbox.Group>
               <Row>
-                <Checkbox value="버블" style={{ lineHeight: "32px" }}>
+                {/* <Checkbox value="버블" style={{ lineHeight: "32px" }}>
                   버블
-                </Checkbox>
+                </Checkbox> */}
                 <Checkbox value="샷" style={{ lineHeight: "32px" }}>
                   샷
                 </Checkbox>
@@ -559,7 +559,7 @@ function AdminProd() {
           </Form.Item>
 
           <div className="ant-row ant-form-item soldout-switch">
-            <div className="ant-col ant-form-item-label">
+            {/* <div className="ant-col ant-form-item-label">
               <label htmlFor="price">버블품절</label>
             </div>
             <div className="ant-col ant-form-item-control">
@@ -586,35 +586,7 @@ function AdminProd() {
                   )}
                 </div>
               </div>
-            </div>
-            <div className="ant-col ant-form-item-label">
-              <label htmlFor="price">무지방 품절</label>
-            </div>
-            <div className="ant-col ant-form-item-control">
-              <div className="ant-form-item-control-input">
-                <div className="ant-form-item-control-input-content">
-                  {MilkSoldout === true && (
-                    <>
-                      <Switch
-                        onChange={MilkSoldoutToggle}
-                        checkedChildren="판매"
-                        unCheckedChildren="품절"
-                        defaultChecked
-                      />
-                    </>
-                  )}
-                  {MilkSoldout === false && (
-                    <>
-                      <Switch
-                        onChange={MilkSoldoutToggle}
-                        checkedChildren="판매"
-                        unCheckedChildren="품절"
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
+            </div> */}            
             <div className="ant-col ant-form-item-label">
               <label htmlFor="price">락토프리 품절</label>
             </div>
@@ -635,6 +607,34 @@ function AdminProd() {
                     <>
                       <Switch
                         onChange={MilkSoldoutToggle2}
+                        checkedChildren="판매"
+                        unCheckedChildren="품절"
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="ant-col ant-form-item-label">
+              <label htmlFor="price">저지방 품절</label>
+            </div>
+            <div className="ant-col ant-form-item-control">
+              <div className="ant-form-item-control-input">
+                <div className="ant-form-item-control-input-content">
+                  {MilkSoldout === true && (
+                    <>
+                      <Switch
+                        onChange={MilkSoldoutToggle}
+                        checkedChildren="판매"
+                        unCheckedChildren="품절"
+                        defaultChecked
+                      />
+                    </>
+                  )}
+                  {MilkSoldout === false && (
+                    <>
+                      <Switch
+                        onChange={MilkSoldoutToggle}
                         checkedChildren="판매"
                         unCheckedChildren="품절"
                       />

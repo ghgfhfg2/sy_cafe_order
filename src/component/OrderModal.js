@@ -383,17 +383,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
             {OrderItem.milk &&
             <div className="flex-box a-center">
               <span className="tit"></span>
-                    <input
-                    type="radio"
-                    name="milk"
-                    id="basic"
-                    value="저지방"
-                    defaultChecked
-                    onChange={radioChange2}
-                    />
-                    <label htmlFor="basic">
-                    저지방
-                    </label>
+                    
               {/* {OrderItem.m_soldout && (
                   <>
                   <input
@@ -415,6 +405,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                     id="free"
                     name="milk"
                     value="락토프리"
+                    defaultChecked
                     onChange={radioChange2}
                   />
                   <label htmlFor="free">
@@ -422,6 +413,16 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                   </label>
                 </>
               )}
+              <input
+                type="radio"
+                name="milk"
+                id="basic"
+                value="저지방"                
+                onChange={radioChange2}
+                />
+                <label htmlFor="basic">
+                저지방
+              </label>
             </div>
             }
           {OrderItem.add && (
@@ -434,7 +435,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                   className="order-check-box"
                   style={{ flexDirection: "column" }}
                 >
-                  <Checkbox.Group style={{ width: "100%" }} onChange={onChange}>
+                  {/* <Checkbox.Group style={{ width: "100%" }} onChange={onChange}>
                     {OrderItem.b_soldout && OrderItem.add.includes("버블") && (
                       <>
                         <Checkbox value="버블">버블</Checkbox>
@@ -447,7 +448,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                         </Checkbox>
                       </>
                     )}
-                  </Checkbox.Group>
+                  </Checkbox.Group> */}
                   {OrderItem.add.includes("샷") && (
                     <>
                       <div
