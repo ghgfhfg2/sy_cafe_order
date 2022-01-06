@@ -367,7 +367,10 @@ function Chair() {
         <>
           <div className="flex-box" style={{alignItems:"baseline",marginBottom:"10px"}}>
             <h3 className="title" style={{marginTop:"25px",marginRight:"7px"}}>예약하기</h3>
-            <span>- 이번주<span style={{fontSize:"12px"}}>(선택날짜기준)</span> <span style={{fontWeight:"bold"}}>{ThisWeekRserv+ThisWeekPenalty}회</span> 이용 하셨습니다.(취소 패널티 : {ThisWeekPenalty}회)</span>
+            <span>- 이번주<span style={{fontSize:"12px"}}>(선택날짜기준)</span> <span style={{fontWeight:"bold"}}>{ThisWeekRserv+ThisWeekPenalty}회</span> 이용 하셨습니다.</span>
+            {ThisWeekPenalty > 0 &&
+              <span>(취소 패널티 : {ThisWeekPenalty}회)</span>
+            }
           </div>
           <ul className="flex-box reserv-info">
             <li>
