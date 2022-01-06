@@ -75,6 +75,7 @@ function Chair() {
 
   const [MyReservation, setMyReservation] = useState();
   const [ThisWeekRserv, setThisWeekRserv] = useState();
+  const [ThisWeekPenalty, setThisWeekPenalty] = useState();
 
   useEffect(() => {
     //이번주 예약횟수
@@ -89,6 +90,18 @@ function Chair() {
         curWeekSel.push(el.val());
       })
       setThisWeekRserv(curWeekSel.length)
+    })
+
+    let penaltyCount = 0;
+    welDb.ref(`chair/user/${userInfo.uid}/penalty`)
+    .orderByKey()
+    .startAt(weekObj.firstDate)
+    .endAt(weekObj.lastDate)
+    .on('value',data => {
+      data.forEach(el=>{
+        penaltyCount += el.val()
+      })
+      setThisWeekPenalty(penaltyCount)
     })
 
     //시간설정
@@ -163,12 +176,13 @@ function Chair() {
 
   const reservation = (num,time,chair) => {
     let now = getFormatDate(new Date());
+    
     if(now.hour < 9){
       message.error('예약은 9시부터 가능합니다.');        
       return;
     }
     
-    if(ThisWeekRserv >= 3){
+    if(ThisWeekRserv+ThisWeekPenalty >= 3){
       message.error('예약은 일주일에 3번까지 가능합니다.');        
       return;
     }
@@ -234,7 +248,18 @@ function Chair() {
     })
   }
 
-  const onCancel = (date,num,room) => {     
+  const onCancel = (date,num,room) => {   
+      let limitHour = 2;
+      let nowDate = new Date();
+      let nowHour = nowDate.getHours();
+      let nowMin = nowDate.getMinutes();
+      let nowCalcMin = nowHour*60 + nowMin*1;
+      let reservCalcMin = date.hour*60 + date.min*1;
+      let penalty;
+      if(reservCalcMin - nowCalcMin < 120){
+        penalty = window.confirm(`예약시간 ${limitHour}시간 이내에 취소시 이용횟수 차감이 되지않습니다.\n취소 하시겠습니까?`)
+      }
+
       const dateTime = date.full + String(date.hour) + String(date.min)
       welDb.ref(`chair/list/${date.full}/${num}/${room}`).remove();
       welDb.ref(`chair/user/${userInfo.uid}/list/${date.full}/${num}`).remove();
@@ -243,6 +268,13 @@ function Chair() {
         pre--
         return pre;
       });
+      if(penalty){
+        welDb.ref(`chair/user/${userInfo.uid}/penalty/${date.full}`)
+        .transaction((pre) => {
+          pre++
+          return pre;
+        });
+      }
       
       
       axios.post('https://metree.co.kr/_sys/_xml/chair_api_del.php',{
@@ -285,7 +317,7 @@ function Chair() {
         <DatePicker 
           format="YYYY-MM-DD"
           defaultValue={moment()}
-          disabledDate={disabledDate}
+          //disabledDate={disabledDate}
           style={{marginBottom:"10px"}}
           onChange={onSelectDate} 
         />
@@ -335,7 +367,7 @@ function Chair() {
         <>
           <div className="flex-box" style={{alignItems:"baseline",marginBottom:"10px"}}>
             <h3 className="title" style={{marginTop:"25px",marginRight:"7px"}}>예약하기</h3>
-            <span>- 이번주<span style={{fontSize:"12px"}}>(선택날짜기준)</span> <span style={{fontWeight:"bold"}}>{ThisWeekRserv}회</span> 이용 하셨습니다.</span>
+            <span>- 이번주<span style={{fontSize:"12px"}}>(선택날짜기준)</span> <span style={{fontWeight:"bold"}}>{ThisWeekRserv+ThisWeekPenalty}회</span> 이용 하셨습니다.(취소 패널티 : {ThisWeekPenalty}회)</span>
           </div>
           <ul className="flex-box reserv-info">
             <li>
