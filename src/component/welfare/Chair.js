@@ -256,27 +256,32 @@ function Chair() {
       let nowCalcMin = nowHour*60 + nowMin*1;
       let reservCalcMin = date.hour*60 + date.min*1;
       let penalty;
+      const dateTime = date.full + String(date.hour) + String(date.min)
       if(reservCalcMin - nowCalcMin < 120){
         penalty = window.confirm(`예약시간 ${limitHour}시간 이내에 취소시 이용횟수 차감이 되지않습니다.\n취소 하시겠습니까?`)
+        if(penalty){
+          rervCancel();
+          welDb.ref(`chair/user/${userInfo.uid}/penalty/${date.full}`)
+          .transaction((pre) => {
+            pre++
+            return pre;
+          });
+        }else{
+          return;
+        }
+      }else{
+        rervCancel();
       }
-
-      const dateTime = date.full + String(date.hour) + String(date.min)
-      welDb.ref(`chair/list/${date.full}/${num}/${room}`).remove();
-      welDb.ref(`chair/user/${userInfo.uid}/list/${date.full}/${num}`).remove();
-      welDb.ref(`chair/user/${userInfo.uid}/count`)
-      .transaction((pre) => {
-        pre--
-        return pre;
-      });
-      if(penalty){
-        welDb.ref(`chair/user/${userInfo.uid}/penalty/${date.full}`)
+      function rervCancel() {        
+        welDb.ref(`chair/list/${date.full}/${num}/${room}`).remove();
+        welDb.ref(`chair/user/${userInfo.uid}/list/${date.full}/${num}`).remove();
+        welDb.ref(`chair/user/${userInfo.uid}/count`)
         .transaction((pre) => {
-          pre++
+          pre--
           return pre;
         });
       }
-      
-      
+
       axios.post('https://metree.co.kr/_sys/_xml/chair_api_del.php',{
           name:userInfo.displayName,
           call:userInfo.call_number,
@@ -288,8 +293,6 @@ function Chair() {
         .catch(error => {
           console.log(error) 
         });
-        
-        
 
       setRerender(!Rerender)
   }
@@ -317,7 +320,7 @@ function Chair() {
         <DatePicker 
           format="YYYY-MM-DD"
           defaultValue={moment()}
-          disabledDate={disabledDate}
+          //disabledDate={disabledDate}
           style={{marginBottom:"10px"}}
           onChange={onSelectDate} 
         />
