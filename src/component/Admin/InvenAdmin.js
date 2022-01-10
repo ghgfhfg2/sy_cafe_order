@@ -50,6 +50,13 @@ function InvenAdmin() {
     setSearchMonth(month)
   } 
 
+  const excelList = [    
+    {label: "품명", key:"name"},
+    {label: "재고", key:"ea"},
+    {label: "장소", key:"place"},
+    {label: "비고", key:"etc"}
+  ]
+
 
   const excelHeaders = [
     {label: "등록일자", key:"date_"},
@@ -861,6 +868,18 @@ function InvenAdmin() {
       </div>
       <div className="flex-box a-center" style={{marginBottom:"10px"}}>
         <h3 className="title" style={{marginBottom:"0",marginRight:"10px"}}>비품 리스트</h3>
+        {ProdItem &&
+        <Button style={{marginRight:"5px"}}>
+          <CSVLink 
+            headers={excelList} 
+            data={ProdItem} 
+            filename={`metree-expendables-list-${EaDate}.csv`} 
+            target="_blank"
+          >
+            <antIcon.AiOutlineFileExcel style={{position:"relative",top:"3px",fontSize:"17px",marginRight:"3px"}} />엑셀 다운로드
+          </CSVLink>
+        </Button>
+        }
         <DatePicker defaultValue={moment(DateStart,'YYYY-MM-DD')} onChange={onSubmitDate} style={{marginRight:"5px"}} />
         <span style={{fontSize:"12px",color:"#888"}}>*실 입출고시간이 있는경우 선택</span>
       </div>
