@@ -4,6 +4,7 @@ import { getFormatDate } from '../CommonFunc';
 import { Button,Popconfirm,message,InputNumber,Modal,Form,Input,DatePicker,Table } from 'antd'
 import * as bsIcon from "react-icons/bs";
 import * as antIcon from "react-icons/ai";
+import * as goIcon from "react-icons/go";
 import { useSelector } from "react-redux";
 import uuid from "react-uuid";
 import moment from 'moment';
@@ -283,11 +284,17 @@ function Inventory() {
             <div className="list-con">
               <div className="left">
                 {el.image ? <div className="img-box"><img src={el.image} /></div>
-                  : <div className="img-box no-img"><bsIcon.BsImage /></div>
+                  : <div className="img-box no-img"><bsIcon.BsImage style={{opacity:"0.4"}} /></div>
                 }
                 <dl className="txt-box">
-                  <dt>{el.name}</dt>
-                  <dd>{el.etc}</dd>
+                  <dt style={{marginBottom:"2px"}}>{el.name}</dt>
+                  <dd style={{color:"#555",fontSize:"13px"}}><goIcon.GoLocation style={{fontSize:"14px",position:"relative",top:"2px",marginRight:"3px"}} />{el.place}</dd>
+                  <dd style={{color:"#555",fontSize:"13px"}}>
+                    {el.etc &&
+                    <antIcon.AiOutlineInfoCircle style={{fontSize:"15px",position:"relative",top:"3px",marginRight:"3px"}} />
+                    }
+                    {el.etc}
+                  </dd>
                 </dl>
               </div>
               <div className="right">
