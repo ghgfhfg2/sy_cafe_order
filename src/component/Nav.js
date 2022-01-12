@@ -341,7 +341,7 @@ function Nav() {
               </Link>
             </Menu.Item>
             }
-            {(currentUser?.auth && currentUser.auth.includes('insa') ||currentUser?.auth && currentUser.role > 2) &&
+            {(currentUser && currentUser.role >= 0) &&
             <Menu.Item key="17">
               <Link to="/inventory">
                 <mdIcon.MdOutlineInventory />
