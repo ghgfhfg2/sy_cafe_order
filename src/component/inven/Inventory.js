@@ -8,6 +8,8 @@ import * as goIcon from "react-icons/go";
 import { useSelector } from "react-redux";
 import uuid from "react-uuid";
 import moment from 'moment';
+const { Search } = Input;
+const _ = require("lodash");
 
 function Inventory() {
   const nowDate = getFormatDate(new Date());
@@ -16,6 +18,7 @@ function Inventory() {
   const db = firebase.database(wel);
   const userInfo = useSelector((state) => state.user.currentUser);
   const [InvenData, setInvenData] = useState();
+  const [ProdItemCopy, setProdItemCopy] = useState();
   const formRef = useRef();
 
   const [SearchMonth, setSearchMonth] = useState(curMonth);
@@ -24,6 +27,32 @@ function Inventory() {
     let month = dateString.replace(regex,"")
     setSearchMonth(month)
   } 
+
+   //키워드 검색
+   const [searchInput, setSearchInput] = useState("");
+   const [SearchAgain, setSearchAgain] = useState(false)
+   const onSearchChange = (e) => {
+     setSearchInput(e.target.value);
+   };
+   const onSearch = () => {
+    setSearchAgain(!SearchAgain);
+   };
+
+   useEffect(() => {
+    if (ProdItemCopy) {
+      let regexstring = searchInput;
+      let regexp = new RegExp(regexstring, "gi");
+      let array = _.cloneDeep(ProdItemCopy);
+      if(searchInput != ''){
+        array = array.filter(el=>{
+          return el.name.match(regexp)
+        })
+      }
+      setInvenData(array);
+    }
+  }, [SearchAgain])
+
+ 
 
   const columns = [
     {
@@ -152,7 +181,8 @@ function Inventory() {
       arr.sort((a,b)=>{
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
       })      
-      setInvenData(arr)
+      setInvenData(arr);
+      setProdItemCopy(arr);
     })
 
     db.ref(`inventory/user/${SearchMonth}/${userInfo.uid}`)
@@ -296,7 +326,7 @@ function Inventory() {
   return (
     <>
       {Category && 
-      <div className="menuCategory" style={{marginBottom:"20px"}}>
+      <div className="menuCategory">
         <Radio.Group
           className="menuCategory"
           onChange={itemSort}
@@ -313,6 +343,17 @@ function Inventory() {
         </Radio.Group>
       </div>
       }
+      <Search
+        style={{ marginBottom: "20px" }}
+        allowClear
+        enterButton="검색"
+        size="large"
+        placeholder="품명으로 검색"
+        value={searchInput}
+        onSearch={onSearch}
+        onChange={onSearchChange}
+        type="text"
+      />
       {InvenData && 
       <ul className="inven-list-box">
         {InvenData.map((el,idx)=>(
