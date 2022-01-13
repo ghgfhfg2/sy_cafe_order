@@ -133,7 +133,9 @@ function Inventory() {
   useEffect(() => { 
     db.ref("inventory/category")
     .once("value", snapshot => {
-      setCategory(snapshot.val().split(','))
+      if(snapshot.val()){
+        setCategory(snapshot.val().split(','))
+      }
     })
 
     db.ref('inventory/list')

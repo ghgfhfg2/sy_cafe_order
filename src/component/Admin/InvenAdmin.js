@@ -92,17 +92,20 @@ function InvenAdmin() {
     .update({
       category:Category
     })
+    message.success('품목이 업데이트 되었습니다.')
   }
   useEffect(() => {
     db.ref("inventory/category")
     .on("value", snapshot => {
       let obj = {};
-      obj = {
-        txt:snapshot.val(),
-        arr: snapshot.val().split(',')
+      if(snapshot.val()){
+        obj = {
+          txt:snapshot.val(),
+          arr: snapshot.val().split(',')
+        }
+        setCateList(obj.arr)
+        setCategory(obj.txt)
       }
-      setCateList(obj.arr)
-      setCategory(obj.txt)
     })
 
     db.ref("inventory/list")
@@ -820,7 +823,7 @@ function InvenAdmin() {
           품목등록
         </h3>
         <Input onChange={onCateInput} value={Category} />      
-        <Button onClick={onCateInit}>등록</Button>
+        <Button type="primary" style={{marginLeft:"5px"}} onClick={onCateInit}>등록</Button>
       </div>
       <div className="flex-box a-center" style={{ marginBottom: "10px" }}>
         <h3 className="title" style={{ margin: "0 10px 0 0" }}>
