@@ -1,7 +1,7 @@
 import React,{ useState, useEffect, useRef } from 'react';
 import firebase, {wel} from "../../firebase";
 import { getFormatDate } from '../CommonFunc';
-import { Button,Popconfirm,message,InputNumber,Modal,Form,Input,DatePicker,Table } from 'antd'
+import { Button,Radio,Popconfirm,message,InputNumber,Modal,Form,Input,DatePicker,Table } from 'antd'
 import * as bsIcon from "react-icons/bs";
 import * as antIcon from "react-icons/ai";
 import * as goIcon from "react-icons/go";
@@ -123,17 +123,33 @@ function Inventory() {
   ]
 
   const [ProdItem, setProdItem] = useState();
+  const [Category, setCategory] = useState();
+  const [SortCate, setSortCate] = useState('all');
 
-  useEffect(() => {    
+  const itemSort = (e) => {
+    setSortCate(e.target.value);
+  }
+
+  useEffect(() => { 
+    db.ref("inventory/category")
+    .once("value", snapshot => {
+      setCategory(snapshot.val().split(','))
+    })
+
     db.ref('inventory/list')
     .on('value',snapshot => {
       let arr = [];
       snapshot.forEach(el => {
         arr.push(el.val())
       })
+      if(SortCate != 'all'){
+        arr = arr.filter(el=>{
+          return el.category === SortCate;
+        })
+      }
       arr.sort((a,b)=>{
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-      })
+      })      
       setInvenData(arr)
     })
 
@@ -149,7 +165,7 @@ function Inventory() {
     return () => {
       db.ref('inventory/list').off()
     }
-  }, [])
+  }, [SortCate])
 
   const cancel = function cancel(e) {
     message.error('취소되었습니다.');
@@ -277,6 +293,24 @@ function Inventory() {
 
   return (
     <>
+      {Category && 
+      <div className="menuCategory" style={{marginBottom:"20px"}}>
+        <Radio.Group
+          className="menuCategory"
+          onChange={itemSort}
+          defaultValue="all"
+          value={SortCate}
+          buttonStyle="solid"
+        > 
+          <Radio.Button value={'all'}>{`전체`}</Radio.Button>
+          {Category.map(el=>(
+            <>
+              <Radio.Button value={el}>{el}</Radio.Button>
+            </>
+          ))}
+        </Radio.Group>
+      </div>
+      }
       {InvenData && 
       <ul className="inven-list-box">
         {InvenData.map((el,idx)=>(

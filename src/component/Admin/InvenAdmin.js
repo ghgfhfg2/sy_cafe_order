@@ -80,8 +80,31 @@ function InvenAdmin() {
   ]
   
   const [ModifyUid, setModifyUid] = useState("");
-  const [ModifyData, setModifyData] = useState()
+  const [ModifyData, setModifyData] = useState();
+
+  const [Category, setCategory] = useState();  
+  const [CateList, setCateList] = useState();
+  const onCateInput = (e) => {
+    setCategory(e.target.value)
+  }
+  const onCateInit = () => {
+    db.ref("inventory")
+    .update({
+      category:Category
+    })
+  }
   useEffect(() => {
+    db.ref("inventory/category")
+    .on("value", snapshot => {
+      let obj = {};
+      obj = {
+        txt:snapshot.val(),
+        arr: snapshot.val().split(',')
+      }
+      setCateList(obj.arr)
+      setCategory(obj.txt)
+    })
+
     db.ref("inventory/list")
     .on("value", snapshot => {
       let arr = [];
@@ -427,6 +450,14 @@ function InvenAdmin() {
       render: data => data
     },
     {
+      title: '품목',
+      dataIndex: 'category',
+      key: 'category',
+      align: 'center',  
+      width: 100,          
+      render: data => data
+    },
+    {
       title: '재고',
       dataIndex: 'ea',
       key: 'ea',
@@ -455,10 +486,12 @@ function InvenAdmin() {
       key: 'uid',
       align: 'center',      
       render: (text,row) => <>
-        <InputNumber id={`plus_${row['uid']}`} min={1} max={999} style={{width:"50px"}} />
-        <Button style={{marginRight:"5px",marginLeft:"-1px"}} onClick={()=>onPlus(row['uid'],row['name'],row['ea'])}>입고</Button>
-        <InputNumber id={`minus_${row['uid']}`} min={1} max={999} style={{width:"50px"}} />
-        <Button style={{marginRight:"5px",marginLeft:"-1px"}} onClick={()=>onMinus(row['uid'],row['name'],row['ea'])}>출고</Button>
+        <div style={{marginBottom:"5px"}}>
+          <InputNumber id={`plus_${row['uid']}`} min={1} max={999} style={{width:"50px"}} />
+          <Button style={{marginRight:"5px",marginLeft:"-1px"}} onClick={()=>onPlus(row['uid'],row['name'],row['ea'])}>입고</Button>
+          <InputNumber id={`minus_${row['uid']}`} min={1} max={999} style={{width:"50px"}} />
+          <Button style={{marginRight:"5px",marginLeft:"-1px"}} onClick={()=>onMinus(row['uid'],row['name'],row['ea'])}>출고</Button>
+        </div>
         <Button onClick={()=>onModify(row['uid'])}>내용수정</Button>
         <Button style={{marginLeft:"5px"}} onClick={()=>onLogList(row['uid'],row['name'],row['ea'])}>내역</Button>
         <Popconfirm
@@ -641,7 +674,7 @@ function InvenAdmin() {
     return e && e.fileList;
   };
 
-  const onSubmitProd = async (values) => {
+  const onSubmitProd = async (values) => {    
     values.etc = values.etc ? values.etc : '';
     values.upload = values.upload ? values.upload : ''
     let upload = '';
@@ -778,8 +811,17 @@ function InvenAdmin() {
     setLogMessege(e.target.value)
   }
 
+  
+
   return (
     <>
+      <div className="flex-box a-center" style={{ marginBottom: "10px" }}>
+        <h3 className="title" style={{ margin: "0 10px 0 0",flexShrink:"0" }}>
+          품목등록
+        </h3>
+        <Input onChange={onCateInput} value={Category} />      
+        <Button onClick={onCateInit}>등록</Button>
+      </div>
       <div className="flex-box a-center" style={{ marginBottom: "10px" }}>
         <h3 className="title" style={{ margin: "0 10px 0 0" }}>
           비품등록
@@ -840,6 +882,26 @@ function InvenAdmin() {
             ]}
           >
             <Input className="sm-input" />
+          </Form.Item>
+          <Form.Item 
+            label="품목" 
+            name="category"
+            rules={[
+              {
+                required: true,
+                message: "품목을 입력해 주세요",
+              }
+            ]}
+          >
+            <Radio.Group>
+              {
+                CateList && CateList.map(el=>(
+                  <>
+                    <Radio.Button value={el}>{el}</Radio.Button>
+                  </>
+                ))
+              }
+            </Radio.Group>
           </Form.Item>
           <Form.Item
             name="etc"
@@ -905,6 +967,7 @@ function InvenAdmin() {
             onFinish={onModifySubmit}
             initialValues={{
               'name': ModifyData.name,
+              'category': ModifyData.category,
               'ea': ModifyData.ea,
               'etc': ModifyData.etc
             }}
@@ -921,7 +984,27 @@ function InvenAdmin() {
             ]}
           >
             <Input />
-          </Form.Item>          
+          </Form.Item>
+          <Form.Item 
+            label="품목" 
+            name="category"
+            rules={[
+              {
+                required: true,
+                message: "품목을 입력해 주세요",
+              }
+            ]}
+          >
+            <Radio.Group>
+              {
+                CateList && CateList.map(el=>(
+                  <>
+                    <Radio.Button value={el}>{el}</Radio.Button>
+                  </>
+                ))
+              }
+            </Radio.Group>
+          </Form.Item>      
           <Form.Item
             name="etc"
             label="비고"
