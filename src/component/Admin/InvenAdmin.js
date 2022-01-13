@@ -172,7 +172,6 @@ function InvenAdmin() {
         }) 
         arr.push(...arr2)
       })
-      console.log(arr)
       setThisLogData(arr)
     })
     return () => {
@@ -769,6 +768,7 @@ function InvenAdmin() {
     setModifyUid('');
     setThisLogUid('');
     setThisLogData('');
+    setModifyData('');
   };  
   const onModify = (uid) => {
     setModifyUid(uid)
@@ -975,7 +975,7 @@ function InvenAdmin() {
               'etc': ModifyData.etc
             }}
           >
-                  
+                  {ModifyData.category}
           <Form.Item
             name="name"
             label="상품명"  
