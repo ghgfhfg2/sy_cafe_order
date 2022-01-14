@@ -353,7 +353,7 @@ function Menu() {
             <GuestHome prod={ProdItem} guestPopClose={guestPopClose} />
           </>
         }        
-        {TodayLunchCheck && !TodayLunchCheck.confirm && curDate.hour < 9 && LunchPop &&
+        {TodayLunchCheck && !TodayLunchCheck.confirm && curDate.hour < 10 && curDate.min < 30 && LunchPop &&
           <div className="lunch-check-popup">
             {TodayLunchCheck.item && 
               <>

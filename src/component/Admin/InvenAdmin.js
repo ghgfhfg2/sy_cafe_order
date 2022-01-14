@@ -807,6 +807,7 @@ function InvenAdmin() {
     });
     message.success("업데이트에 성공했습니다.");
     setIsModalVisible(false);
+    setModifyData('');
   }
 
   const [LogMessege, setLogMessege] = useState('')
