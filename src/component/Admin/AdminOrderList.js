@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import firebase from "../../firebase";
-import { Radio,Button,DatePicker } from "antd";
+import firebase, {old} from "../../firebase";
+import { Radio,Button,DatePicker,message } from "antd";
 import * as antIcon from "react-icons/ai";
 import { commaNumber,getFormatDate } from "../CommonFunc";
 import { CSVLink } from "react-csv";
@@ -130,6 +130,7 @@ function AdminOrderList() {
               }
             })
           }            
+          console.log(array)
           setExcelData(array);
           setOrderList(array);          
         });
@@ -159,6 +160,37 @@ function AdminOrderList() {
   
     const disabledDate = (current) => {
       return current < moment().subtract(30, 'days') || current > moment();
+    }    
+
+
+    const kakaoSend = (key) => { 
+
+      // 올드DB에 추가
+      let newData = key;
+      newData.order_state = 2
+      firebase.database(old).ref(`order/${newData.key}`)
+      .update({
+        ...newData
+      })
+  
+      /*
+      firebase.database().ref('order')
+      .once("value",data=>{
+        data.forEach(el=>{                                
+          if(el.val().timestamp < (new Date().getTime() - 2592000000)){
+            firebase.database().ref(`order/${el.key}`).remove()
+          }
+        })
+      })  
+      */
+  
+      let time = getFormatDate(new Date());
+      time = time.full+time.hour+time.min+time.sec
+      let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name + "&order_time=" + time;
+      window.open(url,'kakao',"height=1,width=1");
+
+      message.success('카톡알림이 발송되었습니다.')
+      return;
     }    
   return (
     <>
@@ -193,6 +225,7 @@ function AdminOrderList() {
         <table className="fl-table" style={{marginTop:"12px"}}>
           <thead>
             <tr>
+              <th scope="col">알림재발송</th>
               <th scope="col">주문자</th>
               <th scope="col">상품명</th>
               <th scope="col">수량</th>
@@ -205,6 +238,7 @@ function AdminOrderList() {
           <tbody>
             {OrderList.map((list, index) => (
               <tr key={index}>
+                <td><Button onClick={()=>{kakaoSend(list)}}><antIcon.AiOutlineAlert style={{marginTop:"2px",fontSize:"17px"}} /></Button></td>
                 <td>{list.order_name}</td>
                 <td>
                   {list.prod_name}

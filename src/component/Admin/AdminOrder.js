@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button,message } from "antd";
+import { Button,message,Radio } from "antd";
 import styled from "styled-components";
 import firebase, {old} from "../../firebase";
-import { Radio } from "antd";
 import { commaNumber,notify,getFormatDate } from "../CommonFunc";
 import { Howl } from "howler";
 import axios from "axios";
@@ -256,6 +255,7 @@ function AdminOrder() {
     time = time.full+time.hour+time.min+time.sec
     let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name + "&order_time=" + time;
     window.open(url,'kakao',"height=1,width=1");
+    message.success('카톡알림이 발송되었습니다.')
     return;
   }
   

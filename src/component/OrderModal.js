@@ -194,7 +194,12 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
   }
   const [submitLoading, setsubmitLoading] = useState(false);
   const onSubmitOrder = async (e) => {
-    e.preventDefault();    
+    e.preventDefault();  
+    let guest_call = '';
+    if(e.target.guest_call){
+      guest_call = e.target.guest_call.value;
+    }
+    
     if(userInfo?.auth && userInfo.auth.includes('disable')){
       message.error("주문이 불가능 합니다.")
       return;
@@ -276,7 +281,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
       order_time: nowTime,
       order_etc: e.target.etc.value,
       order_state: 0,
-      order_phone:UserPhone,
+      order_phone:guest_call ? guest_call : UserPhone,
       prod_uid: OrderItem.uid,
       prod_name: OrderItem.name,
       prod_option: ProdOption ? ProdOption : "",
@@ -473,6 +478,14 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
             <span className="tit">기타</span>
             <Input name="etc" type="text" />
           </div>
+          {userInfo && userInfo.uid === 'cz8emz5BbZMkdJLTSEmro6DYqF32' &&
+            <div className="flex-box a-center">
+              <div>
+                <span>주문알림용 연락처(선택)</span>
+                <Input name="guest_call" type="number" placeholder={`휴대폰번호 ('-' 빼고 입력해 주세요)`} />
+              </div>
+            </div>
+          }
           <div className="btn-box">
             <Button
               disabled={submitLoading}
