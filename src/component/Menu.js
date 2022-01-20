@@ -15,6 +15,7 @@ const { Search } = Input;
 const _ = require("lodash");
 
 const curDate = getFormatDate(new Date());
+const curHourMin = ''+curDate.hour+curDate.min;
 
 function Menu() {
   const userInfo = useSelector((state) => state.user.currentUser);
@@ -313,7 +314,7 @@ function Menu() {
     </>
   );
 
-  const [LunchPop, setLunchPop] = useState(true)
+  const [LunchPop, setLunchPop] = useState(true)  
   const onConfrim =(uid) => {
     let date = curDate.full;
     try {
@@ -353,7 +354,7 @@ function Menu() {
             <GuestHome prod={ProdItem} guestPopClose={guestPopClose} />
           </>
         }        
-        {TodayLunchCheck && !TodayLunchCheck.confirm && curDate.hour < 10 && curDate.min < 30 && LunchPop &&
+        {TodayLunchCheck && !TodayLunchCheck.confirm && curHourMin < 930 && LunchPop &&
           <div className="lunch-check-popup">
             {TodayLunchCheck.item && 
               <>

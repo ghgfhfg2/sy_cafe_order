@@ -320,7 +320,7 @@ function Chair() {
         <DatePicker 
           format="YYYY-MM-DD"
           defaultValue={moment()}
-          //disabledDate={disabledDate}
+          disabledDate={disabledDate}
           style={{marginBottom:"10px"}}
           onChange={onSelectDate} 
         />
