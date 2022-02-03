@@ -418,16 +418,20 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
                   </label>
                 </>
               )}
-              <input
-                type="radio"
-                name="milk"
-                id="basic"
-                value="저지방"                
-                onChange={radioChange2}
-                />
-                <label htmlFor="basic">
-                저지방
-              </label>
+              {OrderItem.m_soldout && (
+              <>
+                <input
+                  type="radio"
+                  name="milk"
+                  id="basic"
+                  value="저지방"   
+                  onChange={radioChange2}
+                  />
+                  <label htmlFor="basic">
+                  저지방
+                </label>
+              </>
+              )}
             </div>
             }
           {OrderItem.add && (
