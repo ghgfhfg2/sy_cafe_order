@@ -151,7 +151,7 @@ function Join() {
               <input type="radio" className="custom-radio" name="sosok" id="sosok2" value="2" ref={register({ required: true })} />
               <label for="sosok2">푸드킹</label>
               <input type="radio" className="custom-radio" name="sosok" id="sosok3" value="3" ref={register({ required: true })} />
-              <label for="sosok3">계약직</label>
+              <label for="sosok3">미에르</label>
             </div>
             {errors.sosok && <p>소속을 선택해 주세요</p>}
           </div>
@@ -164,14 +164,16 @@ function Join() {
               <option value="1" disabled hidden>
                 부서
               </option>
-              <option value="R&D">R&D</option>
-              <option value="전략기획부">전략기획부</option>
-              <option value="영업지원부">영업지원부</option>
-              <option value="인사재경부">인사재경부</option>
-              <option value="IT개발부">IT개발부</option>
+              <option value="총괄">총괄</option>
+              <option value="R&D운영본부">R&D운영본부</option>
+              <option value="영업지원본부">영업지원본부</option>
+              <option value="총괄기획본부">총괄기획본부</option>
+              <option value="IT개발본부">IT개발본부</option>
+              <option value="온라인사업본부">온라인사업본부</option>
+              <option value="경영관리본부">경영관리본부</option>
+              <option value="문화사업본부">문화사업본부</option>
               <option value="푸드킹">푸드킹</option>
-              <option value="물류부">물류부</option>
-              <option value="카페부">카페부</option>
+              <option value="미에르">미에르</option>
             </select>
             {errors.part && <p>부서를 선택해 주세요</p>}
           </div>
