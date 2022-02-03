@@ -151,7 +151,7 @@ function HairAdmin() {
       let meureArr = hairArr.concat().filter(el => {
         return el.sosok === '3'
       })
-      setFoodkingData(meureArr);
+      setMeureData(meureArr);
 
       let excelArr = _.cloneDeep(hairArr).map(el => {
         el.date = el.date.full_;
