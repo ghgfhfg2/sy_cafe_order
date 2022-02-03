@@ -18,18 +18,21 @@ function HairAdmin() {
   const [MyHairData, setMyHairData] = useState();
   const [MetreeData, setMetreeData] = useState();
   const [FoodkingData, setFoodkingData] = useState();
+  const [MeureData, setMeureData] = useState();
   const [Rerender, setRerender] = useState(false);
   const [SearchDate, setSearchDate] = useState([curDate,curDate]);
 
   const [TotalPrice, setTotalPrice] = useState(0);
   const [MeTotalPrice, setMeTotalPrice] = useState(0);
   const [FdTotalPrice, setFdTotalPrice] = useState(0);
+  const [ErTotalPrice, setErTotalPrice] = useState(0);
   const [TypeTotalPrice, setTypeTotalPrice] = useState(0);
 
   const [PersnalData, setPersnalData] = useState();
   const [TotalPersnalData, setTotalPersnalData] = useState();
   const [MePersonalData, setMePersonalData] = useState();
   const [FdPersonalData, setFdPersonalData] = useState();
+  const [ErPersonalData, setErPersonalData] = useState();
 
   const [HairData, setHairData] = useState();
 
@@ -57,6 +60,7 @@ function HairAdmin() {
     let totalPrice = 0;    
     let meTotalPrice = 0;    
     let fdTotalPrice = 0;    
+    let erTotalPrice = 0;    
     let personalArr = [];
     let startDate = SearchDate[0].full.substr(0,6);
     let endDate = SearchDate[1].full.substr(0,6);
@@ -83,6 +87,9 @@ function HairAdmin() {
             }
             if(obj[key].sosok === '2'){
               fdTotalPrice += parseInt(obj[key].price);
+            }
+            if(obj[key].sosok === '3'){
+              erTotalPrice += parseInt(obj[key].price);
             }
             obj[key].distance =  obj[key].timestamp - new Date(`${obj[key].date.full_} ${obj[key].date.hour}:${obj[key].date.min}`).getTime();
             obj[key].distance = Math.floor(obj[key].distance/1000/60/60/24)
@@ -116,12 +123,17 @@ function HairAdmin() {
         let fdPersnalArr = personalArr.concat().filter(el=>{
           return el.sosok === '2';
         });
+        let erPersnalArr = personalArr.concat().filter(el=>{
+          return el.sosok === '3';
+        });
         setMePersonalData(mePersnalArr);
         setFdPersonalData(fdPersnalArr);        
+        setErPersonalData(erPersnalArr);        
         setTotalPrice(totalPrice);
         setTypeTotalPrice(totalPrice);
         setMeTotalPrice(meTotalPrice);
         setFdTotalPrice(fdTotalPrice);
+        setErTotalPrice(erTotalPrice);
       })      
       hairArr.sort((a,b)=>{
         return b.date.full - a.date.full
@@ -136,12 +148,16 @@ function HairAdmin() {
         return el.sosok === '2'
       })
       setFoodkingData(foodkingArr);
+      let meureArr = hairArr.concat().filter(el => {
+        return el.sosok === '3'
+      })
+      setFoodkingData(meureArr);
 
       let excelArr = _.cloneDeep(hairArr).map(el => {
         el.date = el.date.full_;
         el.timestamp = getFormatDate(new Date(el.timestamp)).full_;
         el.price = commaNumber(el.price);
-        el.sosok = el.sosok == 1 ? "미트리" : "푸드킹"
+        el.sosok = el.sosok == 1 ? "미트리" : el.sosok == 2 ? "푸드킹" : "미에르"
         el.signature = "";
         el.uid = "";
         el.user_uid = "";
@@ -268,6 +284,12 @@ function HairAdmin() {
       setTypeTotalPrice(FdTotalPrice);
       setPersnalData(FdPersonalData);
     }
+    if(type === '4'){
+      excelArr = excelArr.filter(el => el.sosok === '미에르');
+      setHairData(MeureData);
+      setTypeTotalPrice(ErTotalPrice);
+      setPersnalData(ErPersonalData);
+    }
     setExcelData(excelArr);
     
 
@@ -319,7 +341,7 @@ function HairAdmin() {
             txt = "푸드킹";
           }
           if(data == 3){
-            txt = "계약직";
+            txt = "미에르";
           }
           return txt
         }
@@ -429,6 +451,7 @@ function HairAdmin() {
         <Radio.Button value="1">전체</Radio.Button>
         <Radio.Button value="2">미트리</Radio.Button>
         <Radio.Button value="3">푸드킹</Radio.Button>
+        <Radio.Button value="4">미에르</Radio.Button>
       </Radio.Group>
       <h3 className="title">개인별 합계</h3>
       {PersnalData &&
@@ -491,7 +514,8 @@ function HairAdmin() {
                     <th scope="row" rowSpan={el.date.length} style={{background:'#f1f1f1'}}>
                       {el.name}/
                       {el.sosok === '1' ? "미트리" :
-                       el.sosok === '2' ? "푸드킹" : "" 
+                       el.sosok === '2' ? "푸드킹" : 
+                       el.sosok === '3' ? "미에르" : "" 
                       }/
                       {el.part}
                     </th>
