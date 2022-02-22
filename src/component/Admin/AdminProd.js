@@ -331,8 +331,9 @@ function AdminProd() {
   const [PosX, setPosX] = useState(0);
   const [PosY, setPosY] = useState(0);
   const onProdModify = (e, uid, img) => {
-    setPosX(e.clientX);
-    setPosY(e.clientY);
+    console.log(e)
+    setPosX(e.pageX);
+    setPosY(e.pageY);
     setPuid(uid);
     setPimg(img);
     setOnModal(true);

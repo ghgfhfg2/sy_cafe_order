@@ -173,6 +173,7 @@ function Menu() {
                 soldout: item.val().soldout,
                 sort_num: item.val().sort_num ? item.val().sort_num : 9999,
                 limit: item.val().limit,
+                hidden: item.val().hidden ? item.val().hidden : false,
                 jaego: item.val().jaego ? item.val().jaego : 
                        item.val().jaego === 0 ? 0 : "",
               });
@@ -212,6 +213,9 @@ function Menu() {
                 return el;
               }
               return el.category === CateRadio;
+            });
+            array = array.filter((el) => {
+              return el.hidden === false
             });
             setProdItem(array);
             setProdItemCopy(array);
@@ -408,7 +412,8 @@ function Menu() {
         }
         {TopBox}
         <ProdList>
-          {ProdItem.map((item, index) => (
+          {ProdItem.map((item, index) => 
+            (
             <div
               style={{ cursor: "pointer", position: "relative" }}
               className={`ani-fadein list delay-${index}`}
@@ -478,7 +483,8 @@ function Menu() {
                 </div>
               </div>
             </div>
-          ))}
+          )
+          )}
         </ProdList>
         {OnModal && (
           <OderModalPopup

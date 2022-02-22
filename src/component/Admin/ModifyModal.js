@@ -26,12 +26,12 @@ export const ModalPopup = styled.div`
   max-width: 350px;
   padding: 20px;
   border: 1px solid #ddd;
-  position: fixed;
+  position: absolute;
   z-index: 100;
   border-radius: 10px;
   background: #fff;
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
-  transform: translate(-50px, -100%);
+  transform: translate(-50%, -100%);
   left: ${(props) => props.posx}px;
   top: ${(props) => props.posy}px;
   @media all and (max-width: 640px) {
@@ -50,6 +50,21 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
   const SoldoutToggle = () => {
     setSoldout(!Soldout);
   };
+
+  const [Hidden, setHidden] = useState();
+  function onChange4(e) {
+    setHidden(e.target.checked);
+  }    
+
+  const [AddCheck, setAddCheck] = useState();
+  function onChange(checkedValues) {
+    setAddCheck(checkedValues);
+  }
+  const [MilkCheck, setMilkCheck] = useState();
+  function onChange2(checkedValues) {
+    setMilkCheck(checkedValues);
+  }  
+
   useEffect(() => {
     firebase
       .database()
@@ -61,12 +76,14 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
         setradioValue(snapshot.val().category);
         setradioValue2(snapshot.val().hot);
         setSoldout(snapshot.val().soldout);
+        setHidden(snapshot.val().hidden);
+        setMilkCheck(snapshot.val().milk)
+        setAddCheck(snapshot.val().add)
       });
   }, [puid]);
 
   const onSubmitProd2 = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault();    
     let values = {
       name: e.target.name.value,
       option: e.target.option.value,
@@ -82,6 +99,7 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
         ? parseInt(e.target.sort_num.value)
         : 9999,
       soldout: Soldout ? Soldout : false,
+      hidden: Hidden ? Hidden : false,
     };
     if (isNaN(values.price)) {
       alert("가격은 숫자만 입력해 주세요");
@@ -144,19 +162,12 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
     setradioValue2(e.target.value);
   };
 
-  const [AddCheck, setAddCheck] = useState();
-  function onChange(checkedValues) {
-    setAddCheck(checkedValues);
-  }
-  const [MilkCheck, setMilkCheck] = useState();
-  function onChange2(checkedValues) {
-    setMilkCheck(checkedValues);
-  }  
 
   const [LimitCheck, setLimitCheck] = useState();
   function onChange3(e) {
     setLimitCheck(e.target.checked);
   }  
+
 
   const onCancel = () => {
     onFinished();
@@ -346,8 +357,17 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
                 onChange={onChange3}
                 value={LimitCheck}
               />
+              <label className="tit" style={{marginLeft:"50px"}} htmlFor="hidden">
+                숨김
+              </label>
+              <Checkbox
+                id="_limit"
+                name="limit"
+                onChange={onChange4}
+                checked={Hidden ? true : false}
+              />
             </div>
-            <Checkbox.Group onChange={onChange}>
+            <Checkbox.Group onChange={onChange} value={AddCheck}>
               {/* <Checkbox value="버블" style={{ lineHeight: "32px" }}>
                 버블
               </Checkbox> */}
@@ -358,7 +378,7 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
                 연하게
               </Checkbox>
             </Checkbox.Group>
-            <Checkbox.Group onChange={onChange2}>
+            <Checkbox.Group onChange={onChange2} value={MilkCheck}>
               <Checkbox value="우유" style={{ lineHeight: "32px" }}>
                 우유
               </Checkbox>

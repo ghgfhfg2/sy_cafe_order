@@ -148,12 +148,19 @@ function Nav() {
     try{
       let user = firebase.auth().currentUser;
       user.updateProfile({
-        phoneNumber: "01055278712"
+        phoneNumber: call_num
       }).then(function() {
         alert('업데이트 되었습니다.');
       }).catch(function(error) {
         console.error(error);
       });  
+      await firebase
+      .database()
+      .ref("lunch/user")
+      .child(currentUser.uid)
+      .update({
+        part: part,
+      })
       await firebase
       .database()
       .ref("users")
