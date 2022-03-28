@@ -552,6 +552,9 @@ function AdminProd() {
               </Row>
             </Checkbox.Group>
           </Form.Item>
+          <Form.Item label="손님숨김" name="guest_hidden" valuePropName="checked"> 
+              <Checkbox style={{ lineHeight: "32px" }} />                  
+          </Form.Item>
           <Form.Item label="1개제한" name="limit" valuePropName="checked"> 
               <Checkbox style={{ lineHeight: "32px" }} />                  
           </Form.Item>

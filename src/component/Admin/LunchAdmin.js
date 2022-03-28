@@ -43,90 +43,89 @@ function LunchAdmin() {
             name: el.val().name,
             part: el.val().part,
             role: el.val().role,
-          })
-        }
-      });
-      
-      setRuser(r_user);
-    })
-    let itemArr = [];
-    let itemObj = {};
-    firebase.database().ref('lunch/item')
-    .once('value', (snapshot) => {
-      snapshot.forEach(el => {
-        itemArr.push(el.val())
-      });
-      itemArr.map(el=>{
-        itemObj[el] = 0;
-      })
-      setTblItem(itemArr);
-      itemArr = itemArr.join(',');      
-      setItemList(itemArr)
-    })
-    firebase.database().ref('lunch/info')
-      .on('value', (snapshot) => {
-        setCheckInfoTxt(snapshot.val())        
-    });
-    firebase.database().ref('lunch/user')
-    .once('value', (snapshot) => {
-      let arr = [];
-      let listDate = SearchDate.full ? SearchDate.full : curDate.full
-      snapshot.forEach(el => {
-        let elItemArr;
-        if(el.val().checkList && el.val().checkList[listDate]){
-          elItemArr = el.val().checkList[listDate].item;
-        }
-        if(elItemArr){
-          elItemArr.map(el=>{
-          itemObj[el] += 1;
-          })       
-          arr.push({
             uid: el.key,
-            name: el.val().name,
-            part: el.val().part,
-            item: elItemArr,
-            confirm: el.val().checkList[listDate].confirm,
           })
         }
-      })
-      if(Filter && Filter.length > 0){
-        arr = arr.filter(el=>{
-          let res;
-          let count = 0;
-          Filter.map(item=>{
-            el.item.includes(item) ? count = count+1 : count = count;
-          })
-          return count > 0 ? el : ""
+      });
+      let itemArr = [];
+      let itemObj = {};
+      firebase.database().ref('lunch/item')
+      .once('value', (snapshot) => {
+        snapshot.forEach(el => {
+          itemArr.push(el.val())
+        });
+        itemArr.map(el=>{
+          itemObj[el] = 0;
         })
-      }
-      arr.sort((a,b)=>{
-        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+        setTblItem(itemArr);
+        itemArr = itemArr.join(',');      
+        setItemList(itemArr)
       })
-      setCheckLength(arr.length)
-      setCheckList(arr);
-      setItemSum(itemObj);
-      let checker = [];
-      let allName = [];
-      let nonChecker = [];
-      Ruser && Ruser.map(el => {
-        allName.push(el.name);
-        arr.map(list => {
-          if(list.name.includes(el.name) && list.part.includes(el.part)){
-            checker.push(list.name)
+      firebase.database().ref('lunch/info')
+        .on('value', (snapshot) => {
+          setCheckInfoTxt(snapshot.val())        
+      });
+      firebase.database().ref('lunch/user')
+      .once('value', (snapshot) => {
+        let arr = [];
+        let listDate = SearchDate.full ? SearchDate.full : curDate.full
+        snapshot.forEach(el => {
+          let elItemArr;
+          if(el.val().checkList && el.val().checkList[listDate]){
+            elItemArr = el.val().checkList[listDate].item;
+          }
+          if(elItemArr){
+            elItemArr.map(el=>{
+            itemObj[el] += 1;
+            })       
+            arr.push({
+              uid: el.key,
+              name: el.val().name,
+              part: el.val().part,
+              item: elItemArr,
+              confirm: el.val().checkList[listDate].confirm,
+            })
           }
         })
+        if(Filter && Filter.length > 0){
+          arr = arr.filter(el=>{
+            let res;
+            let count = 0;
+            Filter.map(item=>{
+              el.item.includes(item) ? count = count+1 : count = count;
+            })
+            return count > 0 ? el : ""
+          })
+        }
+        arr.sort((a,b)=>{
+          return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+        })
+        setCheckLength(arr.length)
+        setCheckList(arr);
+        setItemSum(itemObj);
+        let checker = [];
+        let allName = [];
+        let nonChecker = [];
+        r_user && r_user.map(el => {
+          allName.push(el.name);
+          arr.map(list => {
+            if(list.uid.includes(el.uid)){
+              checker.push(list.name)
+            }
+          })
+        })
+        nonChecker = allName.filter(el => {
+          return !checker.includes(el);
+        })
+        setNonChecker(nonChecker);
       })
-      nonChecker = allName.filter(el => {
-        return !checker.includes(el);
-      })
-      setNonChecker(nonChecker);
     })
 
-    
 
     return () => {
+      firebase.database().ref('lunch/info').off()
     }
-  }, [Ruser,Render])
+  }, [SearchDate])
 
   useEffect(() => {
     firebase.database().ref('lunch/img')

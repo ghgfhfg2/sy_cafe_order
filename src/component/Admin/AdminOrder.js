@@ -4,6 +4,7 @@ import styled from "styled-components";
 import firebase, {old} from "../../firebase";
 import { commaNumber,notify,getFormatDate } from "../CommonFunc";
 import { Howl } from "howler";
+import { BsPhone } from "react-icons/bs"
 import axios from "axios";
 import src1 from "../../jumun.mp3";
 import src2 from "../../jumun2.mp3";
@@ -297,8 +298,13 @@ function AdminOrder() {
           <div className={`list state_${list.order_state}`} key={index}>
             <span style={{ display: "none" }}>{list.key}</span>
             <div className="from">
-              <span>{list.order_name}</span>
-              <span>{list.order_part}</span>
+              <span className="flex-box a-center">{list.order_name}
+                <span style={{marginLeft:"5px",display:"flex",alignItems:"center",fontWeight:"500"}}>
+                  <BsPhone style={{marginRight:"3px"}}/>
+                  {list.order_phone && list.order_phone.substr(list.order_phone.length-4,4)}
+                </span>
+              </span>
+              <span style={{flexShrink:"0"}}>{list.order_part}</span>
             </div>
             <div className="prod">
               <div className="info-box">
@@ -330,7 +336,7 @@ function AdminOrder() {
             </div>
             <div style={{color:"red",fontWeight:"500"}}>
                 {list.order_etc && list.order_etc}
-            </div>
+            </div>            
             <div className="state">
               <span className="date">
                 {list.order_time}

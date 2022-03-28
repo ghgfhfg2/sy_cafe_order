@@ -56,6 +56,11 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
     setHidden(e.target.checked);
   }    
 
+  const [GuestHidden, setGuestHidden] = useState();
+  function onChange5(e) {
+    setGuestHidden(e.target.checked);
+  } 
+
   const [AddCheck, setAddCheck] = useState();
   function onChange(checkedValues) {
     setAddCheck(checkedValues);
@@ -77,6 +82,7 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
         setradioValue2(snapshot.val().hot);
         setSoldout(snapshot.val().soldout);
         setHidden(snapshot.val().hidden);
+        setGuestHidden(snapshot.val().guest_hidden);
         setMilkCheck(snapshot.val().milk)
         setAddCheck(snapshot.val().add)
       });
@@ -100,6 +106,7 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
         : 9999,
       soldout: Soldout ? Soldout : false,
       hidden: Hidden ? Hidden : false,
+      guest_hidden: GuestHidden ? GuestHidden : false,
     };
     if (isNaN(values.price)) {
       alert("가격은 숫자만 입력해 주세요");
@@ -348,24 +355,37 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
               />
             </div>
             <div className="input-box">
-              <label className="tit" htmlFor="_limit">
-                제한
-              </label>
               <Checkbox
                 id="_limit"
                 name="limit"
                 onChange={onChange3}
                 value={LimitCheck}
+                style={{marginRight:"8px"}}
               />
-              <label className="tit" style={{marginLeft:"50px"}} htmlFor="hidden">
+              <label className="tit" htmlFor="_limit">
+                제한
+              </label>
+              <Checkbox
+                id="hidden"
+                name="hidden"
+                onChange={onChange4}
+                checked={Hidden ? true : false}
+                style={{marginRight:"8px"}}
+              />
+              <label className="tit" htmlFor="hidden">
                 숨김
               </label>
               <Checkbox
-                id="_limit"
-                name="limit"
-                onChange={onChange4}
-                checked={Hidden ? true : false}
+                id="guest_hidden"
+                name="guest_hidden"
+                onChange={onChange5}
+                checked={GuestHidden ? true : false}
+                style={{marginRight:"8px"}}
               />
+              <label className="tit" htmlFor="guest_hidden" style={{width:"auto"}}>
+                손님제외
+              </label>
+              
             </div>
             <Checkbox.Group onChange={onChange} value={AddCheck}>
               {/* <Checkbox value="버블" style={{ lineHeight: "32px" }}>

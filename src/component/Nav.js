@@ -78,6 +78,7 @@ function Nav() {
   const [TimeChange, setTimeChange] = useState(false);
   const timeRef = useRef(false);
 
+  const [userPart, setUserPart] = useState()
   useEffect(() => {              
     setTimeout(() => {
       timeRef.current = !timeRef.current;      
@@ -88,6 +89,14 @@ function Nav() {
     const currentTimeNum = timeDiff(currentTime);
     let mounted = true;
     if (mounted) {   
+
+      currentUser && 
+      firebase
+      .database()
+      .ref(`users/${currentUser.uid}/part`)
+      .on("value", (snapshot) => {
+        setUserPart(snapshot.val())
+      })
 
       firebase
       .database()
@@ -229,7 +238,7 @@ function Nav() {
                         <span className="tit">부서</span>
                         <select
                           name="part"
-                          defaultValue={photoUrl}
+                          defaultValue={userPart}
                         >
                           <option value="photoUrl" disabled hidden>
                             부서

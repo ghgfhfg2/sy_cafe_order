@@ -145,7 +145,7 @@ function Inventory() {
           okText="네"
           cancelText="아니오"
         >
-          <Button onClick={()=>onLogDelete(row['ea'],row['val'],row['real_date'],row['prod_uid'],row['uid'],row['key'])}><antIcon.AiOutlineDelete style={{marginTop:"4px"}} /></Button>
+          <Button><antIcon.AiOutlineDelete style={{marginTop:"4px"}} /></Button>
         </Popconfirm>
       </>
     },
@@ -197,7 +197,7 @@ function Inventory() {
     return () => {
       db.ref('inventory/list').off()
     }
-  }, [SortCate])
+  }, [SortCate,SearchMonth])
 
   const cancel = function cancel(e) {
     message.error('취소되었습니다.');
@@ -293,7 +293,6 @@ function Inventory() {
 
 
   const onLogDelete = (ea,val,date,prod,uid,key) => {
-    console.log(ea,val,date.full,prod,uid,key)
     let monthDate = date.full.substr(0,date.full.length-2)
     db
     .ref(`inventory/log_month/${monthDate}/${prod}/output`)
@@ -304,7 +303,7 @@ function Inventory() {
     db
     .ref(`inventory/list/${prod}/ea`)
     .transaction(pre=>{
-      return pre - parseInt(val);
+      return pre + parseInt(val);
     }) 
 
     db
@@ -359,6 +358,7 @@ function Inventory() {
         {InvenData.map((el,idx)=>(
           <li key={idx}>
             <div className="list-con">
+              <span className='hidden'>{el.uid}</span>
               <div className="left">
                 {el.image ? <div className="img-box"><img src={el.image} /></div>
                   : <div className="img-box no-img"><bsIcon.BsImage style={{opacity:"0.4"}} /></div>

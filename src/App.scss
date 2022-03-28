@@ -170,6 +170,7 @@ h3.title {
   align-items: center;
   justify-content: center;
   position: relative;
+  .top-logo{max-width: 200px;}
   .top-logo-m{display: none;}
   @include mobile() {
     height: 80px;

@@ -79,13 +79,13 @@ function Chair() {
 
   useEffect(() => {
     //이번주 예약횟수
-    let curWeekSel = [];
     let weekObj = curWeek(SearchDate.full_); //todayDate.timestamp
     welDb.ref(`chair/user/${userInfo.uid}/list`)
     .orderByKey()
     .startAt(weekObj.firstDate)
     .endAt(weekObj.lastDate)
     .on('value',data => {
+      let curWeekSel = [];
       data.forEach(el=>{
         curWeekSel.push(el.val());
       })

@@ -174,6 +174,7 @@ function Menu() {
                 sort_num: item.val().sort_num ? item.val().sort_num : 9999,
                 limit: item.val().limit,
                 hidden: item.val().hidden ? item.val().hidden : false,
+                guest_hidden: item.val().guest_hidden ? item.val().guest_hidden : false,
                 jaego: item.val().jaego ? item.val().jaego : 
                        item.val().jaego === 0 ? 0 : "",
               });
@@ -217,6 +218,11 @@ function Menu() {
             array = array.filter((el) => {
               return el.hidden === false
             });
+            if(userInfo.uid === 'cz8emz5BbZMkdJLTSEmro6DYqF32'){
+              array = array.filter((el) => {
+                return el.guest_hidden === false
+              });
+            }
             setProdItem(array);
             setProdItemCopy(array);
           });          
