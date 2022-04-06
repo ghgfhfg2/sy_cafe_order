@@ -277,7 +277,7 @@ function AdminProd() {
 
   // submit
   const onSubmitProd = async (values) => {
-    
+    values.guest_hidden = values.guest_hidden ? values.guest_hidden : ''
     if (isNaN(values.price)) {
       alert("가격은 숫자만 입력해 주세요");
       return;

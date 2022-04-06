@@ -268,13 +268,13 @@ function Nav() {
                     </form>
                   </OderModalPopup>
                 }
-                <div className="flex-box j-center">
+                <div className="flex-box j-center">                  
                   <span className="p-color-l"
                     onClick={onChangeInfo}
                     style={{
                       cursor: "pointer",
                       fontWeight: "500",
-                      marginLeft: "10px",
+                      marginLeft: "5px",
                     }}
                   >
                     {currentUser.displayName}

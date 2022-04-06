@@ -43,10 +43,12 @@ import StylerAdmin from "./component/welfare/StylerAdmin";
 import Styler from "./component/welfare/Styler";
 import Inventory from "./component/inven/Inventory";
 import InvenAdmin from "./component/Admin/InvenAdmin";
+import AuthPop from "./component/AuthPop";
 
 const { Sider, Content, Header } = Layout;
 
 function App(props) {
+  const userInfo = useSelector((state) => state.user.currentUser);
   function isDesktopOS(){
     return ( 'win16|win32|win64|windows|mac|macintel|linux|freebsd|openbsd|sunos'.indexOf(navigator.platform.toLowerCase()) >= 0 ); 
   }
@@ -76,6 +78,8 @@ function App(props) {
               favorite:snapshot.val().favorite,
               role:snapshot.val().role,
               sosok:snapshot.val().sosok,
+              welfare_range:snapshot.val().welfare_range,
+              welfare_able:snapshot.val().welfare_able,
             }
             history.push("/");
             dispatch(setUser(addInfo));
@@ -112,6 +116,12 @@ function App(props) {
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
+  const [authPop, setAuthPop] = useState(false)
+  const authPopToggle = () => {
+    setAuthPop(!authPop);
+  }
+
   if (isLoading) {
     return (
       <>
@@ -120,7 +130,7 @@ function App(props) {
             <a href="/">
               <img className="top-logo" src={Logo} alt="" />
               <img className="top-logo-m" src={Logo} alt="" />
-            </a>            
+            </a>                       
           </Header>
           <Layout>
             <div className="content-box">
@@ -138,12 +148,24 @@ function App(props) {
   } else {
     return (
       <>
+        {authPop &&
+          <AuthPop authPopToggle={authPopToggle} />
+        }
         <Layout className={TopFix && "top-fix"}>
           <Header className="header-box">
-            <a href="/">
-              <img className="top-logo" src={Logo} alt="" />
-              <img className="top-logo-m" src={Logo} alt="" />
-            </a>
+            <div className="header-content">
+              <a href="/">
+                <img className="top-logo" src={Logo} alt="" />
+                <img className="top-logo-m" src={Logo} alt="" />
+              </a>
+              {userInfo && userInfo.auth && userInfo.auth.includes('insa') &&
+              <button type="button" className="user-auth" onClick={authPopToggle}>
+                <antIcon.AiOutlineIdcard 
+                /> 
+                사원증
+              </button>
+              }
+            </div>
           </Header>
           <Layout>
             <div className="content-box">

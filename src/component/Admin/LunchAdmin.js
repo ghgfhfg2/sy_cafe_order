@@ -84,6 +84,7 @@ function LunchAdmin() {
               part: el.val().part,
               item: elItemArr,
               confirm: el.val().checkList[listDate].confirm,
+              admin_check: el.val().checkList[listDate].admin_check,
             })
           }
         })
@@ -125,7 +126,7 @@ function LunchAdmin() {
     return () => {
       firebase.database().ref('lunch/info').off()
     }
-  }, [SearchDate])
+  }, [SearchDate,Render])
 
   useEffect(() => {
     firebase.database().ref('lunch/img')
@@ -188,7 +189,8 @@ function LunchAdmin() {
     try {
       firebase.database().ref(`lunch/user/${user.uid}/checkList/${date}`)
       .update({
-        confirm: 1
+        confirm: 1,
+        admin_check: true
       })
       setRender(!Render)
     }catch (error) {
@@ -361,7 +363,7 @@ function LunchAdmin() {
                     {el.item.includes(list) && 1}
                   </td>
               ))}
-              <td>
+              <td className={el.admin_check ? 'admin_check' : ''}>
               {el.confirm ? 'O' : <Button onClick={()=>{onConfrim(el)}}>확인</Button>}
               </td>
               <td style={{position:"relative"}}>

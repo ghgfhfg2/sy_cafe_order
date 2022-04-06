@@ -96,10 +96,12 @@ function LunchCheck() {
       .on('value', (snapshot) => {
         let arr = [];
         snapshot.forEach(el => {
+          console.log(el.val())
           arr.push({
             date: el.val().date,
             item: el.val().item,
-            confirm: el.val().confirm ? el.val().confirm : ''
+            confirm: el.val().confirm ? el.val().confirm : '',
+            admin_check: el.val().admin_check ? el.val().admin_check : false,
           })
         })
         setUserList(arr);
@@ -116,6 +118,7 @@ function LunchCheck() {
             if(el.full == list.date){
               el.item = list.item ? list.item.join(',') : '';
               el.confirm = list.confirm;
+              el.admin_check = list.admin_check;
             }
           })
         })
@@ -262,6 +265,7 @@ function LunchCheck() {
                 
               <div className="confirm-info">
               {el.confirm && <span>확인완료</span>}
+              {el.admin_check && <>(관리자)</>}
               {el.full != curDate.full && !el.confirm &&
                 <span>미확인</span>
               }

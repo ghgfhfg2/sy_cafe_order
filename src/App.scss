@@ -2,7 +2,7 @@
 @import "form.css";
 
 @include mobile(){
-  body{font-size: 12px;}
+  html{font-size: 12px;}
 }
 
 .p-color{color:$p-color;}
@@ -163,6 +163,9 @@ h3.title {
     }
   }
 }
+.ant-layout-header{
+  padding:0 15px;
+}
 .header-box {
   display: flex;
   height: 130px;
@@ -181,6 +184,87 @@ h3.title {
     }
   }
 }
+.header-content{
+  width:100%;max-width:1400px;
+  position: relative;
+  @include flex($j:center);
+  .user-auth{
+    position: absolute;
+    right: 15px;top:50%;
+    transform: translateY(-50%);
+    background: none;
+    font-size: 12px;
+    border-radius: 5px;
+    border:1px solid #aaa;
+    height: 40px;
+    padding:0 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    @include flex();
+    svg{font-size: 18px;margin-right: 5px;}
+  }
+}
+
+//사원증 팝업
+.auth_pop{
+  position: fixed;
+  width: 100%;height: 100vh;
+  left: 0;top:0;
+  z-index: 1000;
+  .bg{
+    width: 100%;height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    animation: fade_in 0.3s both;
+  }
+  .auth_card{
+    position: fixed;
+    width:90%;height: 90%;
+    max-width: 300px;height: 400px;
+    left:50%;top:50%;transform: translate(-50%,-50%) scale(0);
+    padding-bottom:28px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;    
+    line-height: 1.5;
+    animation: auth_card 0.3s both;
+    transform-origin: center;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    @include flex($d:column,$a:stretch);
+    h3{font-size: 24px;text-align: center;margin: 20px 0;}
+    .info{
+      text-align: center;
+      padding:0 20px;
+    }
+    dl{
+      @include flex($d:column,$a:flex-start);
+      margin-bottom: 10px;
+      padding: 0 5px 5px 5px;
+      border-bottom: 1px solid #e1e1e1;
+      dt{margin-right: 0.7rem;font-size: 12px;flex-shrink: 0;font-weight: 700;color:#999;margin-bottom: 3px;}
+      dd{margin-bottom: 0;font-size: 12px;}
+    }
+    .logo{
+      text-align: center;
+      img{max-width: 36%;}
+    }
+    .able_box{
+      text-align: center;margin-bottom: 10px;
+      padding:5px 0;color:#fff;
+      &.able{background-color: $p-color;}
+      &.disable{background-color: #888;}
+    }
+    .time{font-size: 11px;text-align: center;margin-bottom: 15px;color: #999;margin-top: auto;}
+  }
+}
+@keyframes auth_card {
+  from{
+    transform: translate(-50%,-50%) rotate(-90deg) scale(0);
+  }
+  to{
+    transform: translate(-50%,-50%) rotate(0) scale(1);
+  }
+}
+
+
 .btn-guest-home{
   position: absolute;
   right: 15px;top:25px;
@@ -191,7 +275,7 @@ h3.title {
 @include mobile() {
   .top-fix {
     padding-top: 70px;
-    .header-box {
+    .header-box {      
       position: fixed;
       left: 0;
       top: 0;
@@ -204,8 +288,10 @@ h3.title {
       top: 22px;
       animation: fade_down 0.2s both;
     }
-  }
+  }  
+
 }
+.header-content .user-auth{right: 0;}
 .nav-top-box {
   background-color: #fff;
   position: relative;
@@ -222,6 +308,7 @@ h3.title {
     }
   }
 }
+
 
 .left-nav-menu {
   width: 250px;
@@ -449,6 +536,7 @@ h3.title {
 .tbl-lunch-check{
   tr{transition: all 0.1s;}
   tr:hover{background-color: lighten($p-color,45%)}
+  .admin_check{background-color: $p-color;color:#fff;}
 }
 
 // 주간 식단체크
