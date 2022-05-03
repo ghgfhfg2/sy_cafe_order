@@ -130,7 +130,6 @@ function AdminOrderList() {
               }
             })
           }            
-          console.log(array)
           setExcelData(array);
           setOrderList(array);          
         });

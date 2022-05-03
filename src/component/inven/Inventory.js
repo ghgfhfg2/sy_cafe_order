@@ -375,7 +375,10 @@ function Inventory() {
                 </dl>
               </div>
               <div className="right">
-                <span className="ea">재고 : {el.ea}</span>
+                <span className="ea">
+                  재고 : {el.ea}
+                  {el.unit && <>({el.unit})</>}
+                </span>
                   <div className="input-box">
                     <Button onClick={()=>onModify(el.uid,el.name,el.ea)}>사용</Button>
                   </div>

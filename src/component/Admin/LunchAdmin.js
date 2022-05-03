@@ -7,10 +7,9 @@ import { UploadOutlined } from '@ant-design/icons';
 import { OderModalPopup } from "../OrderModal";
 import uuid from "react-uuid";
 const { TextArea } = Input;
-const curDate = getFormatDate(new Date());
 
 function LunchAdmin() {
-
+  const curDate = getFormatDate(new Date());
   const [ItemList, setItemList] = useState();
   const [CheckInfoTxt, setCheckInfoTxt] = useState();
   const [TblItem, setTblItem] = useState();
@@ -33,7 +32,7 @@ function LunchAdmin() {
 
   const [DefaultImg, setDefaultImg] = useState()
 
-  useEffect(() => {
+  useEffect(() => {    
     let r_user = []
     firebase.database().ref('users')
     .once('value', (snapshot) => {
@@ -142,7 +141,6 @@ function LunchAdmin() {
     e.preventDefault();
     try {
       if(uploadImg){
-        console.log(uploadImg)
         let uploadTask = await firebase
         .storage()
         .ref(`lunch_img/lunchImg`)
@@ -209,7 +207,6 @@ function LunchAdmin() {
 
   const onModifySubmit = (el) => {
     let itemList = ModifyCheck ? ModifyCheck : el.item
-    console.log(itemList);
     firebase.database().ref(`lunch/user/${el.uid}/checkList/${SearchDate.full}`)
     .update({
       item:itemList
@@ -256,7 +253,7 @@ function LunchAdmin() {
         <>          
           <form onSubmit={onSubmit}>
             <h3 className="title" style={{ margin: "0 0 5px 0" }}>
-              식단 항목
+              식단 항목1
             </h3>
             <div className="flex-box">
               <Input name="item" defaultValue={ItemList} />

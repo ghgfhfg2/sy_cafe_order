@@ -80,7 +80,9 @@ function App(props) {
               sosok:snapshot.val().sosok,
               welfare_range:snapshot.val().welfare_range,
               welfare_able:snapshot.val().welfare_able,
+              photoURL:snapshot.val().part,
             }
+            console.log(addInfo)
             history.push("/");
             dispatch(setUser(addInfo));
           }
@@ -158,7 +160,7 @@ function App(props) {
                 <img className="top-logo" src={Logo} alt="" />
                 <img className="top-logo-m" src={Logo} alt="" />
               </a>
-              {userInfo && userInfo.auth && userInfo.auth.includes('insa') &&
+              {userInfo && 
               <button type="button" className="user-auth" onClick={authPopToggle}>
                 <antIcon.AiOutlineIdcard 
                 /> 

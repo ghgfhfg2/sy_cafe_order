@@ -46,7 +46,7 @@ function AuthPop({authPopToggle}) {
             {userInfo.welfare_range &&
             <dl>
               <dt>가족복지 대상자</dt>
-              <dd>{userInfo.welfare_range.join(', ')}</dd>
+              <dd>{userInfo.welfare_range}</dd>
             </dl>
             }
           </div>          

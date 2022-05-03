@@ -25,6 +25,12 @@ function InvenAdmin() {
   const [Render, setRender] = useState(false)
 
   const [submitDate, setsubmitDate] = useState(nowDate);
+
+  const onRerender = () => {
+    message.success('검색완료')
+    setRender(!Render)
+  }
+
   const onSubmitDate = (date, dateString) => {
     let res;
     res = date ? getFormatDate(new Date(date._d)) : getFormatDate(new Date());
@@ -39,7 +45,6 @@ function InvenAdmin() {
     end = date ? getFormatDate(new Date(date[1]._d)).full : '';
     setDateStart(start);
     setDateEnd(end);
-    setTimeout(()=>setRender(!Render),100)
     
   }  
   
@@ -930,7 +935,8 @@ function InvenAdmin() {
       <Divider />     
       <div style={{marginBottom:"20px"}}>
         <RangePicker defaultValue={[moment(DateStart,'YYYY-MM-DD'),moment(DateEnd,'YYYY-MM-DD')]} onChange={onSearchDate} style={{marginRight:"5px"}} />
-        <span style={{fontSize:"12px",color:"#888"}}>*날짜 검색</span>
+        <Button onClick={onRerender}>검색</Button>
+        <span style={{fontSize:"12px",color:"#888",marginLeft:"5px"}}>*날짜 검색</span>
       </div>
       <div className="flex-box a-center" style={{marginBottom:"10px"}}>
         <h3 className="title" style={{marginBottom:"0",marginRight:"10px"}}>비품 리스트</h3>
@@ -973,7 +979,8 @@ function InvenAdmin() {
               'name': ModifyData.name,
               'category': ModifyData.category,
               'ea': ModifyData.ea,
-              'etc': ModifyData.etc
+              'etc': ModifyData.etc,
+              'unit': ModifyData.unit
             }}
           >
                   {ModifyData.category}
@@ -1012,6 +1019,12 @@ function InvenAdmin() {
           <Form.Item
             name="etc"
             label="비고"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="unit"
+            label="단위"
           >
             <Input />
           </Form.Item>
