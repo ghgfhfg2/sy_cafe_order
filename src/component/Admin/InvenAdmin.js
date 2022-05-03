@@ -293,26 +293,29 @@ function InvenAdmin() {
     .orderByKey()
     .startAt(DateStart)
     .endAt(DateEnd)
-    .on("value", snapshot => {
+    .once("value", snapshot => {
       let arr = [];
-      snapshot.val() && snapshot.forEach((el)=>{
-        let obj = getArr(el.val())
-        let arr2 = [];
-        obj.map(list=>{
-          let obj2 = {
-            ...list,
-            date_: `${list.date.full_} ${list.date.hour}:${list.date.min}`,
-            real_date_:`${list.real_date.full_}`,
-            name:`${list.name}(${list.part})`
-          }
-          arr2.push(obj2)
+      if(snapshot.val()){
+        snapshot.forEach((el)=>{
+          let obj = getArr(el.val())
+          let arr2 = [];
+          obj.map(list=>{
+            let obj2 = {
+              ...list,
+              date_: `${list.date.full_} ${list.date.hour}:${list.date.min}`,
+              real_date_:`${list.real_date.full_}`,
+              name:`${list.name}(${list.part})`
+            }
+            arr2.push(obj2)
+          })
+          arr.push(...arr2)
+          setLogListData(arr)
         })
-        arr.push(...arr2)
-        setLogListData(arr)
-      })
+      }else{
+        setLogListData([])
+      }
     })
     return () => {
-      db.ref("inventory/list").off()
     }
   }, [Render])
   

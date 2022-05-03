@@ -250,7 +250,18 @@ h3.title {
       text-align: center;margin-bottom: 10px;
       padding:5px 0;color:#fff;
       &.able{background-color: $p-color;}
-      &.disable{background-color: #888;}
+      &.disable{
+        background-color: rgba(255,255,255,0.7);
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        color: #111;
+        font-weight: 700;
+      }
     }
     .time{font-size: 11px;text-align: center;margin-bottom: 15px;color: #999;margin-top: auto;}
   }
