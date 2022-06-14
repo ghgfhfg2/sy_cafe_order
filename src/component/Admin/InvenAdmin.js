@@ -289,6 +289,7 @@ function InvenAdmin() {
   
   const [LogListData, setLogListData] = useState()
   useEffect(() => {
+    console.log(DateStart,DateEnd)
     db.ref(`inventory/log`)
     .orderByKey()
     .startAt(DateStart)
@@ -309,8 +310,8 @@ function InvenAdmin() {
             arr2.push(obj2)
           })
           arr.push(...arr2)
-          setLogListData(arr)
         })
+        setLogListData(arr)
       }else{
         setLogListData([])
       }

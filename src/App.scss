@@ -173,7 +173,11 @@ h3.title {
   align-items: center;
   justify-content: center;
   position: relative;
-  .top-logo{max-width: 200px;}
+  .top-logo{max-width: 202px;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
   .top-logo-m{display: none;}
   @include mobile() {
     height: 80px;
@@ -244,7 +248,8 @@ h3.title {
     }
     .logo{
       text-align: center;
-      img{max-width: 36%;}
+      img{max-width: 36%;
+      }
     }
     .able_box{
       text-align: center;margin-bottom: 10px;

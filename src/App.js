@@ -24,9 +24,9 @@ import { setUser, clearUser } from "./redux/actions/user_action";
 import { getNotificationPermission } from "./component/CommonFunc";
 import * as antIcon from "react-icons/ai";
 //import Logo from "./img/logo.svg";
-import Logo from "./img/logo_2021_spring.png";
-//import Logo_PC from "./img/logo_2021_summer_pc.png";
-//import Logo from "./img/logo_2021_summer.png";
+//import Logo from "./img/logo_2021_spring.png";
+import Logo_PC from "./img/logo_2021_summer_pc.png";
+import Logo from "./img/logo_2021_summer.png";
 //import Logo_PC from "./img/logo_2021_fall_pc.png";
 //import Logo_PC from "./img/logo_2021_winter_pc.png";
 //import Logo from "./img/logo_2021_fall.png";
@@ -130,7 +130,7 @@ function App(props) {
         <Layout className={TopFix && "top-fix"}>
           <Header className="header-box">
             <a href="/">
-              <img className="top-logo" src={Logo} alt="" />
+              <img className="top-logo" src={Logo_PC} alt="" />
               <img className="top-logo-m" src={Logo} alt="" />
             </a>                       
           </Header>

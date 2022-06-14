@@ -353,7 +353,6 @@ function Menu() {
     setModifyState(false)
   }
 
-  if (ProdItem.length) {
     return (
       <> 
         {userInfo && userInfo.auth && userInfo.auth.includes('guest') &&
@@ -416,118 +415,125 @@ function Menu() {
             }
           </div>
         }
+
         {TopBox}
-        <ProdList>
-          {ProdItem.map((item, index) => 
-            (
-            <div
-              style={{ cursor: "pointer", position: "relative" }}
-              className={`ani-fadein list delay-${index}`}
-              key={index}
-            >
-              {(item.soldout === false || item.jaego === 0) && (
+        {ProdItem.length > 0 ? (
+          <>
+            <ProdList>
+              {ProdItem.map((item, index) => 
+                (
                 <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    position: "absolute",
-                    left: "0",
-                    top: "0",
-                    display: "flex",
-                    fontSize: "14px",
-                    color: "#fff",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    background: "rgba(0,0,0,0.5)",
-                    zIndex: "10",
-                  }}
+                  style={{ cursor: "pointer", position: "relative" }}
+                  className={`ani-fadein list delay-${index}`}
+                  key={index}
                 >
-                  sold out
-                </div>
-              )}
-              
-              <div className="img" onClick={(e) => orderHandler(e, item)}>
-                <span style={{ opacity: "0.85" }} className="kal">
-                  {item.kal}kal
-                </span>
-                <img src={item.image} alt="" />
-              </div>
-              <div className="user-box" onClick={(e) => orderHandler(e, item)}>
-                <div className="txt" style={{ padding: "0 5px" }}>
-                  <div className="flex-box between">
-                    <span className="name">
-                      {item.name}
-                      <span className="hidden">{item.uid}</span>
-                      {(item.jaego > 0 && item.jaego < 6) && (
-                      <div style={{fontSize:"12px",color:"red"}}>잔여수량 : {item.jaego}</div>
-                      )}
-                    </span>
-                    <span
-                      className={"ic-favor p-color " + item.add_favor}
-                      onClick={(e) => {
-                        onToggleFavor(e, item.name);
-                      }}
-                    >
-                      <antIcon.AiFillStar className="favor" />
-                      <antIcon.AiOutlineStar className="no-favor" />
-                    </span>
-                  </div>
-                  <div className="flex-box between a-center">
-                    <span className="hot">
-                      {item.hot === "etc" ? "" : item.hot}
-                    </span>
-                    <span
+                  {(item.soldout === false || item.jaego === 0) && (
+                    <div
                       style={{
-                        textDecoration: "line-through",
-                        color: "#888",
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                        left: "0",
+                        top: "0",
+                        display: "flex",
+                        fontSize: "14px",
+                        color: "#fff",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        background: "rgba(0,0,0,0.5)",
+                        zIndex: "10",
                       }}
-                      className="price"
                     >
-                      {commaNumber(item.price)}원
+                      sold out
+                    </div>
+                  )}
+                  
+                  <div className="img" onClick={(e) => orderHandler(e, item)}>
+                    <span style={{ opacity: "0.85" }} className="kal">
+                      {item.kal}kal
                     </span>
+                    <img src={item.image} alt="" />
+                  </div>
+                  <div className="user-box" onClick={(e) => orderHandler(e, item)}>
+                    <div className="txt" style={{ padding: "0 5px" }}>
+                      <div className="flex-box between">
+                        <span className="name">
+                          {item.name}
+                          <span className="hidden">{item.uid}</span>
+                          {(item.jaego > 0 && item.jaego < 6) && (
+                          <div style={{fontSize:"12px",color:"red"}}>잔여수량 : {item.jaego}</div>
+                          )}
+                        </span>
+                        <span
+                          className={"ic-favor p-color " + item.add_favor}
+                          onClick={(e) => {
+                            onToggleFavor(e, item.name);
+                          }}
+                        >
+                          <antIcon.AiFillStar className="favor" />
+                          <antIcon.AiOutlineStar className="no-favor" />
+                        </span>
+                      </div>
+                      <div className="flex-box between a-center">
+                        <span className="hot">
+                          {item.hot === "etc" ? "" : item.hot}
+                        </span>
+                        <span
+                          style={{
+                            textDecoration: "line-through",
+                            color: "#888",
+                          }}
+                          className="price"
+                        >
+                          {commaNumber(item.price)}원
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          )
-          )}
-        </ProdList>
-        {OnModal && (
-          <OderModalPopup
-            onFinished={onFinished}
-            posx={PosX}
-            posy={PosY}
-            OrderItem={OrderItem}
-          />
-        )}
+              )
+              )}
+            </ProdList>
+            {OnModal && (
+              <OderModalPopup
+                onFinished={onFinished}
+                posx={PosX}
+                posy={PosY}
+                OrderItem={OrderItem}
+              />
+            )}
+          </>
+        ) : ProdItem.length === 0 ? (
+          <div style={{ paddingTop: "15px" }}>
+            <Empty
+              description={
+                <span>
+                  메뉴가 없습니다.
+                </span>
+              }
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          </div>
+        ) : searchInput ? (
+          <div style={{ paddingTop: "15px" }}>
+            <Empty
+              description={
+                <span>
+                  검색결과가 없습니다.
+                  <br />
+                  ※검색어가 제대로 입력된 경우엔 검색버튼을 다시 눌러보세요.
+                </span>
+              }
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          </div>
+        ) : (
+          <Loading />
+        )
+      }        
+        
       </>
     );
-  } else if (searchInput) {
-    return (
-      <>
-        {TopBox}
-        <div style={{ paddingTop: "15px" }}>
-          <Empty
-            description={
-              <span>
-                검색결과가 없습니다.
-                <br />
-                ※검색어가 제대로 입력된 경우엔 검색버튼을 다시 눌러보세요.
-              </span>
-            }
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-          />
-        </div>
-      </>
-    );
-  } else {
-    return (
-      <>
-        {TopBox}
-        <Loading />
-      </>
-    );
-  }
 }
 
 export default Menu;
