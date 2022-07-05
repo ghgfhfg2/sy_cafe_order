@@ -417,7 +417,7 @@ function Inventory() {
             name="real_date"
             label="실출고일"
           >  
-            <DatePicker style={{marginRight:"5px"}} />       
+            <DatePicker defaultValue={moment()} style={{marginRight:"5px"}} />       
           </Form.Item>
           <Form.Item
             name="val"

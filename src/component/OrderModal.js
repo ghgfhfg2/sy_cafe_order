@@ -66,10 +66,22 @@ export const OderModalPopup = styled.div`
 const { Option } = Select;
 
 function OrderModal({ posx, posy, onFinished, OrderItem }) {
+
+  const [saleTime, setSaleTime] = useState();
   const userInfo = useSelector((state) => state.user.currentUser);
   const [UserDb, setUserDb] = useState();
   const [UserPhone, setUserPhone] = useState()
   useEffect(() => {
+    let timeTemp = [];
+    OrderItem.time_sale && OrderItem.time_sale.forEach(el=>{
+      let temp = [];
+      el.forEach(e=>{
+        temp.push(e.split(":").slice(0,2).join(":"))
+      })
+      timeTemp.push(temp);
+    })
+    setSaleTime(timeTemp);
+
     if (userInfo) {
       firebase
       .database()
@@ -195,6 +207,55 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
   const [submitLoading, setsubmitLoading] = useState(false);
   const onSubmitOrder = async (e) => {
     e.preventDefault();  
+    const nowTime = moment().format("YYYY-MM-DD HH:mm:ss|dddd");
+    const timeStamp = new Date().getTime();
+    const curTime = getFormatDate(new Date());    
+    if(OrderItem.time_sale){
+      let posibleTime = '';
+      saleTime.forEach((el,idx)=>{
+        let copyEl = el.concat();
+        if(idx == 0){
+          posibleTime += copyEl.join(' ~ ');
+        }
+        if(idx == 1){
+          posibleTime += ' 그리고 '+copyEl.join(' ~ ');
+        }
+      })
+      let saleTimeCheck1 = true;
+      let saleTimeCheck2 = true;
+      OrderItem.time_sale.forEach((el,idx)=>{
+        if(el){
+          let curTimeMin = curTime.hour*60 + parseInt(curTime.min);
+          let start = el[0].split(":");
+          start.pop();
+          start = start[0]*60 + parseInt(start[1]);
+          let end = el[1].split(":");
+          end.pop();
+          end = end[0]*60 + parseInt(end[1]);
+          
+          if(idx == 0){
+            saleTimeCheck1 = false;
+            if(curTimeMin >= start && curTimeMin <= end) {
+              saleTimeCheck1 = true;
+            }
+          }
+          if(idx == 1){
+            saleTimeCheck2 = false;
+            console.log(curTime,curTimeMin, start,end,idx)
+            if(curTimeMin >= start && curTimeMin <= end) {
+              console.log(33)
+              saleTimeCheck2 = true
+            }
+          }
+        }
+      })
+
+      if(!saleTimeCheck1 && !saleTimeCheck2){
+        message.error(`지금은 주문불가 시간 입니다.`)
+        message.info(`주문가능 시간은 ${posibleTime} 입니다.`)
+        return
+      }
+    }
     let guest_call = '';
     if(e.target.guest_call){
       guest_call = e.target.guest_call.value;
@@ -214,9 +275,6 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
     }
        
     setsubmitLoading(true);
-    const nowTime = moment().format("YYYY-MM-DD HH:mm:ss|dddd");
-    const timeStamp = new Date().getTime();
-    const curTime = getFormatDate(new Date());
     
     if(OrderItem.limit && UserDb.limit){
       if(UserDb.limit.hasOwnProperty(OrderItem.name)){
@@ -355,6 +413,16 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
       >
         <form className="order-form-box" onSubmit={onSubmitOrder}>
           <h4>{OrderItem.name}</h4>
+          {OrderItem.time_sale && saleTime?.length > 0 &&
+          <div className="sale-time">
+            <h5>판매시간</h5>
+            <div className="time">
+            {saleTime.map(el=>(
+              <div>{el.join('~')}</div>
+            ))}
+            </div>
+          </div>
+          }
           <div className="flex-box a-center">
             <span className="tit">수량</span>
             {/* <Button

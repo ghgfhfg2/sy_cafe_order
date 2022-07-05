@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, Checkbox, Switch } from "antd";
+import { Button, Checkbox, Switch, TimePicker } from "antd";
 import firebase from "../../firebase";
 import styled from "styled-components";
 import uuid from "react-uuid";
+import moment from 'moment'
 export const FileLabel2 = styled.label`
   display: flex;
   width: 60px;
@@ -70,13 +71,16 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
     setMilkCheck(checkedValues);
   }  
 
+
+  const [saleTimeState, setSaleTimeState] = useState()
+  const [saleTimeState2, setSaleTimeState2] = useState()
+  
   useEffect(() => {
     firebase
       .database()
       .ref("products")
       .child(puid)
-      .once("value")
-      .then((snapshot) => {
+      .on("value", snapshot=>{
         setProdItem(snapshot.val());
         setradioValue(snapshot.val().category);
         setradioValue2(snapshot.val().hot);
@@ -84,12 +88,37 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
         setHidden(snapshot.val().hidden);
         setGuestHidden(snapshot.val().guest_hidden);
         setMilkCheck(snapshot.val().milk)
-        setAddCheck(snapshot.val().add)
-      });
+        setAddCheck(snapshot.val().add);
+        if(snapshot.val().time_sale){
+          snapshot.val().time_sale[0] && setSaleTimeState(snapshot.val().time_sale[0])
+          snapshot.val().time_sale[1] && setSaleTimeState2(snapshot.val().time_sale[1])
+        }
+      })
+    return () => {
+      firebase
+      .database()
+      .ref("products")
+      .child(puid)
+      .off()
+    }
   }, [puid]);
+
+
+  //판매시간
+  const [saleTime, setSaleTime] = useState()
+  const [saleTime2, setSaleTime2] = useState()
+  const onSaleTime = (time,timestring) => {
+    setSaleTime(timestring)
+  }
+  const onSaleTime2 = (time,timestring) => {
+    setSaleTime2(timestring)
+  }  
 
   const onSubmitProd2 = async (e) => {
     e.preventDefault();    
+    let time_sale = [];
+    if(saleTime?.join('')) time_sale.push(saleTime);
+    if(saleTime2?.join('')) time_sale.push(saleTime2);
     let values = {
       name: e.target.name.value,
       option: e.target.option.value,
@@ -107,6 +136,7 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
       soldout: Soldout ? Soldout : false,
       hidden: Hidden ? Hidden : false,
       guest_hidden: GuestHidden ? GuestHidden : false,
+      time_sale: time_sale.length > 0 ? time_sale : null
     };
     if (isNaN(values.price)) {
       alert("가격은 숫자만 입력해 주세요");
@@ -175,13 +205,12 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
     setLimitCheck(e.target.checked);
   }  
 
-
   const onCancel = () => {
     onFinished();
   };
   if (ProdItem) {
     return (
-      <>
+      <>        
         <ModalPopup posx={posx} posy={posy}>
           <form className="admin-modify-form" onSubmit={onSubmitProd2}>
             <div className="input-box">
@@ -403,6 +432,32 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
                 우유
               </Checkbox>
             </Checkbox.Group>
+            <div style={{marginBottom:"7px"}}>
+              {saleTimeState &&
+                <TimePicker.RangePicker style={{marginBottom:"5px"}} defaultValue={[
+                  moment(`${saleTimeState[0]}`, 'HH:mm:ss'),
+                  moment(`${saleTimeState[1]}`, 'HH:mm:ss')
+                ]} onChange={onSaleTime} placeholder={['주문시작','주문종료']} />                  
+              }
+              {saleTimeState2 &&
+                <TimePicker.RangePicker style={{marginBottom:"5px"}} defaultValue={[
+                  moment(`${saleTimeState2[0]}`, 'HH:mm:ss'),
+                  moment(`${saleTimeState2[1]}`, 'HH:mm:ss')
+                ]} onChange={onSaleTime2} placeholder={['주문시작','주문종료']} />                  
+              }
+
+              {!saleTimeState &&
+                <>
+                  <TimePicker.RangePicker style={{marginBottom:"5px"}} onChange={onSaleTime} placeholder={['주문시작','주문종료']} />
+                </>
+              }
+              {!saleTimeState2 &&
+                <>
+                  <TimePicker.RangePicker onChange={onSaleTime2} placeholder={['주문시작','주문종료']} />
+                </>
+              }
+
+            </div>
             {(Soldout === true || Soldout === "") && (
               <Switch
                 style={{ width: "60px" }}

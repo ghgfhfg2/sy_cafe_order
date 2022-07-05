@@ -331,7 +331,6 @@ function AdminProd() {
   const [PosX, setPosX] = useState(0);
   const [PosY, setPosY] = useState(0);
   const onProdModify = (e, uid, img) => {
-    console.log(e)
     setPosX(e.pageX);
     setPosY(e.pageY);
     setPuid(uid);

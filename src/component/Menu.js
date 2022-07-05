@@ -157,22 +157,13 @@ function Menu() {
             let array = [];
             snapshot.forEach(function (item) {
               array.push({
+                ...item.val(),
                 uid: item.key,
-                name: item.val().name,
-                option: item.val().option,
-                kal: item.val().kal,
-                hot: item.val().hot,
-                milk: item.val().milk,                
-                category: item.val().category,
-                image: item.val().image,
                 price: parseInt(item.val().price),
-                add: item.val().add,
                 b_soldout: b_soldout,
                 m_soldout: m_soldout,
                 m_soldout2: m_soldout2,
-                soldout: item.val().soldout,
                 sort_num: item.val().sort_num ? item.val().sort_num : 9999,
-                limit: item.val().limit,
                 hidden: item.val().hidden ? item.val().hidden : false,
                 guest_hidden: item.val().guest_hidden ? item.val().guest_hidden : false,
                 jaego: item.val().jaego ? item.val().jaego : 
