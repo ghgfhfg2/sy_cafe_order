@@ -15,6 +15,8 @@ import firebase from "../../firebase";
 import styled from "styled-components";
 import ModifyModal from "./ModifyModal";
 import uuid from "react-uuid";
+import ProdCategory from "./ProdCategory";
+import LastOrderTime from "./option/LastOrderTime";
 
 export const ProdList = styled.div`
   display: flex;
@@ -469,7 +471,7 @@ function AdminProd() {
               <Radio.Button value="차">차</Radio.Button>
               <Radio.Button value="프로틴">프로틴</Radio.Button>
               <Radio.Button value="스낵">스낵</Radio.Button>
-              <Radio.Button value="주스">주스</Radio.Button>
+              <Radio.Button value="셀프">셀프</Radio.Button>
             </Radio.Group>
           </Form.Item>
           <Form.Item
@@ -671,14 +673,7 @@ function AdminProd() {
           defaultValue="all"
           buttonStyle="solid"
         >
-          <Radio.Button value="all">전체</Radio.Button>
-          <Radio.Button value="커피">커피</Radio.Button>
-          <Radio.Button value="라떼">라떼</Radio.Button>
-          <Radio.Button value="에이드">에이드</Radio.Button>
-          <Radio.Button value="차">차</Radio.Button>
-          <Radio.Button value="프로틴">프로틴</Radio.Button>
-          <Radio.Button value="스낵">스낵</Radio.Button>
-          <Radio.Button value="주스">주스</Radio.Button>
+          <ProdCategory />
         </Radio.Group>
       </div>
       <ProdList>

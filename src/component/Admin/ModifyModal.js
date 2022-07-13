@@ -322,11 +322,11 @@ function ModifyModal({ puid, pimg, onFinished, posx, posy }) {
                 type="radio"
                 id="cate7"
                 name="category"
-                value="주스"
-                checked={radioValue === "주스"}
+                value="셀프"
+                checked={radioValue === "셀프"}
                 onChange={radioChange}
               />
-              <label htmlFor="cate7">주스</label>
+              <label htmlFor="cate7">셀프</label>
             </div>
             <div className="input-box">
               <label className="tit" htmlFor="_name">

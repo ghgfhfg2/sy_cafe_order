@@ -875,6 +875,9 @@ h3.title {
   .list.state_2{
     img{opacity: 0.6;}
   }
+  .list.self{
+    background: scale-color($p-color, $lightness: +85%);
+  }
 }
 .order-check-box {
   display: flex;

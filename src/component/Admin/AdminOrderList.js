@@ -5,9 +5,10 @@ import * as antIcon from "react-icons/ai";
 import { commaNumber,getFormatDate } from "../CommonFunc";
 import { CSVLink } from "react-csv";
 import moment from 'moment';
+import LastOrderTime from "./option/LastOrderTime";
 
-const curDate = getFormatDate(new Date());
 function AdminOrderList() {
+  const curDate = getFormatDate(new Date());
 
   const [OrderList, setOrderList] = useState([]);
   const [SelectDay, setSelectDay] = useState();
@@ -34,11 +35,20 @@ function AdminOrderList() {
     {label: "가격", key:"price"}
   ]
 
+  const [lastOrderTime, setLastOrderTime] = useState()
+  useEffect(()=>{
+    firebase.database().ref("last_order_time")
+    .on("value", data=>{
+      setLastOrderTime(data.val())
+    })
+
+  },[])
+
   useEffect(() => {
     let mounted = true;
-    let limitDateStart = SearchDate.timestamp - 36000000;
-    let limitDateEnd = SearchDate.timestamp + 36000000;
-    if (mounted) {     
+    let limitDateStart = new Date(SearchDate.year,SearchDate.month-1,SearchDate.day,lastOrderTime?.hour,0).getTime() - 86400000;
+    let limitDateEnd = new Date(SearchDate.year,SearchDate.month-1,SearchDate.day,lastOrderTime?.hour,0).getTime();
+    if (mounted,lastOrderTime) {     
         firebase
         .database()
         .ref("order")
@@ -53,6 +63,7 @@ function AdminOrderList() {
               key: item.key,
             });
           });
+
           // eslint-disable-next-line array-callback-return          
           array.sort((a, b) => {
             if (a.timestamp > b.timestamp) {
@@ -63,8 +74,7 @@ function AdminOrderList() {
             }
           });
           array = array.filter(el=>{
-            var date = getFormatDate(new Date(el.timestamp)).full;
-            return date === SearchDate.full && el.order_state === 2
+            return el.order_state === 2
           })  
           
           array.map(el=>{
@@ -100,7 +110,7 @@ function AdminOrderList() {
               if(el.add2 && el.add2.includes('샷2')) {
                 el.price -= 1000;
                 add2C += 2
-              }              
+              }     
             })
             setSumAmount(sumA)
             setAdd1Count(add1C)
@@ -138,7 +148,7 @@ function AdminOrderList() {
         firebase.database().ref("order").off();
         mounted = false;
       };
-    }, [SelectDay,Render]);
+    }, [SearchDate,lastOrderTime]);
     
     const onSelectDay = (e) => {
       if(e.target.value === '1'){
@@ -193,6 +203,7 @@ function AdminOrderList() {
     }    
   return (
     <>
+      <LastOrderTime />
       <h3 className="title">완료내역</h3>
       
       <Radio.Group onChange={onSelectDay} defaultValue="1" buttonStyle="solid">

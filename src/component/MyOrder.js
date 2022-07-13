@@ -86,6 +86,14 @@ function MyOrder() {
     }
   }
 
+  const stateChange = (key) => {
+    firebase.database().ref(`order/${key}`)
+    .child("order_state")
+    .transaction((pre) => {
+      return pre + 2;
+    });
+  };
+
   const onDateChange = (e) => {
     if(e){
       setStartDate(getFormatDate(e[0]._d).full)
@@ -168,7 +176,7 @@ function MyOrder() {
                   {list.order_time.split("|")[0]}&nbsp; (
                   {list.order_time.split("|")[1]})
                 </span>
-                <span className="setting">
+                <span className="setting">                  
                   {list.order_state === 0 &&
                   <>
                     <Button
@@ -180,9 +188,21 @@ function MyOrder() {
                     >
                       주문취소
                     </Button>
-                    대기중
+                    {
+                      list.category === '셀프' && 
+                      <Button
+                      className="btn-cancel"
+                        style={{marginRight:"5px"}}
+                        onClick={() => {
+                          stateChange(list.key);
+                        }}
+                        >
+                        픽업완료
+                      </Button>
+                    }
                     </>
                     }
+                  {list.order_state === 0 && "대기중"}
                   {list.order_state === 1 && "주문접수"}
                   {list.order_state === 2 && "완료"}
                 </span>

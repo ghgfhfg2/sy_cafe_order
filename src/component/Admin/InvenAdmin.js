@@ -289,7 +289,6 @@ function InvenAdmin() {
   
   const [LogListData, setLogListData] = useState()
   useEffect(() => {
-    console.log(DateStart,DateEnd)
     db.ref(`inventory/log`)
     .orderByKey()
     .startAt(DateStart)
@@ -469,12 +468,12 @@ function InvenAdmin() {
       render: data => data
     },
     {
-      title: '재고',
-      dataIndex: 'ea',
+      title: '재고(알림)',
+      dataIndex: ['ea','alert_ea'],
       key: 'ea',
       align: 'center',      
       render: (text,row) => <>
-        <span>{row['ea']}</span>
+        <span>{row['ea']}{row['alert_ea'] && `(${row['alert_ea']})`}</span>
       </>
     },
     {
@@ -1031,6 +1030,12 @@ function InvenAdmin() {
             label="단위"
           >
             <Input />
+          </Form.Item>
+          <Form.Item
+            name="alert_ea"
+            label="알림수량"
+          >
+            <InputNumber />
           </Form.Item>
           <div
             className="btn-box"

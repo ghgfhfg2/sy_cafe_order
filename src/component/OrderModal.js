@@ -70,7 +70,8 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
   const [saleTime, setSaleTime] = useState();
   const userInfo = useSelector((state) => state.user.currentUser);
   const [UserDb, setUserDb] = useState();
-  const [UserPhone, setUserPhone] = useState()
+  const [UserPhone, setUserPhone] = useState();
+
   useEffect(() => {
     let timeTemp = [];
     OrderItem.time_sale && OrderItem.time_sale.forEach(el=>{
@@ -81,6 +82,9 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
       timeTemp.push(temp);
     })
     setSaleTime(timeTemp);
+  }, [OrderItem])
+  
+  useEffect(() => {
 
     if (userInfo) {
       firebase
@@ -204,6 +208,9 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
   const onOptionChange = (e) => {
     setProdOption(e);
   }
+  useEffect(()=>{
+    setProdOption('')
+  },[OrderItem])
   const [submitLoading, setsubmitLoading] = useState(false);
   const onSubmitOrder = async (e) => {
     e.preventDefault();  

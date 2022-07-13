@@ -170,10 +170,16 @@ function AdminOrder() {
         .on("value", (snapshot) => {
           let array = [];
           snapshot.forEach(function (item) {
+            // if(item.val().category !== '셀프'){
+            //   array.push({
+            //     ...item.val(),
+            //     key: item.key,
+            //   });
+            // }
             array.push({
               ...item.val(),
               key: item.key,
-            });
+            })
           });
           // eslint-disable-next-line array-callback-return
           array.sort((a, b) => {
@@ -295,7 +301,7 @@ function AdminOrder() {
       </div>
       <OrderBox className="order-list-box">
         {OrderList.map((list, index) => (
-          <div className={`list state_${list.order_state}`} key={index}>
+          <div className={`list state_${list.order_state} ${list.category === '셀프' ? 'self' : ''}`} key={index}>
             <span style={{ display: "none" }}>{list.key}</span>
             <div className="from">
               <span className="flex-box a-center">{list.order_name}
@@ -309,6 +315,11 @@ function AdminOrder() {
             <div className="prod">
               <div className="info-box">
                 <span className="info">
+                  {list.category === '셀프' &&
+                    <>
+                      (셀프)
+                    </>
+                  }
                   {list.prod_name}{list.prod_option ? `-${list.prod_option}`:""}
                 </span>
                 {list.hot === "hot" ? (

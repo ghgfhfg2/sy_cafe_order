@@ -11,6 +11,7 @@ import * as antIcon from "react-icons/ai";
 import * as Hangul from "hangul-js";
 import { useSelector } from "react-redux";
 import GuestHome from "./GuestHome"
+import ProdCategory from "./Admin/ProdCategory";
 const { Search } = Input;
 const _ = require("lodash");
 
@@ -302,14 +303,7 @@ function Menu() {
           defaultValue="all"
           buttonStyle="solid"
         >
-          <Radio.Button value="all">전체</Radio.Button>
-          <Radio.Button value="커피">커피</Radio.Button>
-          <Radio.Button value="라떼">라떼</Radio.Button>
-          <Radio.Button value="에이드">에이드</Radio.Button>
-          <Radio.Button value="차">차</Radio.Button>
-          <Radio.Button value="프로틴">프로틴</Radio.Button>
-          <Radio.Button value="스낵">스낵</Radio.Button>
-          <Radio.Button value="주스">주스</Radio.Button>
+          <ProdCategory />
         </Radio.Group>
       </div>
     </>
