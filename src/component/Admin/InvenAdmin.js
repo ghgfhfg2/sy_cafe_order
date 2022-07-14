@@ -11,6 +11,8 @@ import { useSelector } from "react-redux";
 import { getFormatDate, getArr,getMax } from '../CommonFunc';
 import { CSVLink } from "react-csv";
 import { once } from 'lodash';
+import AdminModifyModal from './inventory/AdminModifyModal';
+import InvenTelAdmin from './inventory/InvenTelAdmin';
 const { RangePicker } = DatePicker;
 
 function InvenAdmin() {
@@ -822,8 +824,7 @@ function InvenAdmin() {
   const onMessege = (e) => {
     setLogMessege(e.target.value)
   }
-
-  
+ 
 
   return (
     <>
@@ -935,6 +936,8 @@ function InvenAdmin() {
           </div>
         </Form>
       )}
+      <InvenTelAdmin />
+
       <Divider />     
       <div style={{marginBottom:"20px"}}>
         <RangePicker defaultValue={[moment(DateStart,'YYYY-MM-DD'),moment(DateEnd,'YYYY-MM-DD')]} onChange={onSearchDate} style={{marginRight:"5px"}} />
@@ -975,81 +978,8 @@ function InvenAdmin() {
        footer={false}
       >
         {ModifyData &&
-          <Form 
-            className="admin-prod-form" 
-            onFinish={onModifySubmit}
-            initialValues={{
-              'name': ModifyData.name,
-              'category': ModifyData.category,
-              'ea': ModifyData.ea,
-              'etc': ModifyData.etc,
-              'unit': ModifyData.unit
-            }}
-          >
-                  {ModifyData.category}
-          <Form.Item
-            name="name"
-            label="상품명"  
-            rules={[
-              {
-                required: true,
-                message: "상품명을 입력해 주세요",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item 
-            label="품목" 
-            name="category"
-            rules={[
-              {
-                required: true,
-                message: "품목을 입력해 주세요",
-              }
-            ]}
-          >
-            <Radio.Group>
-              {
-                CateList && CateList.map(el=>(
-                  <>
-                    <Radio.Button value={el}>{el}</Radio.Button>
-                  </>
-                ))
-              }
-            </Radio.Group>
-          </Form.Item>      
-          <Form.Item
-            name="etc"
-            label="비고"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="unit"
-            label="단위"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="alert_ea"
-            label="알림수량"
-          >
-            <InputNumber />
-          </Form.Item>
-          <div
-            className="btn-box"
-            style={{ width: "100%", textAlign: "center" }}
-          >
-            <Button
-              htmlType="submit"
-              type="primary"
-              size="large"
-            >
-              수정하기
-            </Button>
-          </div>
-        </Form>
+          <AdminModifyModal ModifyData={ModifyData} CateList={CateList} onModifySubmit={onModifySubmit} />
+          // 내용수정 모달
         }
       </Modal>
       {ThisLogUid &&

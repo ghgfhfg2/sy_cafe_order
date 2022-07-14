@@ -8,6 +8,7 @@ import * as goIcon from "react-icons/go";
 import { useSelector } from "react-redux";
 import uuid from "react-uuid";
 import moment from 'moment';
+import useInvenKakaoTel from './useInvenKakaoTel';
 const { Search } = Input;
 const _ = require("lodash");
 
@@ -27,6 +28,9 @@ function Inventory() {
     let month = dateString.replace(regex,"")
     setSearchMonth(month)
   } 
+
+  // 알림톡 수신번호
+  const { alertTelArr } = useInvenKakaoTel(); 
 
    //키워드 검색
    const [searchInput, setSearchInput] = useState("");
@@ -206,11 +210,12 @@ function Inventory() {
     setIsModalVisible(false);
     setModifyUid('');
   }; 
-  const onModify = (uid,name,ea) => {
+  const onModify = (uid,name,ea,alert_ea) => {
     let obj = {
       uid,
       name,
-      ea
+      ea,
+      alert_ea: alert_ea || '' 
     }
     setModifyUid(obj)
     setIsModalVisible(true);
@@ -234,6 +239,7 @@ function Inventory() {
       ea,
       type:"출고",
       prod_uid:ModifyUid.uid,
+      alert_ea:ModifyUid.alert_ea || '',
       prod:ModifyUid.name,
       name:userInfo.displayName,
       part:userInfo.photoURL,
@@ -251,6 +257,11 @@ function Inventory() {
     .transaction((pre) => {
       let curValue = pre;
       curValue = parseInt(pre) - parseInt(values.val);
+      if(curValue <= obj.alert_ea){
+        alertTelArr.forEach(el=>{
+          kakaoAlertEa(el,obj.prod,curValue)
+        })
+      }      
       return curValue;
     });
 
@@ -321,6 +332,21 @@ function Inventory() {
     .remove()
   }
 
+  const kakaoAlertEa = (tel,prod,ea) => {
+    let time = getFormatDate(new Date());
+    time = time.full+time.hour+time.min+time.sec;
+    let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?inven_alert_tel="+ tel +"&prod_name="+ prod +"&alert_ea="+ ea + "&order_time=" + time;
+    fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      return response
+      }).catch(err=>{
+      console.log(err)
+    })
+    message.success('카톡알림이 발송되었습니다.');
+  } 
 
   return (
     <>
@@ -380,7 +406,7 @@ function Inventory() {
                   {el.unit && <>({el.unit})</>}
                 </span>
                   <div className="input-box">
-                    <Button onClick={()=>onModify(el.uid,el.name,el.ea)}>사용</Button>
+                    <Button onClick={()=>onModify(el.uid,el.name,el.ea,el.alert_ea)}>사용</Button>
                   </div>
               </div>
             </div>
