@@ -229,7 +229,8 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
         }
       })
       let saleTimeCheck1 = true;
-      let saleTimeCheck2 = true;
+      let saleTimeCheck2;
+      saleTimeCheck2 = OrderItem.time_sale[1] ? true : false;
       OrderItem.time_sale.forEach((el,idx)=>{
         if(el){
           let curTimeMin = curTime.hour*60 + parseInt(curTime.min);
@@ -248,15 +249,12 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
           }
           if(idx == 1){
             saleTimeCheck2 = false;
-            console.log(curTime,curTimeMin, start,end,idx)
             if(curTimeMin >= start && curTimeMin <= end) {
-              console.log(33)
               saleTimeCheck2 = true
             }
           }
         }
       })
-
       if(!saleTimeCheck1 && !saleTimeCheck2){
         message.error(`지금은 주문불가 시간 입니다.`)
         message.info(`주문가능 시간은 ${posibleTime} 입니다.`)

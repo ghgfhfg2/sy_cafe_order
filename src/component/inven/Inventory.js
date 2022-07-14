@@ -345,7 +345,6 @@ function Inventory() {
       }).catch(err=>{
       console.log(err)
     })
-    message.success('카톡알림이 발송되었습니다.');
   } 
 
   return (

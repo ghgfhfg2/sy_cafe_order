@@ -809,6 +809,8 @@ function InvenAdmin() {
 
   const onModifySubmit = (values) => {
     const uid = ModifyData.uid;
+    console.log(values)
+    values.unit = values.unit || '';
     db
     .ref("inventory/list")
     .child(uid)
@@ -927,7 +929,7 @@ function InvenAdmin() {
           >
             <Button
               htmlType="submit"
-              style={{ width: "100%" }}
+              style={{ width: "100%",marginBottom:"15px" }}
               type="primary"
               size="large"
             >

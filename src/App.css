@@ -1685,7 +1685,7 @@ h3.title::before {
 .inven-list-box li .right {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-end;
   flex-direction: column; }
 
 .inven-list-box li .right .ea {
