@@ -436,6 +436,11 @@ h3.title {
         margin-right: 12px;
       }
     }
+    .alble-time-check{margin-right: 5px;
+      span{font-weight: 500;}
+      .able{color: $p-color;}
+      .disable{color: #888;}
+    }
   }
   .tit {
     width: 35px;

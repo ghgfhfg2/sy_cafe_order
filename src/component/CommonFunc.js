@@ -96,3 +96,55 @@ export function getMax(arr,target){
     let res = Math.min.apply(null,arr2);
     return arr[res];
 }
+
+
+//판매시간 체크
+export function getAbleTime(timeSale,curTime) {
+    let ableTime = true;
+    let posibleTime = '';
+    timeSale.forEach((el,idx)=>{
+      let copyEl = el.concat();
+      copyEl = copyEl.map(el=>{
+            el = el.split(':')
+            el = el.slice(0,2).join(':');
+            return el
+        })
+        
+      if(idx == 0){
+        posibleTime += copyEl.join(' ~ ');
+      }
+      if(idx == 1){
+        posibleTime += ' 그리고 '+copyEl.join(' ~ ');
+      }
+    })
+    let saleTimeCheck1 = true;
+    let saleTimeCheck2;
+    saleTimeCheck2 = timeSale[1] ? true : false;
+    timeSale.forEach((el,idx)=>{
+      if(el){
+        let curTimeMin = curTime.hour*60 + parseInt(curTime.min);
+        let start = el[0].split(":");
+        start.pop();
+        start = start[0]*60 + parseInt(start[1]);
+        let end = el[1].split(":");
+        end.pop();
+        end = end[0]*60 + parseInt(end[1]);
+        if(idx == 0){
+          saleTimeCheck1 = false;
+          if(curTimeMin >= start && curTimeMin <= end) {
+            saleTimeCheck1 = true;
+          }
+        }
+        if(idx == 1){
+          saleTimeCheck2 = false;
+          if(curTimeMin >= start && curTimeMin <= end) {
+            saleTimeCheck2 = true
+          }
+        }
+      }
+    }) 
+    if(!saleTimeCheck1 && !saleTimeCheck2){
+      ableTime = false;
+    } 
+    return {ableTime,posibleTime};
+  }

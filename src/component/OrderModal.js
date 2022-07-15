@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import firebase from "../firebase";
 import moment from "moment";
-import { getFormatDate } from "./CommonFunc";
+import { getFormatDate, getAbleTime } from "./CommonFunc";
 import "moment/locale/ko";
 import uuid from "react-uuid";
 export const OderModalPopup = styled.div`
@@ -72,16 +72,23 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
   const [UserDb, setUserDb] = useState();
   const [UserPhone, setUserPhone] = useState();
 
+  const [ableTimeState, setAbleTimeState] = useState();
+
   useEffect(() => {
-    let timeTemp = [];
-    OrderItem.time_sale && OrderItem.time_sale.forEach(el=>{
-      let temp = [];
-      el.forEach(e=>{
-        temp.push(e.split(":").slice(0,2).join(":"))
+    if(OrderItem.time_sale){
+      let timeTemp = [];
+      OrderItem.time_sale.forEach(el=>{
+        let temp = [];
+        el.forEach(e=>{
+          temp.push(e.split(":").slice(0,2).join(":"))
+        })
+        timeTemp.push(temp);
       })
-      timeTemp.push(temp);
-    })
-    setSaleTime(timeTemp);
+      const curTime = getFormatDate(new Date());   
+      const ableTimeCheck =  getAbleTime(OrderItem.time_sale,curTime);
+      setAbleTimeState(ableTimeCheck.ableTime);
+      setSaleTime(timeTemp);
+    }
   }, [OrderItem])
   
   useEffect(() => {
@@ -218,46 +225,9 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
     const timeStamp = new Date().getTime();
     const curTime = getFormatDate(new Date());    
     if(OrderItem.time_sale){
-      let posibleTime = '';
-      saleTime.forEach((el,idx)=>{
-        let copyEl = el.concat();
-        if(idx == 0){
-          posibleTime += copyEl.join(' ~ ');
-        }
-        if(idx == 1){
-          posibleTime += ' 그리고 '+copyEl.join(' ~ ');
-        }
-      })
-      let saleTimeCheck1 = true;
-      let saleTimeCheck2;
-      saleTimeCheck2 = OrderItem.time_sale[1] ? true : false;
-      OrderItem.time_sale.forEach((el,idx)=>{
-        if(el){
-          let curTimeMin = curTime.hour*60 + parseInt(curTime.min);
-          let start = el[0].split(":");
-          start.pop();
-          start = start[0]*60 + parseInt(start[1]);
-          let end = el[1].split(":");
-          end.pop();
-          end = end[0]*60 + parseInt(end[1]);
-          
-          if(idx == 0){
-            saleTimeCheck1 = false;
-            if(curTimeMin >= start && curTimeMin <= end) {
-              saleTimeCheck1 = true;
-            }
-          }
-          if(idx == 1){
-            saleTimeCheck2 = false;
-            if(curTimeMin >= start && curTimeMin <= end) {
-              saleTimeCheck2 = true
-            }
-          }
-        }
-      })
-      if(!saleTimeCheck1 && !saleTimeCheck2){
-        message.error(`지금은 주문불가 시간 입니다.`)
-        message.info(`주문가능 시간은 ${posibleTime} 입니다.`)
+      const ableTimeCheck =  getAbleTime(OrderItem.time_sale,curTime)
+      if(!ableTimeCheck.ableTime){
+        message.error(`주문불가 시간 입니다.`)
         return
       }
     }
@@ -360,6 +330,7 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
       timestamp: timeStamp,      
     };
 
+
     try {
       await firebase
       .database()
@@ -421,6 +392,10 @@ function OrderModal({ posx, posy, onFinished, OrderItem }) {
           {OrderItem.time_sale && saleTime?.length > 0 &&
           <div className="sale-time">
             <h5>판매시간</h5>
+            <div className="alble-time-check">
+            {ableTimeState ? (<span className="able">(주문가능)</span>) : (<span className="disable">(주문불가)</span>)
+            }
+            </div>
             <div className="time">
             {saleTime.map(el=>(
               <div>{el.join('~')}</div>
