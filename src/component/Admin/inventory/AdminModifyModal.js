@@ -2,6 +2,7 @@ import { Button, Form, Input, InputNumber, Radio } from 'antd';
 import React from 'react';
 
 function AdminModifyModal({ModifyData,CateList,onModifySubmit}) {
+  
   return (
     <Form 
       className="admin-prod-form" 

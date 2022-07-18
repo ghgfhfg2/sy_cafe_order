@@ -475,7 +475,11 @@ function InvenAdmin() {
       key: 'ea',
       align: 'center',      
       render: (text,row) => <>
-        <span>{row['ea']}{row['alert_ea'] && `(${row['alert_ea']})`}</span>
+        <span>{row['ea']}{
+          row['alert_ea'] === '' ? null 
+          : row['alert_ea'] === undefined ? null
+          : `(${row['alert_ea']})`
+        }</span>
       </>
     },
     {
@@ -809,8 +813,8 @@ function InvenAdmin() {
 
   const onModifySubmit = (values) => {
     const uid = ModifyData.uid;
-    console.log(values)
     values.unit = values.unit || '';
+    values.alert_ea = values.alert_ea || '';
     db
     .ref("inventory/list")
     .child(uid)
@@ -820,6 +824,8 @@ function InvenAdmin() {
     message.success("업데이트에 성공했습니다.");
     setIsModalVisible(false);
     setModifyData('');
+    setModifyUid('');
+    setRender(!Render)
   }
 
   const [LogMessege, setLogMessege] = useState('')
