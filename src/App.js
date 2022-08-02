@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Router, Switch, useHistory } from "react-router-dom";
 import Nav from "./component/Nav";
 import './custom_antd.less';
 import "./App.css";
@@ -123,6 +123,7 @@ function App(props) {
   const authPopToggle = () => {
     setAuthPop(!authPop);
   }
+
 
   if (isLoading) {
     return (

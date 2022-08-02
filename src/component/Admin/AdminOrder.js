@@ -261,8 +261,20 @@ function AdminOrder() {
     let time = getFormatDate(new Date(key.order_time.split("|")[0]));
     time = time.full+time.hour+time.min+time.sec
     let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name + "&order_time=" + time;
-    window.open(url,'kakao',"height=1,width=1");
-    message.success('카톡알림이 발송되었습니다.')
+    
+    //window.open(url,'kakao',"height=1,width=1");
+
+    fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      message.success('카톡알림이 발송되었습니다.')
+      return response
+      }).catch(err=>{
+      console.log(err)
+    })
+
     return;
   }
   
