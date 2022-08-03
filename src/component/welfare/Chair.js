@@ -9,6 +9,7 @@ import { getFormatDate, curWeek } from '../CommonFunc';
 import moment from 'moment';
 import { constant } from 'lodash';
 import axios from 'axios'
+import ReservList from './chair/ReservList';
 const { Countdown } = Statistic;
 
 function Chair() {
@@ -330,38 +331,7 @@ function Chair() {
           <h3 className="title">예정중인 내 예약목록</h3>
           <ul className="my-reserv-list">
           {MyReservation.map((el,idx)=>(
-            <li key={idx}>
-              <div className="box">
-                <div className="r-day">
-                  <span className="room">{el.room}</span>
-                  <span className="date fon-barlow">
-                    {
-                      el.date.full === CurDate.full ? 
-                      '오늘 ' :
-                      `${el.date.full_} `
-                    } 
-                    {el.date.hour}:{el.date.min}
-                    </span>
-                </div>
-                <div className="right">
-                  <div className="count-box">
-                    <antIcon.AiOutlineHourglass className="ic-time" />
-                    <Countdown 
-                      className="countdown"
-                      value={el.date.timestamp}
-                      format="H시간 m분 s초"
-                      onFinish={onRerender}
-                    />
-                  </div>
-                  <Popconfirm
-                    title="예약 취소 하시겠습니까?"
-                    onConfirm={()=>{onCancel(el.date,el.timeNum,el.roomNum)}}
-                  >                  
-                    <Button className="btn-del"><antIcon.AiOutlineRollback /><span className="no-mo">예약취소</span></Button>
-                  </Popconfirm>
-                </div>
-              </div>
-            </li>
+            <ReservList el={el} idx={idx} CurDate={CurDate} onRerender={onRerender} onCancel={onCancel} />
           ))}
           </ul>
         </>
