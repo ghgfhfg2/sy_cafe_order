@@ -1,7 +1,7 @@
 @charset "UTF-8";
 @import url(form.css);
 .com-tab-box .tab-content {
-  display: none; }
+  display: none }
 
 /* 인풋 */
 @media (max-width: 760px) {
