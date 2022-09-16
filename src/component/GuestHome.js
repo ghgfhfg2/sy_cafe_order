@@ -1,10 +1,10 @@
 import React, { useState,useRef,useEffect } from 'react'
 import { Carousel,Button,Form,Input,InputNumber } from 'antd';
 import * as antIcon from "react-icons/ai";
-import Logo from "../img/logo_2021_winter_pc.png";
 import {OderModalPopup} from "./OrderModal";
 import { values } from 'lodash';
 import firebase from "../firebase";
+import LogoImg from './LogoImg';
 
 function GuestHome(props) {
   const db = firebase.database()
@@ -35,7 +35,7 @@ function GuestHome(props) {
   return (
     <>
       <div className="guest-home">
-      <img className="top-logo-m" src={Logo} alt="" />
+      <LogoImg />
         <div className="slide-wrapper">
           <Carousel {...settings}>
             {props.prod.map((el,idx)=>(

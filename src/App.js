@@ -23,13 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser, clearUser } from "./redux/actions/user_action";
 import { getNotificationPermission } from "./component/CommonFunc";
 import * as antIcon from "react-icons/ai";
-//import Logo from "./img/logo.svg";
-//import Logo from "./img/logo_2021_spring.png";
-import Logo_PC from "./img/logo_2021_summer_pc.png";
-import Logo from "./img/logo_2021_summer.png";
-//import Logo_PC from "./img/logo_2021_fall_pc.png";
-//import Logo_PC from "./img/logo_2021_winter_pc.png";
-//import Logo from "./img/logo_2021_fall.png";
 import Test from "./component/Test";
 import UserAdmin from "./component/Admin/UserAdmin";
 import Hair from "./component/hair/Hair";
@@ -44,6 +37,7 @@ import Styler from "./component/welfare/Styler";
 import Inventory from "./component/inven/Inventory";
 import InvenAdmin from "./component/Admin/InvenAdmin";
 import AuthPop from "./component/AuthPop";
+import LogoImg from "./component/LogoImg";
 
 const { Sider, Content, Header } = Layout;
 
@@ -131,8 +125,9 @@ function App(props) {
         <Layout className={TopFix && "top-fix"}>
           <Header className="header-box">
             <a href="/">
-              <img className="top-logo" src={Logo_PC} alt="" />
-              <img className="top-logo-m" src={Logo} alt="" />
+              <LogoImg />
+              {/* <img className="top-logo" src={Logo_PC} alt="" />
+              <img className="top-logo-m" src={Logo} alt="" /> */}
             </a>                       
           </Header>
           <Layout>
@@ -158,8 +153,7 @@ function App(props) {
           <Header className="header-box">
             <div className="header-content">
               <a href="/">
-                <img className="top-logo" src={Logo} alt="" />
-                <img className="top-logo-m" src={Logo} alt="" />
+                <LogoImg />
               </a>
               {userInfo && 
               <button type="button" className="user-auth" onClick={authPopToggle}>
