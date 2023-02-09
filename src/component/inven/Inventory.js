@@ -223,6 +223,10 @@ function Inventory() {
   const [ModifyUid, setModifyUid] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);  
   const onModifySubmit = (values) => {
+    if(!userInfo.sosok){
+      message.error('소속이 설정되어 있지 않습니다.');
+      return
+    }
     const agree = window.confirm('출고 하시겠습니까?\n(수량확인 부탁드립니다)')
     if(!agree){return}
     let ea = parseInt(ModifyUid.ea) - parseInt(values.val);
@@ -248,6 +252,7 @@ function Inventory() {
       key:uid,
       date:getFormatDate(new Date()),
     }
+    
 
     db.ref(`inventory/log/${curDate}/${uid}`)
     .update({...obj})
