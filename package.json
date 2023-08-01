@@ -12,6 +12,7 @@
     "axios": "^0.21.1",
     "craco-antd": "^1.19.0",
     "craco-less": "^1.17.1",
+    "dayjs": "^1.11.9",
     "firebase": "^8.2.3",
     "hangul-js": "^0.2.6",
     "howler": "^2.2.1",
