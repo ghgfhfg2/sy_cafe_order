@@ -122,10 +122,6 @@ function Menu() {
         });
       let lunchCheck = {};
 
-      lunchCheck.date = 20230801;
-      lunchCheck.confirm = "";
-      lunchCheck.item = ["일반식"];
-      console.log("lunchCheck", lunchCheck);
       setTodayLunchCheck(lunchCheck);
 
       firebase
