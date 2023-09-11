@@ -3,7 +3,7 @@ import firebase from "../firebase";
 import { ProdList } from "./Admin/AdminProd";
 import OderModalPopup from "./OrderModal";
 import * as antIcon from "react-icons/ai";
-import { commaNumber,getFormatDate } from "./CommonFunc";
+import { commaNumber, getFormatDate } from "./CommonFunc";
 import { useSelector } from "react-redux";
 import Loading from "./Loading";
 
@@ -37,8 +37,6 @@ function MyMenu() {
   useEffect(() => {
     let mounted = true;
     if (mounted) {
-  
-
       async function getProdItem() {
         let favor = [];
         let favorName = [];
@@ -46,10 +44,10 @@ function MyMenu() {
           .database()
           .ref("soldout")
           .once("value")
-          .then((snapshot) => {            
-            b_soldout = snapshot.val().b_soldout;
-            m_soldout = snapshot.val().MilkSoldout;
-            m_soldout2 = snapshot.val().MilkSoldout2;
+          .then((snapshot) => {
+            b_soldout = snapshot.val()?.b_soldout || "";
+            m_soldout = snapshot.val()?.MilkSoldout || "";
+            m_soldout2 = snapshot.val()?.MilkSoldout2 || "";
           });
         await firebase
           .database()
@@ -80,7 +78,7 @@ function MyMenu() {
                 option: item.val().option,
                 kal: item.val().kal,
                 hot: item.val().hot,
-                milk: item.val().milk,                
+                milk: item.val().milk,
                 category: item.val().category,
                 image: item.val().image,
                 price: parseInt(item.val().price),
@@ -90,8 +88,11 @@ function MyMenu() {
                 m_soldout2: m_soldout2,
                 soldout: item.val().soldout,
                 sort_num: item.val().sort_num ? item.val().sort_num : 9999,
-                jaego: item.val().jaego ? item.val().jaego : 
-                       item.val().jaego === 0 ? 0 : "",
+                jaego: item.val().jaego
+                  ? item.val().jaego
+                  : item.val().jaego === 0
+                  ? 0
+                  : "",
               });
             });
             setProdItem(array);
@@ -103,7 +104,7 @@ function MyMenu() {
             return favorName.includes(el.name);
           });
           let assignArr = [];
-          array.map(el => {
+          array.map((el) => {
             favor.map((item) => {
               item.name === el.name && assignArr.push(Object.assign(item, el));
             });
@@ -120,7 +121,6 @@ function MyMenu() {
           assignArr = assignArr.slice(0, 10);
           setProdItem(assignArr);
         }
-
       }
       getProdItem();
       //즐찾
@@ -155,7 +155,7 @@ function MyMenu() {
                 option: item.val().option,
                 kal: item.val().kal,
                 hot: item.val().hot,
-                milk: item.val().milk,                
+                milk: item.val().milk,
                 category: item.val().category,
                 image: item.val().image,
                 price: parseInt(item.val().price),
@@ -168,7 +168,7 @@ function MyMenu() {
               });
             });
           });
-          
+
         array = array.filter((el) => {
           return addFavorName.includes(el.name);
         });
@@ -211,7 +211,7 @@ function MyMenu() {
       setOnModal(true);
     }
   };
-  
+
   const onFinished = () => {
     setOnModal(false);
   };
@@ -223,9 +223,9 @@ function MyMenu() {
         <ProdList>
           {AddFavorItem.map((item, index) => (
             <div
-              style={{ cursor: "pointer",position:"relative" }}
+              style={{ cursor: "pointer", position: "relative" }}
               className={`ani-fadein list delay-${index}`}
-              key={index}              
+              key={index}
             >
               {item.soldout === false && (
                 <div
@@ -259,8 +259,10 @@ function MyMenu() {
                     <span className="name">
                       {item.name}
                       <span className="hidden">{item.uid}</span>
-                      {(item.jaego > 0 && item.jaego < 6) && (
-                      <div style={{fontSize:"12px",color:"red"}}>품절임박 - 잔여수량 : {item.jaego}</div>
+                      {item.jaego > 0 && item.jaego < 6 && (
+                        <div style={{ fontSize: "12px", color: "red" }}>
+                          품절임박 - 잔여수량 : {item.jaego}
+                        </div>
                       )}
                     </span>
                     <span
@@ -301,9 +303,9 @@ function MyMenu() {
         <ProdList>
           {ProdItem.map((item, index) => (
             <div
-              style={{ cursor: "pointer",position:"relative" }}
+              style={{ cursor: "pointer", position: "relative" }}
               className={`ani-fadein list delay-${index}`}
-              key={index}              
+              key={index}
             >
               {item.soldout === false && (
                 <div
@@ -335,7 +337,7 @@ function MyMenu() {
                     left: "0",
                     top: "0",
                     zIndex: "10",
-                    padding:"0 7px",
+                    padding: "0 7px",
                     height: "26px",
                     background: "#333",
                     textAlign: "center",
@@ -345,8 +347,11 @@ function MyMenu() {
                     color: "#fff",
                   }}
                 >
-                  {index + 1}위  
-                  <span style={{fontSize:"11px"}}> ({item.count}회 주문)</span>
+                  {index + 1}위
+                  <span style={{ fontSize: "11px" }}>
+                    {" "}
+                    ({item.count}회 주문)
+                  </span>
                 </span>
                 <img src={item.image} alt="" />
               </div>
@@ -355,8 +360,10 @@ function MyMenu() {
                   <span className="name">
                     {item.name}
                     <span className="hidden">{item.uid}</span>
-                    {(item.jaego > 0 && item.jaego < 6) && (
-                    <div style={{fontSize:"12px",color:"red"}}>품절임박 - 잔여수량 : {item.jaego}</div>
+                    {item.jaego > 0 && item.jaego < 6 && (
+                      <div style={{ fontSize: "12px", color: "red" }}>
+                        품절임박 - 잔여수량 : {item.jaego}
+                      </div>
                     )}
                   </span>
                   <div className="flex-box between a-center">

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button,message,Radio } from "antd";
+import { Button, message, Radio } from "antd";
 import styled from "styled-components";
-import firebase, {old} from "../../firebase";
-import { commaNumber,notify,getFormatDate } from "../CommonFunc";
+import firebase from "../../firebase";
+import { commaNumber, notify, getFormatDate } from "../CommonFunc";
 import { Howl } from "howler";
-import { BsPhone } from "react-icons/bs"
+import { BsPhone } from "react-icons/bs";
 import axios from "axios";
 import src1 from "../../jumun.mp3";
 import src2 from "../../jumun2.mp3";
@@ -17,22 +17,33 @@ import src7 from "../../alert.mp3";
 export const OrderBox = styled.div`
   width: 100%;
   display: flex;
-  flex-wrap: wrap;  
+  flex-wrap: wrap;
   .list {
-    &.user{
-        position:relative;
-        padding-left:80px;
-        .order-prod-img{
-          width:55px;height:55px;border-radius:50%;overflow:hidden;
-          position:absolute;left:15px;top:50%;transform:translateY(-50%);
-          &.no-img{border:1px solid #ededed}
-          img{
-            height:100%;
-            position:absolute;left:50%;
-            transform:translateX(-50%);
-          }
+    &.user {
+      position: relative;
+      padding-left: 80px;
+      .order-prod-img {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        &.no-img {
+          border: 1px solid #ededed;
         }
-        .btn-cancel{margin-right:5px}
+        img {
+          height: 100%;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+      .btn-cancel {
+        margin-right: 5px;
+      }
     }
     .ic-hot,
     .ic-ice {
@@ -51,7 +62,7 @@ export const OrderBox = styled.div`
     .ic-ice {
       background: #1890ff;
     }
-    color: #888;    
+    color: #888;
     &.state_0 {
       .ic-hot,
       .ic-ice {
@@ -64,7 +75,7 @@ export const OrderBox = styled.div`
         font-weight: 500;
       }
     }
-    &.state_1{
+    &.state_1 {
       .ic-hot,
       .ic-ice {
         opacity: 1;
@@ -78,7 +89,9 @@ export const OrderBox = styled.div`
       border-bottom: 1px solid #ddd;
       height: 30px;
     }
-    .shrink-0{flex-shrink: 0;}
+    .shrink-0 {
+      flex-shrink: 0;
+    }
     diplay: flex;
     flex-direction: column;
     padding: 10px;
@@ -94,7 +107,7 @@ export const OrderBox = styled.div`
     }
     .info-box {
       display: flex;
-      min-height:30px;
+      min-height: 30px;
       align-items: center;
       .info {
         margin-right: 7px;
@@ -117,24 +130,30 @@ export const OrderBox = styled.div`
       width: 100%;
       padding: 0 4px;
     }
-    
   }
   @media all and (max-width: 1200px) {
     .list {
       width: 100%;
       margin: 5px 0;
-      &.user{
-        padding-left:76px;
-        .order-prod-img{
-          width:52px;height:52px;border-radius:50%;overflow:hidden;
-          position:absolute;left:13px;
+      &.user {
+        padding-left: 76px;
+        .order-prod-img {
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          overflow: hidden;
+          position: absolute;
+          left: 13px;
         }
-        .btn-cancel{height:28px;font-size:12px;padding:0 10px}
+        .btn-cancel {
+          height: 28px;
+          font-size: 12px;
+          padding: 0 10px;
+        }
       }
     }
   }
 `;
-
 
 function AdminOrder() {
   const [SoundSelect, setSoundSelect] = useState();
@@ -162,7 +181,7 @@ function AdminOrder() {
   useEffect(() => {
     let mounted = true;
     if (mounted) {
-        firebase
+      firebase
         .database()
         .ref("order")
         .orderByChild("order_state")
@@ -179,7 +198,7 @@ function AdminOrder() {
             array.push({
               ...item.val(),
               key: item.key,
-            })
+            });
           });
           // eslint-disable-next-line array-callback-return
           array.sort((a, b) => {
@@ -192,14 +211,14 @@ function AdminOrder() {
           });
           setOrderList(array);
         });
-      }
+    }
     return function cleanup() {
       firebase.database().ref("order").off();
       mounted = false;
     };
   }, []);
 
-  const [OrderCount, setOrderCount] = useState()
+  const [OrderCount, setOrderCount] = useState();
   useEffect(() => {
     let mounted = true;
     if (mounted) {
@@ -207,14 +226,14 @@ function AdminOrder() {
         .database()
         .ref("order_count")
         .on("value", (snapshot) => {
-          setOrderCount(snapshot.val())
-          if(OrderList.length > 0){
+          setOrderCount(snapshot.val());
+          if (OrderList.length > 0) {
             SoundSelect && Sound.play();
-            notify('새 주문이 들어왔습니다.');
+            notify("새 주문이 들어왔습니다.");
           }
         });
     }
-    
+
     return function cleanup() {
       firebase.database().ref("order_count").off();
       mounted = false;
@@ -222,79 +241,68 @@ function AdminOrder() {
   }, [OrderCount]);
 
   const stateChange = (key) => {
-      firebase.database().ref(`order/${key}`)
+    firebase
+      .database()
+      .ref(`order/${key}`)
       .child("order_state")
       .transaction((pre) => {
         return pre + 1;
       });
   };
   const stateChange2 = (key) => {
-      firebase.database().ref(`order/${key}`)
+    firebase
+      .database()
+      .ref(`order/${key}`)
       .child("order_state")
       .transaction((pre) => {
         return pre + 1;
       });
   };
 
-  
-  const kakaoSend = (key) => { 
-
-    // 올드DB에 추가
-    let newData = key;
-    newData.order_state = 2
-    firebase.database(old).ref(`order/${newData.key}`)
-    .update({
-      ...newData
-    })
-
-    /*
-    firebase.database().ref('order')
-    .once("value",data=>{
-      data.forEach(el=>{                                
-        if(el.val().timestamp < (new Date().getTime() - 2592000000)){
-          firebase.database().ref(`order/${el.key}`).remove()
-        }
-      })
-    })  
-    */
-
+  const kakaoSend = (key) => {
     let time = getFormatDate(new Date(key.order_time.split("|")[0]));
-    time = time.full+time.hour+time.min+time.sec
-    let url = "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel="+ key.order_phone +"&goods_name="+ key.prod_name + "&order_time=" + time;
-    
+    time = time.full + time.hour + time.min + time.sec;
+    let url =
+      "https://metree.co.kr/_sys/_xml/order_kakao.php?order_tel=" +
+      key.order_phone +
+      "&goods_name=" +
+      key.prod_name +
+      "&order_time=" +
+      time;
+
     //window.open(url,'kakao',"height=1,width=1");
 
     fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(response.statusText)
-      }
-      message.success('카톡알림이 발송되었습니다.')
-      return response
-      }).catch(err=>{
-      console.log(err)
-    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        message.success("카톡알림이 발송되었습니다.");
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     return;
-  }
-  
-  const orderCancel = (key,uid) => {
+  };
+
+  const orderCancel = (key, uid) => {
     if (window.confirm("주문 취소 하시겠습니까?")) {
-      firebase.database().ref("order").child(key).remove()
+      firebase.database().ref("order").child(key).remove();
       firebase
         .database()
         .ref("products")
         .child(uid)
         .transaction((pre) => {
-          if(pre.jaego >= 0){
+          if (pre.jaego >= 0) {
             pre.jaego++;
             return pre;
           }
         });
-        message.success('주문이 취소되었습니다.');
+      message.success("주문이 취소되었습니다.");
     }
-  }
-
+  };
 
   return (
     <>
@@ -313,26 +321,37 @@ function AdminOrder() {
       </div>
       <OrderBox className="order-list-box">
         {OrderList.map((list, index) => (
-          <div className={`list state_${list.order_state} ${list.category === '셀프' ? 'self' : ''}`} key={index}>
+          <div
+            className={`list state_${list.order_state} ${
+              list.category === "셀프" ? "self" : ""
+            }`}
+            key={index}
+          >
             <span style={{ display: "none" }}>{list.key}</span>
             <div className="from">
-              <span className="flex-box a-center">{list.order_name}
-                <span style={{marginLeft:"5px",display:"flex",alignItems:"center",fontWeight:"500"}}>
-                  <BsPhone style={{marginRight:"3px"}}/>
-                  {list.order_phone && list.order_phone.substr(list.order_phone.length-4,4)}
+              <span className="flex-box a-center">
+                {list.order_name}
+                <span
+                  style={{
+                    marginLeft: "5px",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: "500",
+                  }}
+                >
+                  <BsPhone style={{ marginRight: "3px" }} />
+                  {list.order_phone &&
+                    list.order_phone.substr(list.order_phone.length - 4, 4)}
                 </span>
               </span>
-              <span style={{flexShrink:"0"}}>{list.order_part}</span>
+              <span style={{ flexShrink: "0" }}>{list.order_part}</span>
             </div>
             <div className="prod">
               <div className="info-box">
                 <span className="info">
-                  {list.category === '셀프' &&
-                    <>
-                      (셀프)
-                    </>
-                  }
-                  {list.prod_name}{list.prod_option ? `-${list.prod_option}`:""}
+                  {list.category === "셀프" && <>(셀프)</>}
+                  {list.prod_name}
+                  {list.prod_option ? `-${list.prod_option}` : ""}
                 </span>
                 {list.hot === "hot" ? (
                   <span className="ic-hot shrink-0"></span>
@@ -342,9 +361,7 @@ function AdminOrder() {
                   ""
                 )}
                 {/* <span className="info shrink-0">{list.amount}개</span> */}
-                {list.add && (
-                      <span className="info shrink-0">{list.add}</span>
-                    )}
+                {list.add && <span className="info shrink-0">{list.add}</span>}
                 {list.add2 && list.add2[0] && (
                   <span className="info shrink-0">{list.add2[0]}</span>
                 )}
@@ -355,45 +372,45 @@ function AdminOrder() {
                   <span className="info shrink-0">{list.milk}</span>
                 )}
               </div>
-              <span className="shrink-0">{commaNumber(parseInt(list.price))}원</span>
-            </div>
-            <div style={{color:"red",fontWeight:"500"}}>
-                {list.order_etc && list.order_etc}
-            </div>            
-            <div className="state">
-              <span className="date">
-                {list.order_time}
+              <span className="shrink-0">
+                {commaNumber(parseInt(list.price))}원
               </span>
+            </div>
+            <div style={{ color: "red", fontWeight: "500" }}>
+              {list.order_etc && list.order_etc}
+            </div>
+            <div className="state">
+              <span className="date">{list.order_time}</span>
               <div>
-              
-              {list.order_state === 0 &&
-              <>
-                <Button style={{marginRight:"5px"}}
-                  onClick={() => {
-                    orderCancel(list.key,list.prod_uid);
-                  }}
-                >
-                  주문취소
-                </Button>
-                <Button
-                  onClick={() => {
-                    stateChange(list.key);
-                  }}
-                >
-                  주문접수
-                </Button>
-              </>
-              }
-              {list.order_state === 1 &&
-              <Button
-                onClick={() => {
-                  stateChange2(list.key);
-                  kakaoSend(list);
-                }}
-              >
-                완료처리
-              </Button>
-              }
+                {list.order_state === 0 && (
+                  <>
+                    <Button
+                      style={{ marginRight: "5px" }}
+                      onClick={() => {
+                        orderCancel(list.key, list.prod_uid);
+                      }}
+                    >
+                      주문취소
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        stateChange(list.key);
+                      }}
+                    >
+                      주문접수
+                    </Button>
+                  </>
+                )}
+                {list.order_state === 1 && (
+                  <Button
+                    onClick={() => {
+                      stateChange2(list.key);
+                      kakaoSend(list);
+                    }}
+                  >
+                    완료처리
+                  </Button>
+                )}
               </div>
             </div>
           </div>

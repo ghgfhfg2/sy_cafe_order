@@ -93,6 +93,7 @@ function Menu() {
         .database()
         .ref("lunch")
         .once("value", (snapshot) => {
+          if (!snapshot.val()) return;
           let arr = [];
           const startTime = Number(
             snapshot.val().orderTimeStart.split(":").join("")
@@ -152,9 +153,9 @@ function Menu() {
           .ref("soldout")
           .once("value")
           .then((snapshot) => {
-            b_soldout = snapshot.val().b_soldout;
-            m_soldout = snapshot.val().MilkSoldout;
-            m_soldout2 = snapshot.val().MilkSoldout2;
+            b_soldout = snapshot.val()?.b_soldout || "";
+            m_soldout = snapshot.val()?.MilkSoldout || "";
+            m_soldout2 = snapshot.val()?.MilkSoldout2 || "";
           });
 
         await firebase

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import firebase from "../firebase";
 import { Button, Input } from "antd";
-import {ModalPopup} from "./Admin/ModifyModal"
+import { ModalPopup } from "./Admin/ModifyModal";
+import LogoImg from "./LogoImg";
 
 function Login() {
   const { register, errors, handleSubmit } = useForm({
@@ -35,30 +36,36 @@ function Login() {
     setInputPw(e.target.value);
   };
 
-  const [PwChangeInput, setPwChangeInput] = useState('')
+  const [PwChangeInput, setPwChangeInput] = useState("");
   const OnPwChangeInput = (e) => {
-    setPwChangeInput(e.target.value)
-  }
+    setPwChangeInput(e.target.value);
+  };
   const onPwChange = () => {
     const auth = firebase.auth();
-    const emailAddress = PwChangeInput
-    console.log(emailAddress)
-    auth.sendPasswordResetEmail(emailAddress).then(function() {
-      alert('이메일로 비밀번호 변경 링크를 발송했습니다.')
-      onPwModal();
-    }).catch(function(error) {
-      alert('해당 이메일로 가입된 유저가 없습니다.')
-    });    
-  }
+    const emailAddress = PwChangeInput;
+    console.log(emailAddress);
+    auth
+      .sendPasswordResetEmail(emailAddress)
+      .then(function () {
+        alert("이메일로 비밀번호 변경 링크를 발송했습니다.");
+        onPwModal();
+      })
+      .catch(function (error) {
+        alert("해당 이메일로 가입된 유저가 없습니다.");
+      });
+  };
 
-  const [PwModal, setPwModal] = useState(false)
+  const [PwModal, setPwModal] = useState(false);
   const onPwModal = () => {
-    setPwModal(!PwModal)
-  }
+    setPwModal(!PwModal);
+  };
 
   return (
     <>
       <div className="join-form-wrap">
+        <div className="logo_box">
+          <LogoImg />
+        </div>
         <form className="join-form" onSubmit={handleSubmit(onSubmit)}>
           <div className="input-box">
             <input
@@ -73,7 +80,7 @@ function Login() {
               className={"place-holder " + (InputEmail && "on")}
             >
               <span>이메일</span>
-            </label>          
+            </label>
           </div>
           <div className="input-box">
             <input
@@ -99,19 +106,49 @@ function Login() {
           </div>
           <input type="submit" value="로그인" disabled={loading} />
         </form>
-        <div style={{position:"relative",marginTop:"10px"}}>
-          <a href="javascript:;" onClick={onPwModal}>비밀번호를 잊어버렸을때</a>
-          {
-            PwModal &&
+        <div
+          style={{
+            position: "relative",
+            marginTop: "10px",
+            textAlign: "center",
+          }}
+        >
+          <a
+            href="javascript:;"
+            onClick={onPwModal}
+            style={{ fontWeight: "600" }}
+          >
+            비밀번호를 잊어버렸을때
+          </a>
+          {PwModal && (
             <ModalPopup>
-              <h3 style={{fontWeight:"bold",textAlign:"center"}}>비밀번호 재설정</h3>
-              <Input placeholder="가입했던 이메일을 입력해 주세요" type="text" value={PwChangeInput} onChange={OnPwChangeInput} />
-              <div className="flex-box j-center" style={{marginTop:"10px"}}>
-                <Button type="primary" style={{marginRight:"5px"}} onClick={onPwChange}>이메일로 전송</Button>
+              <h3 style={{ fontWeight: "bold", textAlign: "center" }}>
+                비밀번호 재설정
+              </h3>
+              <Input
+                placeholder="가입했던 이메일을 입력해 주세요"
+                type="text"
+                value={PwChangeInput}
+                onChange={OnPwChangeInput}
+              />
+              <div className="flex-box j-center" style={{ marginTop: "10px" }}>
+                <Button
+                  type="primary"
+                  style={{ marginRight: "5px" }}
+                  onClick={onPwChange}
+                >
+                  이메일로 전송
+                </Button>
                 <Button onClick={onPwModal}>닫기</Button>
               </div>
             </ModalPopup>
-          }
+          )}
+        </div>
+        <div style={{ marginTop: "35px", textAlign: "center" }}>
+          아직 회원이 아니시라면?<br></br>
+          <a href="/join" style={{ fontWeight: "600" }}>
+            회원가입 하러가기
+          </a>
         </div>
       </div>
     </>

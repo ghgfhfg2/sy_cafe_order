@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Route, Router, Switch, useHistory } from "react-router-dom";
 import Nav from "./component/Nav";
-import './custom_antd.less';
+import "./custom_antd.less";
 import "./App.css";
 import Join from "./component/Join";
 import Login from "./component/Login";
+import First from "./component/First";
 import Menu from "./component/Menu";
 import MyOrder from "./component/MyOrder";
 import MyMenu from "./component/MyMenu";
@@ -43,11 +44,15 @@ const { Sider, Content, Header } = Layout;
 
 function App(props) {
   const userInfo = useSelector((state) => state.user.currentUser);
-  function isDesktopOS(){
-    return ( 'win16|win32|win64|windows|mac|macintel|linux|freebsd|openbsd|sunos'.indexOf(navigator.platform.toLowerCase()) >= 0 ); 
+  function isDesktopOS() {
+    return (
+      "win16|win32|win64|windows|mac|macintel|linux|freebsd|openbsd|sunos".indexOf(
+        navigator.platform.toLowerCase()
+      ) >= 0
+    );
   }
 
-  if(isDesktopOS()){
+  if (isDesktopOS()) {
     getNotificationPermission();
   }
 
@@ -55,39 +60,36 @@ function App(props) {
   let dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
 
-
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         firebase
-        .database()
-        .ref("users")
-        .child(user.uid)
-        .once("value", (snapshot) => {
-          if(snapshot.val()){
-            let addInfo = {
-              ...user,
-              auth:snapshot.val().auth ? snapshot.val().auth : "",
-              call_number:snapshot.val().call_number,
-              favorite:snapshot.val().favorite,
-              role:snapshot.val().role,
-              sosok:snapshot.val().sosok,
-              welfare_range:snapshot.val().welfare_range,
-              welfare_able:snapshot.val().welfare_able,
-              photoURL:snapshot.val().part,
+          .database()
+          .ref("users")
+          .child(user.uid)
+          .once("value", (snapshot) => {
+            if (snapshot.val()) {
+              let addInfo = {
+                ...user,
+                auth: snapshot.val().auth ? snapshot.val().auth : "",
+                call_number: snapshot.val().call_number,
+                favorite: snapshot.val().favorite,
+                role: snapshot.val().role,
+                sosok: snapshot.val().sosok,
+                welfare_range: snapshot.val().welfare_range,
+                welfare_able: snapshot.val().welfare_able,
+                photoURL: snapshot.val().part,
+              };
+              history.push("/");
+              dispatch(setUser(addInfo));
             }
-            console.log(addInfo)
-            history.push("/");
-            dispatch(setUser(addInfo));
-          }
-        });
+          });
       } else {
         history.push("/login");
         dispatch(clearUser());
       }
     });
   }, []);
-  
 
   // 스크롤 이벤트 핸들러
   const [TopFix, setTopFix] = useState(false);
@@ -113,11 +115,10 @@ function App(props) {
     };
   });
 
-  const [authPop, setAuthPop] = useState(false)
+  const [authPop, setAuthPop] = useState(false);
   const authPopToggle = () => {
     setAuthPop(!authPop);
-  }
-
+  };
 
   if (isLoading) {
     return (
@@ -128,7 +129,7 @@ function App(props) {
               <LogoImg />
               {/* <img className="top-logo" src={Logo_PC} alt="" />
               <img className="top-logo-m" src={Logo} alt="" /> */}
-            </a>                       
+            </a>
           </Header>
           <Layout>
             <div className="content-box">
@@ -146,24 +147,25 @@ function App(props) {
   } else {
     return (
       <>
-        {authPop &&
-          <AuthPop authPopToggle={authPopToggle} />
-        }
+        {authPop && <AuthPop authPopToggle={authPopToggle} />}
         <Layout className={TopFix && "top-fix"}>
-          <Header className="header-box">
+          {/* <Header className="header-box">
             <div className="header-content">
               <a href="/">
                 <LogoImg />
               </a>
-              {userInfo && 
-              <button type="button" className="user-auth" onClick={authPopToggle}>
-                <antIcon.AiOutlineIdcard 
-                /> 
-                사원증
-              </button>
-              }
+              {userInfo && (
+                <button
+                  type="button"
+                  className="user-auth"
+                  onClick={authPopToggle}
+                >
+                  <antIcon.AiOutlineIdcard />
+                  사원증
+                </button>
+              )}
             </div>
-          </Header>
+          </Header> */}
           <Layout>
             <div className="content-box">
               <Sider className={"nav-wrap " + (TopFixLeft && "fix")}>
@@ -172,19 +174,36 @@ function App(props) {
               <Content>
                 <Switch>
                   <Route exact path="/" component={Menu} />
+                  <Route exact path="/first" component={First} />
                   <Route exact path="/login" component={Login} />
                   <Route exact path="/join" component={Join} />
                   <Route exact path="/myorder" component={MyOrder} />
                   <Route exact path="/mymenu" component={MyMenu} />
                   <Route exact path="/lunch" component={LunchCheck} />
                   <Route exact path="/admin/prod" component={AdminProd} />
-                  <Route exact path="/admin/prod_count" component={AdminProdCount} />
+                  <Route
+                    exact
+                    path="/admin/prod_count"
+                    component={AdminProdCount}
+                  />
                   <Route exact path="/admin/order" component={AdminOrder} />
                   <Route exact path="/admin/lunch" component={LunchAdmin} />
-                  <Route exact path="/admin/order_list" component={AdminOrderList}/>
+                  <Route
+                    exact
+                    path="/admin/order_list"
+                    component={AdminOrderList}
+                  />
                   <Route exact path="/research" component={Research} />
-                  <Route exact path="/research_write" component={ResearchWrite} />
-                  <Route exact path="/research_modify" component={ResearchModify} />
+                  <Route
+                    exact
+                    path="/research_write"
+                    component={ResearchWrite}
+                  />
+                  <Route
+                    exact
+                    path="/research_modify"
+                    component={ResearchModify}
+                  />
                   <Route exact path="/research_temp" component={ResearchTemp} />
                   <Route exact path="/research_view" component={ResearchView} />
                   <Route exact path="/hair" component={Hair} />

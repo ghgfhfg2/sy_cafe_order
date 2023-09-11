@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import React, { useState, useEffect } from "react";
-import firebase, { old } from "../firebase";
 import { Popover, message } from "antd";
+import firebase from "../firebase";
 import { commaNumber, notify, getFormatDate } from "./CommonFunc";
 import { useSelector } from "react-redux";
 import { OrderBox } from "./Admin/AdminOrder";
